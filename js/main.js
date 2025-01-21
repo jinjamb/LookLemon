@@ -19,31 +19,44 @@ function startGame() {
     });
 }
 
+
+function createPyrm2Max(n){
+    for(let u=0; u<n; u++){
+        for (let i = 0; i < n-2*u; i++) {
+            for (let j = 0; j < n-2*u; j++) {
+                let box = BABYLON.MeshBuilder.CreateBox("myBox", {size: 2}, scene);
+                box.position.y = u * 2;
+                box.position.x = i * 2+u*2;
+                box.position.z = j * 2+u*2;
+                let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+                groundMaterial.diffuseTexture = new BABYLON.Texture("textures/terre.jpg", scene);
+                // Apply the material to the cube
+                box.material = groundMaterial;
+            }
+        }
+    }
+}
 function createScene() {
     let scene = new BABYLON.Scene(engine);
     
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
-    // Create some objects 
-    // params = number of horizontal "stripes", diameter...
-    let sphere = BABYLON.MeshBuilder.CreateSphere("mySphere", {diameter: 2, segments: 32}, scene);
-    let sphere2 = BABYLON.MeshBuilder.CreateSphere("mySphere2", {diameter: 3, segments: 32}, scene);
-    sphere.position.y = 1;
-    sphere2.position.y = 4;
-    // a plane
-    let ground = BABYLON.MeshBuilder.CreateGround("myGround", {width: 60, height: 60}, scene);
-    //console.log(ground.name);
+    
 
-     camera = new BABYLON.FreeCamera("myCamera", new BABYLON.Vector3(0, 5, -10), scene);
-   // This targets the camera to scene origin
-   camera.setTarget(BABYLON.Vector3.Zero());
-   //camera.rotation.y = 0.3;
-   camera.attachControl(canvas);
+
+    createPyrm2Max(23);
+
+    // Create a camera
+    camera = new BABYLON.FreeCamera("myCamera", new BABYLON.Vector3(0, 50, -50), scene);
+    // This targets the camera to scene origin
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.attachControl(canvas);
    
+    // Create a light
     let light = new BABYLON.HemisphericLight("myLight", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.3;
-    // color of the light
+    light.intensity = 0.7;
     light.diffuse = new BABYLON.Color3(1, 1, 1);
+
     return scene;
 }
 
