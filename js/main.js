@@ -1,3 +1,4 @@
+
 let canvas;
 let engine;
 let scene;
@@ -36,15 +37,18 @@ function createPyrm2Max(n){
         }
     }
 }
+
 function createScene() {
     let scene = new BABYLON.Scene(engine);
     
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
+    createPyrm2Max(2);
+
     
-
-
-    createPyrm2Max(23);
+    BABYLON.SceneLoader.Append("models/", "tree.glb", scene, function () {
+        console.log("Model loaded successfully!");
+    });
 
     // Create a camera
     camera = new BABYLON.FreeCamera("myCamera", new BABYLON.Vector3(0, 50, -50), scene);
@@ -52,6 +56,7 @@ function createScene() {
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas);
    
+
     // Create a light
     let light = new BABYLON.HemisphericLight("myLight", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
@@ -62,4 +67,4 @@ function createScene() {
 
 window.addEventListener("resize", () => {
     engine.resize()
-})
+});
