@@ -38,17 +38,31 @@ function createPyrm2Max(n){
     }
 }
 
+
+
+
 function createScene() {
     let scene = new BABYLON.Scene(engine);
     
     // background
     scene.clearColor = new BABYLON.Color3(1, 0, 1);
-    createPyrm2Max(2);
+    createPyrm2Max(15);
 
     
-    BABYLON.SceneLoader.Append("models/", "tree.glb", scene, function () {
-        console.log("Model loaded successfully!");
+    BABYLON.SceneLoader.ImportMesh("him", "models/", "tree.glb", scene,  (newMeshes, particleSystems, skeletons) => {
+        let heroDude = newMeshes[0];
+        heroDude.position = new BABYLON.Vector3(0, 0, 5);  // The original dude
+        // make it smaller 
+        heroDude.scaling = new BABYLON.Vector3(0.2 , 0.2, 0.2);
+        heroDude.speed = 0.5;
+
+            // give it a name so that we can query the scene to get it by name
+        heroDude.name = "heroDude";
     });
+
+
+
+
 
     // Create a camera
     camera = new BABYLON.FreeCamera("myCamera", new BABYLON.Vector3(0, 50, -50), scene);
