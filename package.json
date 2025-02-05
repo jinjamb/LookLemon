@@ -1,9 +1,44 @@
 {
-  "dependencies": {
-    "vite": "^6.1.0"
+  "name": "projetcitron",
+  "version": "1.0.0",
+  "description": "projet citron",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx webpack serve --config webpack.dev.js",
+    "start:prod": "webpack serve --config webpack.prod.js",
+    "build:dev": "npx webpack --config webpack.dev.js",
+    "build": "npw webpack --config webpack.prod.js",
+    "lint": "npx eslint . --ext .ts",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
+  "repository": {
+    "type": "git",
+    "url": "(https://github.com/jinjamb/3DGame)"
+  },
+  "author": "MCCZMC",
+  "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "eslint": "^9.19.0",
+    "file-loader": "^6.2.0",
+    "globals": "^15.14.0",
+    "html-webpack-plugin": "^5.6.3",
+    "js-loader": "^0.1.1",
+    "source-map-loader": "^5.0.0",
+    "typescript-eslint": "^8.23.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0",
+    "webpack-merge": "^6.0.1"
+  },
+  "dependencies": {
     "@babylonjs/core": "^7.47.2",
-    "@babylonjs/inspector": "^7.47.2"
+    "@babylonjs/havok": "^1.3.10",
+    "@babylonjs/loaders": "^7.47.2",
+    "eslint-plugin-import": "^2.31.0",
+    "gh-pages": "^6.3.0"
   }
 }

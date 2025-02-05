@@ -1,41 +1,41 @@
-import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
-import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder } from "@babylonjs/core";
+import HavokPhysics from "@babylonjs/havok";
+import { Engine, Scene, Vector3, FreeCamera, HemisphericLight, MeshBuilder, StandardMaterial, Color3, HavokPlugin, PhysicsAggregate, PhysicsShapeType, ArcRotateCamera } from "@babylonjs/core";
 
-class App {
-    constructor() {
-        // create the canvas html element and attach it to the webpage
-        var canvas = document.createElement("canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.id = "gameCanvas";
-        document.body.appendChild(canvas);
 
-        // initialize babylon scene and engine
-        var engine = new Engine(canvas, true);
-        var scene = new Scene(engine);
+let canvas = document.getElementById("maCanvas") as HTMLCanvasElement;
+let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
+globalThis.HK = await HavokPhysics();
 
-        var camera: ArcRotateCamera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
-        camera.attachControl(canvas, true);
-        var light1: HemisphericLight = new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
-        var sphere: Mesh = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+const createScene = async function () {
+  const scene = new Scene(engine);
 
-        // hide/show the Inspector
-        window.addEventListener("keydown", (ev) => {
-            // I est apuiller
-            if (ev.keyCode === 73) {
-                if (scene.debugLayer.isVisible()) {
-                    scene.debugLayer.hide();
-                } else {
-                    scene.debugLayer.show();
-                }
-            }
-        });
 
-        // run the main render loop
-        engine.runRenderLoop(() => {
-            scene.render();
-        });
-    }
+  // Create a static camera
+  const camera = new ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 20, Vector3.Zero(), scene);
+  camera.attachControl(canvas, true);
+
+  // Create a light
+  const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
+  light.intensity = 0.7;
+
+  //physics
+  //const havokInstance = await HavokPhysics();
+  const physics = new HavokPlugin(true);
+  scene.enablePhysics(new Vector3(0, -9.81, 0), physics);
+
+  const ground = MeshBuilder.CreateGround("ground", { width: 10, height: 10 },scene);
+  const groundPhysics = new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene);
+  return scene;
 }
-new App();
+
+createScene().then((scene) => {
+  engine.runRenderLoop(function () {
+    if (scene) {
+      scene.render();
+    }
+  });
+});
+
+window.addEventListener("resize", function () {
+  engine.resize();
+});
