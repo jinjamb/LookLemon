@@ -1,84 +1,89 @@
+import "@babylonjs/loaders";
+import HavokPhysics from "@babylonjs/havok";
+import { Engine, Scene, Vector3, FreeCamera, HemisphericLight, MeshBuilder } from "@babylonjs/core";
+import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
+import { PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core/Physics/v2";
+async function startGame() {
+    const canvas = document.querySelector("#myCanvas");
+    const engine = new Engine(canvas, true);
 
-let canvas;
-let engine;
-let scene;
-let camera;
+    const scene = new Scene(engine);
+    //
 
-window.onload = startGame;
-
-function startGame() {
-    canvas = document.querySelector("#myCanvas");
-    engine = new BABYLON.Engine(canvas, true);
-
-    scene = createScene();
-
-    //let sphere = scene.getMeshByName("mySphere");
-
-    // main animation loop 60 times/s
-    engine.runRenderLoop(() => {
-        scene.render();
-    });
-}
-
-
-function createPyrm2Max(n){
-    for(let u=0; u<n; u++){
-        for (let i = 0; i < n-2*u; i++) {
-            for (let j = 0; j < n-2*u; j++) {
-                let box = BABYLON.MeshBuilder.CreateBox("myBox", {size: 2}, scene);
-                box.position.y = u * 2;
-                box.position.x = i * 2+u*2;
-                box.position.z = j * 2+u*2;
-                let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-                groundMaterial.diffuseTexture = new BABYLON.Texture("textures/terre.jpg", scene);
-                // Apply the material to the cube
-                box.material = groundMaterial;
-            }
-        }
-    }
-}
-
-
-
-
-function createScene() {
-    let scene = new BABYLON.Scene(engine);
-    
-    // background
-    scene.clearColor = new BABYLON.Color3(1, 0, 1);
-    createPyrm2Max(15);
-
-    
-    BABYLON.SceneLoader.ImportMesh("him", "models/", "tree.glb", scene,  (newMeshes, particleSystems, skeletons) => {
-        let heroDude = newMeshes[0];
-        heroDude.position = new BABYLON.Vector3(0, 0, 5);  // The original dude
-        // make it smaller 
-        heroDude.scaling = new BABYLON.Vector3(0.2 , 0.2, 0.2);
-        heroDude.speed = 0.5;
-
-            // give it a name so that we can query the scene to get it by name
-        heroDude.name = "heroDude";
-    });
-
-
+    // Enable physics
+    const havokInstance = await HavokPhysics();
+    scene.enablePhysics(new Vector3(0, -9.81, 0), new HavokPlugin(true, havokInstance));
 
 
 
     // Create a camera
-    camera = new BABYLON.FreeCamera("myCamera", new BABYLON.Vector3(0, 50, -50), scene);
-    // This targets the camera to scene origin
-    camera.setTarget(BABYLON.Vector3.Zero());
-    camera.attachControl(canvas);
-   
+    const camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
+    camera.setTarget(Vector3.Zero());
+    camera.attachControl(canvas, true);
 
     // Create a light
-    let light = new BABYLON.HemisphericLight("myLight", new BABYLON.Vector3(0, 1, 0), scene);
+    const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
-    light.diffuse = new BABYLON.Color3(1, 1, 1);
 
-    return scene;
+
+    const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100 }, scene);
+    new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene);
+
+    const wallThickness = 1;
+    const wallHeight = 10;
+
+    const wall1 = MeshBuilder.CreateBox("wall1", { width: 100, height: wallHeight, depth: wallThickness }, this.scene);
+    wall1.position.set(0, wallHeight / 2, -50);
+
+    new PhysicsAggregate(wall1, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
+
+    const wall2 = MeshBuilder.CreateBox("wall2", { width: 100, height: wallHeight, depth: wallThickness }, this.scene);
+    wall2.position.set(0, wallHeight / 2, 50);
+    new PhysicsAggregate(wall2, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
+
+    const wall3 = MeshBuilder.CreateBox("wall3", { width: wallThickness, height: wallHeight, depth: 100 }, this.scene);
+    wall3.position.set(-50, wallHeight / 2, 0);
+    new PhysicsAggregate(wall3, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
+
+    const wall4 = MeshBuilder.CreateBox("wall4", { width: wallThickness, height: wallHeight, depth: 100 }, this.scene);
+    wall4.position.set(50, wallHeight / 2, 0);
+    new PhysicsAggregate(wall4, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
+
+
+
+
+    const sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
+    sphere.position.y = 5;
+
+    spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1 }, scene);
+
+    // Add keyboard controls
+    window.addEventListener("keydown", (event) => {
+        const forceMagnitude = 10;
+        switch (event.key) {
+            case "w":
+                spherePhysics.body.applyImpulse(new Vector3(0, 0, -forceMagnitude), sphere.getAbsolutePosition());
+                break;
+            case "s":
+                spherePhysics.body.applyImpulse(new Vector3(0, 0, forceMagnitude), sphere.getAbsolutePosition());
+                break;
+            case "a":
+                spherePhysics.body.applyImpulse(new Vector3(-forceMagnitude, 0, 0), sphere.getAbsolutePosition());
+                break;
+            case "d":
+                spherePhysics.body.applyImpulse(new Vector3(forceMagnitude, 0, 0), sphere.getAbsolutePosition());
+                break;
+        }
+    });
+    // Main animation loop
+    engine.runRenderLoop(() => {
+        scene.render();
+    });
+
+    // Resize event
+    window.addEventListener("resize", () => {
+        engine.resize();
+    });
 }
 
-window.addEventListener("resize", () => {
-    engine.resize()
-});
+window.onload = startGame;
