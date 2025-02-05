@@ -1,24 +1,32 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { Engine, Scene, Vector3, HemisphericLight, FreeCamera, MeshBuilder } from "@babylonjs/core";
+import HavokPhysics from "@babylonjs/havok";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+async function createScene(canvas: HTMLCanvasElement) {
+    // Initialisation Babylon.js
+    const engine = new Engine(canvas, true);
+    const scene = new Scene(engine);
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+    // Ajout d'une caméra
+    const camera = new FreeCamera("camera", new Vector3(0, 5, -10), scene);
+    camera.setTarget(Vector3.Zero());
+    camera.attachControl(canvas, true);
+
+    // Lumière
+    new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+
+
+    // Boucle de rendu
+    engine.runRenderLoop(() => {
+        scene.render();
+    });
+
+    // Redimensionnement de la fenêtre
+    window.addEventListener("resize", () => {
+        engine.resize();
+    });
+}
+
+// Exécuter la scène
+const canvas = document.createElement("canvas");
+document.body.appendChild(canvas);
+createScene(canvas);
