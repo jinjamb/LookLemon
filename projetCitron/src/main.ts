@@ -1,32 +1,41 @@
-import { Engine, Scene, Vector3, HemisphericLight, FreeCamera, MeshBuilder } from "@babylonjs/core";
-import HavokPhysics from "@babylonjs/havok";
+import "@babylonjs/core/Debug/debugLayer";
+import "@babylonjs/inspector";
+import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder } from "@babylonjs/core";
 
-async function createScene(canvas: HTMLCanvasElement) {
-    // Initialisation Babylon.js
-    const engine = new Engine(canvas, true);
-    const scene = new Scene(engine);
+class App {
+    constructor() {
+        // create the canvas html element and attach it to the webpage
+        var canvas = document.createElement("canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.id = "gameCanvas";
+        document.body.appendChild(canvas);
 
-    // Ajout d'une caméra
-    const camera = new FreeCamera("camera", new Vector3(0, 5, -10), scene);
-    camera.setTarget(Vector3.Zero());
-    camera.attachControl(canvas, true);
+        // initialize babylon scene and engine
+        var engine = new Engine(canvas, true);
+        var scene = new Scene(engine);
 
-    // Lumière
-    new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+        var camera: ArcRotateCamera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
+        camera.attachControl(canvas, true);
+        var light1: HemisphericLight = new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
+        var sphere: Mesh = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
 
+        // hide/show the Inspector
+        window.addEventListener("keydown", (ev) => {
+            // I est apuiller
+            if (ev.keyCode === 73) {
+                if (scene.debugLayer.isVisible()) {
+                    scene.debugLayer.hide();
+                } else {
+                    scene.debugLayer.show();
+                }
+            }
+        });
 
-    // Boucle de rendu
-    engine.runRenderLoop(() => {
-        scene.render();
-    });
-
-    // Redimensionnement de la fenêtre
-    window.addEventListener("resize", () => {
-        engine.resize();
-    });
+        // run the main render loop
+        engine.runRenderLoop(() => {
+            scene.render();
+        });
+    }
 }
-
-// Exécuter la scène
-const canvas = document.createElement("canvas");
-document.body.appendChild(canvas);
-createScene(canvas);
+new App();
