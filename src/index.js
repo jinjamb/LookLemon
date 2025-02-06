@@ -2,8 +2,10 @@ import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLig
 import HavokPhysics from "@babylonjs/havok";
 import Citron from "./../assets/testcitron01.glb";
 import Map from "./../assets/heightMap2.png";
+
 import "@babylonjs/loaders/glTF";
 import {CitronModel} from "./Citron.js"
+import {ArbreModel} from "./Arbre.js"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -37,6 +39,10 @@ const createScene = async function () {
 
     const citron = new CitronModel();
     citron.loadModel(scene);
+
+    const arbre = new ArbreModel();
+    arbre.loadModel(scene);
+    
 
 
     //create a camera
