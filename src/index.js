@@ -1,6 +1,7 @@
 import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 import Citron from "./../assets/testcitron01.glb";
+import Map from "./../assets/heightMap2.png";
 import "@babylonjs/loaders/glTF";
 import {CitronModel} from "./Citron.js"
 
@@ -14,20 +15,25 @@ let sphere;
 
 const createScene = async function () {
     const scene = new Scene(engine);
-
+    
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
     const havokInst = await HavokPhysics();
     const physics = new HavokPlugin(true, havokInst);
     scene.enablePhysics(new Vector3(0, -9.81, 0), physics);
-    const ground = MeshBuilder.CreateGround("ground", { width: 50, height: 50 }, scene);
+    //const ground = MeshBuilder.CreateGround("ground", { width: 50, height: 50 }, scene);
+
+    const ground = MeshBuilder.CreateGroundFromHeightMap("gdhm", Map,{width:500, height :500, subdivisions: 50, maxHeight: 40}, scene); //scene is optional and defaults to the current scene
+
+
     ground.position = new Vector3(0, -15, 0);
 
     let groundPhysics;
     ground.onMeshReadyObservable.add(() => {
         groundPhysics = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
     });
+    
 
     const citron = new CitronModel();
     citron.loadModel(scene);
@@ -40,7 +46,7 @@ const createScene = async function () {
 
     // Create sphere with physics
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-    sphere.position.y = 5;
+    sphere.position.y = 10;
     spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 1 }, scene);
 
     // Variables to track the current force
