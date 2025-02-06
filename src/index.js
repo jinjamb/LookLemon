@@ -2,6 +2,7 @@ import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLig
 import HavokPhysics from "@babylonjs/havok";
 import Citron from "./../assets/testcitron01.glb";
 import "@babylonjs/loaders/glTF";
+import {CitronModel} from "./Citron.js"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -23,21 +24,10 @@ const createScene = async function () {
     ground.onMeshReadyObservable.add(() => {
         groundPhysics = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
     });
-    //create a sphere
-    // Load the .glb model and replace the sphere
 
-    const result = await SceneLoader.ImportMeshAsync("", Citron, "", scene);
-    const model = result.meshes[0];
-    model.scaling = new Vector3(3, 3, 3);
+    const citron = new CitronModel();
+    citron.loadModel(scene);
 
-    model.position = new Vector3(0, 0, 3);
-    result.rotation = new Vector3(0, Math.PI, 0);
-    // Apply physics to the model
-    
-    let citronphy;
-    model.onMeshReadyObservable.add(() => {
-        citronphy = new PhysicsAggregate(model, PhysicsShapeType.BOX, { mass: 0 }, scene);
-    });
 
     //create a camera
     const camera = new FreeCamera("camera", new Vector3(-100, 10, 0), scene);
