@@ -70,48 +70,45 @@ const createScene = async function () {
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
-    // Add keyboard controls
-    window.addEventListener("keydown", (event) => {
-        const forceMagnitude = 40;
-        switch (event.key) {
-            case "w":
-                break;
-            case "s":
-                break;
-            case "a":
-                break;
-            case "d":
-                break;
-        }
-    });
-
-    window.addEventListener("keyup", (event) => {
-        switch (event.key) {
-            case "w":
-            case "s":
-                forceDirection.z = 0;
-                break;
-            case "a":
-            case "d":
-                
-                forceDirection.x = 0;
-                break;
-
-        }
-    });
-    window.addEventListener("keydown", (ev) => {
-        // I est apuiller
-        if (ev.keyCode === 73) {
+   // Add keyboard controls
+   window.addEventListener("keydown", (event) => {
+    const forceMagnitude = 40;
+    switch (event.code) {
+        case "KeyW":
+            forceDirection.z = forceMagnitude;
+            break;
+        case "KeyS":
+            forceDirection.z = -forceMagnitude;
+            break;
+        case "KeyA":
+            forceDirection.x = -forceMagnitude;
+            break;
+        case "KeyD":
+            forceDirection.x = forceMagnitude;
+            break;
+        case "KeyI":
             if (scene.debugLayer.isVisible()) {
                 scene.debugLayer.hide();
             } else {
                 scene.debugLayer.show();
             }
+            break;
+    }});
+
+    window.addEventListener("keyup", (event) => {
+        switch (event.code) {
+            case "KeyW":
+            case "KeyS":
+                forceDirection.z = 0;
+                spherePhysics.body.setLinearVelocity(Vector3.Zero());
+                break;
+            case "KeyA":
+            case "KeyD":
+                forceDirection.x = 0;
+                spherePhysics.body.setLinearVelocity(Vector3.Zero());
+                break;
         }
     });
-
-
-
     return scene;
 
 
