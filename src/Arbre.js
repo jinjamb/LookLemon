@@ -17,9 +17,6 @@ export class ArbreModel {
             this.model.rotation = new Vector3(0, Math.PI, 0);
 
             // Apply physics to the model
-            this.model.onMeshReadyObservable.add(() => {
-                this.Arbrephy = new PhysicsAggregate(this.model, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
-            });
 
             console.log("Arbre model loaded successfully");
         } catch (error) {

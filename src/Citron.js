@@ -16,10 +16,7 @@ export class CitronModel {
             this.model.position = new Vector3(0, 0, 3);
             this.model.rotation = new Vector3(0, Math.PI, 0);
 
-            // Apply physics to the model
-            this.model.onMeshReadyObservable.add(() => {
-                this.citronphy = new PhysicsAggregate(this.model, PhysicsShapeType.BOX, { mass: 0 }, this.scene);
-            });
+
 
             console.log("Citron model loaded successfully");
         } catch (error) {
