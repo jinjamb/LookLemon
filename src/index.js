@@ -1,9 +1,10 @@
 import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
-import Citron from "./../assets/testcitron01.glb";
 import Map from "./../assets/heightMap2.png";
-
+//import {Inspector} from "@babylonjs/inspector";
+import 'babylonjs-inspector';
 import "@babylonjs/loaders/glTF";
+
 import {CitronModel} from "./Citron.js"
 import {ArbreModel} from "./Arbre.js"
 
@@ -16,10 +17,13 @@ let sphere;
 
 
 const createScene = async function () {
+
+
     const scene = new Scene(engine);
-    
+    scene.debugLayer.show();
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
+
 
     const havokInst = await HavokPhysics();
     const physics = new HavokPlugin(true, havokInst);
@@ -42,7 +46,7 @@ const createScene = async function () {
 
     const arbre = new ArbreModel();
     arbre.loadModel(scene);
-    
+
 
 
     //create a camera
@@ -91,6 +95,16 @@ const createScene = async function () {
                 spherePhysics.body.setLinearVelocity(Vector3.Zero());
                 break;
 
+        }
+    });
+    window.addEventListener("keydown", (ev) => {
+        // I est apuiller
+        if (ev.keyCode === 73) {
+            if (scene.debugLayer.isVisible()) {
+                scene.debugLayer.hide();
+            } else {
+                scene.debugLayer.show();
+            }
         }
     });
 

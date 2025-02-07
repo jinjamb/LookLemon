@@ -12,8 +12,8 @@ export class ArbreModel {
         try {
             const result = await SceneLoader.ImportMeshAsync("", Arbre, "", scene);
             this.model = result.meshes[0];
-            this.model.scaling = new Vector3(4, 4, 4);
-            this.model.position = new Vector3(0, 0, 3);
+            this.model.scaling = new Vector3(6, 6, 6);
+            this.model.position = new Vector3(-40, 10, 10);
             this.model.rotation = new Vector3(0, Math.PI, 0);
 
             // Apply physics to the model
