@@ -1,12 +1,13 @@
 import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
-import Map from "./../assets/heightMap2.png";
+//import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
 import 'babylonjs-inspector';
 import "@babylonjs/loaders/glTF";
 
 import {CitronModel} from "./Citron.js"
 import {ArbreModel} from "./Arbre.js"
+import Map from "./../assets/mapSimple.glb"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -30,10 +31,15 @@ const createScene = async function () {
     //scene.enablePhysics(new Vector3(0, -9.81, 0), physics);
     //const ground = MeshBuilder.CreateGround("ground", { width: 50, height: 50 }, scene);
 
-    const ground = MeshBuilder.CreateGroundFromHeightMap("gdhm", Map,{width:500, height :500, subdivisions: 50, maxHeight: 40}, scene); //scene is optional and defaults to the current scene
+    //const ground = MeshBuilder.CreateGroundFromHeightMap("gdhm", Map,{width:500, height :500, subdivisions: 50, maxHeight: 40}, scene); //scene is optional and defaults to the current scene
+    const ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
+        var ground = result.meshes[0];
+        ground.scaling = new Vector3(10, 10, 10);
+        ground.position = new Vector3(0, -15, 0);
+        //ground.physicsImpostor = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
+    });
 
-
-    ground.position = new Vector3(0, -15, 0);
+    //ground.position = new Vector3(0, -15, 0);
 
     // let groundPhysics;
     // ground.onMeshReadyObservable.add(() => {
