@@ -94,8 +94,15 @@ const createScene = async function () {
 
 createScene().then((scene) => {
     engine.runRenderLoop(function () {
+
         if (scene) {
             sphere.moveWithCollisions(new Vector3(0, -0.1, 0));
+            if (sphere.intersectsMesh(scene.meshes[1], false)) {
+                sphere.position.y += 0.2;
+                if (sphere.intersectsMesh(scene.meshes[0], false)) {
+                    sphere.position.y += 0.2;
+                }
+            }
             //truc  
             if (keypress["KeyW"] && keypress["KeyA"]) {
                 sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(0.1));
