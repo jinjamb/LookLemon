@@ -5,8 +5,8 @@ import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLig
 import 'babylonjs-inspector';
 import "@babylonjs/loaders/glTF";
 
-import {CitronModel} from "./Citron.js"
-import {ArbreModel} from "./Arbre.js"
+import { CitronModel } from "./Citron.js"
+import { ArbreModel } from "./Arbre.js"
 import Map from "./../assets/mapSimple.glb"
 
 let canvas = document.getElementById("maCanvas");
@@ -15,7 +15,7 @@ let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: tr
 let forceDirection;
 let spherePhysics;
 let sphere;
-
+let keypress = {};
 
 const createScene = async function () {
 
@@ -45,7 +45,7 @@ const createScene = async function () {
     // ground.onMeshReadyObservable.add(() => {
     //     groundPhysics = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
     // });
-    
+
 
     const citron = new CitronModel();
     citron.loadModel(scene);
@@ -64,50 +64,28 @@ const createScene = async function () {
 
     // Create sphere with physics
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-    sphere.position.y = 10;
+    sphere.position.y = 5;
     //spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 0 }, scene);
     //spherePhysics.body.setLinearDamping(1);
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
-   // Add keyboard controls
-   window.addEventListener("keydown", (event) => {
-    const forceMagnitude = 40;
-    switch (event.code) {
-        case "KeyW":
-            forceDirection.z = forceMagnitude;
-            break;
-        case "KeyS":
-            forceDirection.z = -forceMagnitude;
-            break;
-        case "KeyA":
-            forceDirection.x = -forceMagnitude;
-            break;
-        case "KeyD":
-            forceDirection.x = forceMagnitude;
-            break;
-        case "KeyI":
-            if (scene.debugLayer.isVisible()) {
-                scene.debugLayer.hide();
-            } else {
-                scene.debugLayer.show();
-            }
-            break;
-    }});
+    // Add keyboard controls
+    window.addEventListener("keydown", (event) => {
+        keypress[event.code] = true;
 
-    window.addEventListener("keyup", (event) => {
         switch (event.code) {
-            case "KeyW":
-            case "KeyS":
-                forceDirection.z = 0;
-                spherePhysics.body.setLinearVelocity(Vector3.Zero());
-                break;
-            case "KeyA":
-            case "KeyD":
-                forceDirection.x = 0;
-                spherePhysics.body.setLinearVelocity(Vector3.Zero());
+            case "KeyI":
+                if (scene.debugLayer.isVisible()) {
+                    scene.debugLayer.hide();
+                } else {
+                    scene.debugLayer.show();
+                }
                 break;
         }
+    });
+    window.addEventListener("keyup", (event) => {
+        keypress[event.code] = false;
     });
     return scene;
 
@@ -117,8 +95,27 @@ const createScene = async function () {
 createScene().then((scene) => {
     engine.runRenderLoop(function () {
         if (scene) {
-            if (forceDirection.length() > 0) {
+            sphere.moveWithCollisions(new Vector3(0, -0.1, 0));
+            //truc  
+            if (keypress["KeyW"] && keypress["KeyA"]) {
+                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(0.1));
+            } else if (keypress["KeyW"] && keypress["KeyD"]) {
+                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(0.1));
+            } else if (keypress["KeyS"] && keypress["KeyA"]) {
+                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(0.1));
+            } else if (keypress["KeyS"] && keypress["KeyD"]) {
+                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(0.1));
+            } else
+            if (keypress["KeyW"]) {
+                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(0.1));
+            } else if (keypress["KeyS"]) {
+                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(0.1));
+            } else if (keypress["KeyA"]) {
+                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(0.1));
+            } else if (keypress["KeyD"]) {
+                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(0.1));
             }
+
             scene.render();
         }
     });
