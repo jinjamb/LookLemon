@@ -1,4 +1,4 @@
-import { SceneLoader, Engine, Scene, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
+import { SceneLoader, Engine, Scene,ArcRotateCamera, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
 //import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
@@ -16,7 +16,7 @@ let forceDirection;
 let spherePhysics;
 let sphere;
 let keypress = {};
-
+let camera;
 const createScene = async function () {
 
 
@@ -36,6 +36,9 @@ const createScene = async function () {
         var ground = result.meshes[0];
         ground.scaling = new Vector3(10, 10, 10);
         ground.position = new Vector3(0, -15, 0);
+        result.meshes.forEach(element => {
+            element.checkCollisions = true;
+        });
         //ground.physicsImpostor = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
     });
 
@@ -54,17 +57,18 @@ const createScene = async function () {
     arbre.loadModel(scene);
 
 
+    // Create sphere with physics
+    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
+    sphere.position.y = 7;
+    sphere.checkCollisions = true;
 
     //create a camera
-    const camera = new FreeCamera("camera", new Vector3(-100, 10, 0), scene);
-    camera.setTarget(Vector3.Zero());
+    camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 20, sphere.position, scene);
     camera.attachControl(canvas, true);
 
     // Add a skybox 
 
-    // Create sphere with physics
-    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-    sphere.position.y = 5;
+
     //spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 0 }, scene);
     //spherePhysics.body.setLinearDamping(1);
     // Variables to track the current force
@@ -89,17 +93,17 @@ const createScene = async function () {
     });
     return scene;
 
-
 };
 
 createScene().then((scene) => {
     engine.runRenderLoop(function () {
-
+        
         if (scene) {
-            sphere.moveWithCollisions(new Vector3(0, -0.1, 0));
+            camera.target = sphere.position;
+            //sphere.moveWithCollisions(new Vector3(0, -0.1, 0));
             scene.meshes.forEach(mesh => {
                 if (mesh !== sphere && sphere.intersectsMesh(mesh, false)) {
-                    sphere.moveWithCollisions(new Vector3(0, 0.3, 0));
+                    //sphere.moveWithCollisions(new Vector3(0, 0.3, 0));
                 }
             });
             //truc  
@@ -120,6 +124,10 @@ createScene().then((scene) => {
                 sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(0.1));
             } else if (keypress["KeyD"]) {
                 sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(0.1));
+            }else if (keypress["Space"]) {
+                sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(0.1));
+            }else if (keypress["ShiftLeft"]) {
+                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(0.1));
             }
 
             scene.render();
