@@ -61,13 +61,21 @@ const createScene = async function () {
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
     sphere.position.y = 7;
     sphere.checkCollisions = true;
+    let sphereMin = sphere.getBoundingInfo().boundingBox.minimum;
+    let sphereMax = sphere.getBoundingInfo().boundingBox.maximum;
+    let newMin = BABYLON.Vector3.Minimize(sphereMin, sphereMin);
+    let newMax = BABYLON.Vector3.Maximize(sphereMax, sphereMax);
+    newMax = newMax.add(new BABYLON.Vector3(1, 1, 1));
+    newMin = newMin.subtract(new BABYLON.Vector3(1, 1, 1));
+    console.log("sphere: " , (sphereMin, sphereMax))
+    console.log("new: " , (newMin, newMax));
+    sphere.setBoundingInfo(new BABYLON.BoundingInfo(newMax, newMin));
 
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 20, sphere.position, scene);
     camera.attachControl(canvas, true);
 
     // Add a skybox 
-
 
     //spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 0 }, scene);
     //spherePhysics.body.setLinearDamping(1);
@@ -108,26 +116,26 @@ createScene().then((scene) => {
             });
             //truc  
             if (keypress["KeyW"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(1));
             } else if (keypress["KeyW"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(1));
             } else if (keypress["KeyS"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(1));
             } else if (keypress["KeyS"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(1));
             } else
             if (keypress["KeyW"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(1));
             } else if (keypress["KeyS"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(1));
             } else if (keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(1));
             } else if (keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(1));
             }else if (keypress["Space"]) {
-                sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(1));
             }else if (keypress["ShiftLeft"]) {
-                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(0.1));
+                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
             }
 
             scene.render();
