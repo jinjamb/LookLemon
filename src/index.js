@@ -72,7 +72,7 @@ const createScene = async function () {
     sphere.setBoundingInfo(new BABYLON.BoundingInfo(newMax, newMin));
 
     //create a camera
-    camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 20, sphere.position, scene);
+    camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, sphere.position, scene);
     camera.attachControl(canvas, true);
 
     // Add a skybox 
@@ -116,22 +116,22 @@ createScene().then((scene) => {
             });
             //truc  
             if (keypress["KeyW"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(1));
+                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(1));
             } else if (keypress["KeyW"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(1));
             } else if (keypress["KeyS"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(1));
+                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(1));
             } else if (keypress["KeyS"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(1));
+                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(1));
             } else
             if (keypress["KeyW"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(1));
             } else if (keypress["KeyS"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(1));
+                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(1));
             } else if (keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(1));
+                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(1));
             } else if (keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(1));
+                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(1));
             }else if (keypress["Space"]) {
                 sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(1));
             }else if (keypress["ShiftLeft"]) {
