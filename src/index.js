@@ -79,6 +79,17 @@ const createScene = async function () {
 
 };
 
+function addVector(vector1, vector2) {
+    let vector = vector1.add(vector2);
+    if (vector.x > 1) { vector.x = 1;}
+    if (vector.x < -1) { vector.x = -1;}
+    if (vector.y > 1) { vector.y = 1;}
+    if (vector.y < -1) { vector.y = -1;}
+    if (vector.z > 1) { vector.z = 1;}
+    if (vector.z < -1) { vector.z = -1;}
+    return vector;
+}
+
 createScene().then((scene) => {
   
     engine.runRenderLoop(function () {
@@ -117,19 +128,25 @@ createScene().then((scene) => {
             //truc
             let vector = new Vector3(0, 0, 0);
             if (keypress["KeyW"]) {
-                vector.add()
-                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(1));
-            } else if (keypress["KeyS"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(1));
-            } else if (keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(1));
-            } else if (keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(1));
-            }else if (keypress["Space"]) {
+                vector = addVector(vector, new Vector3(-1, 0, -1));
+            } 
+            if (keypress["KeyS"]) {
+                vector = addVector(vector, new Vector3(1, 0, 1));
+            } 
+            if (keypress["KeyA"]) {
+                vector = addVector(vector, new Vector3(1, 0, -1));
+            } 
+            if (keypress["KeyD"]) {
+                vector = addVector(vector, new Vector3(-1, 0, 1));
+            } 
+            if (keypress["Space"]) {
                 sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(1));
-            }else if (keypress["ShiftLeft"]) {
-                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
             }
+            if (keypress["ShiftLeft"]) {
+                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
+            } 
+            console.log(vector.asArray());
+            sphere.moveWithCollisions(vector.scale(1));
 
             scene.render();
         }
