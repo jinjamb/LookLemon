@@ -8,6 +8,7 @@ import "@babylonjs/loaders/glTF";
 import { CitronModel } from "./Citron.js"
 import { ArbreModel } from "./Arbre.js"
 import Map from "./../assets/mapSimple.glb"
+import Map2 from "./../assets/maptest.glb"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -32,7 +33,7 @@ const createScene = async function () {
     //const ground = MeshBuilder.CreateGround("ground", { width: 50, height: 50 }, scene);
 
     //const ground = MeshBuilder.CreateGroundFromHeightMap("gdhm", Map,{width:500, height :500, subdivisions: 50, maxHeight: 40}, scene); //scene is optional and defaults to the current scene
-    const ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
+    const ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
         var ground = result.meshes[0];
         ground.scaling = new Vector3(10, 10, 10);
         ground.position = new Vector3(0, -15, 0);
