@@ -34,7 +34,7 @@ const createScene = async function () {
     });
 
     const citron = new CitronModel();
-    citron.loadModel(scene);
+    const citronMesh = await citron.loadModel(scene);
 
     const arbre = new ArbreModel();
     arbre.loadModel(scene);
@@ -42,7 +42,7 @@ const createScene = async function () {
     // Add a skybox 
 
     // Create sphere with physics
-    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
+    sphere = citron.getMesh();
     
     // Meshes for the collisions around the sphere
     //box = MeshBuilder.CreateBox("box", { width: 10, height: 10, depth: 1 }, scene);
@@ -91,6 +91,12 @@ function addVector(vector1, vector2) {
     return vector;
 }
 
+function changeCitronRotation(sens) {
+    let rotation = citron.getRotation();
+    rotation.y += sens;
+    citron.setRotation(rotation);
+}
+
 createScene().then((scene) => {
   
     engine.runRenderLoop(function () {
@@ -98,8 +104,8 @@ createScene().then((scene) => {
         if (scene) {
             let chose
             let old
-            camera.target = sphere.position
-            
+            camera.target = sphere.position;
+
             let origin = new BABYLON.Vector3(sphere.position.x, sphere.position.y, sphere.position.z);
             let ray_y = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 10000);
             let proxi_y = scene.pickWithRay(ray_y, (mesh) => { 
@@ -110,7 +116,7 @@ createScene().then((scene) => {
             let ray_x = new BABYLON.Ray(origin, new BABYLON.Vector3(-1, 0, 0), 10000);
             let proxi_x = scene.pickWithRay(ray_y, (mesh) => { 
                 chose = mesh;
-                return(mesh.name === "ground"); 
+                return(mesh.name === "ground");
             }).pickedPoint.x
             let ray_z = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, -1), 10000);
             let proxi_z = scene.pickWithRay(ray_y, (mesh) => { 
@@ -140,9 +146,51 @@ createScene().then((scene) => {
             if (keypress["KeyD"]) {
                 vector = addVector(vector, new Vector3(-1, 0, 1));
             } 
-            if (keypress["Space"]) {
-                sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(1));
+
+            // Rotate the lemon to face movement direction
+            if (vector.length() > 0.1) {
+                // Calculate angle based on movement direction
+
+                //Trouver un autre moyen de faire ça
+                let targetAngle;
+                if (keypress["KeyA"] || keypress["KeyD"]) {
+                    targetAngle = Math.atan2(-vector.z, -vector.x) + Math.PI / -2;
+                }
+                if (keypress["KeyW"] || keypress["KeyS"]) {
+                    targetAngle = Math.atan2(vector.z, vector.x) + Math.PI / -2;
+                }
+                if (keypress["KeyW"] && keypress["KeyA"]) {
+                    targetAngle = ((Math.atan2(-vector.z, -vector.x) + Math.PI / -2) - (Math.atan2(vector.z, vector.x) + Math.PI / -2)) / 2;
+                }
+                if (keypress["KeyW"] && keypress["KeyD"]) {
+                    targetAngle = ((Math.atan2(-vector.z, -vector.x) + Math.PI / -2) - (Math.atan2(vector.z, vector.x) + Math.PI / -2));
+                }
+                if (keypress["KeyS"] && keypress["KeyA"]) {
+                    
+                }
+                if (keypress["KeyS"] && keypress["KeyD"]) {
+                    
+                }
+                //const targetAngle = Math.atan2(-vector.z, -vector.x);
+                
+                // Set the rotation of the lemon (y-axis rotation for turning left/right)
+                // Using a smooth rotation for better visual effect
+                const currentRotation = sphere.rotation.y;
+                const rotationSpeed = 0.1; 
+                
+                // Calculate the shortest path to the target angle
+                let angleDiff = targetAngle - currentRotation;
+                if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+                if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+                
+                // Apply smooth rotation
+                sphere.rotation.y += angleDiff * rotationSpeed;
             }
+            
+
+            if (keypress["Space"]) {
+                sphere.moveWithCollisions(new Vector3(0, 15, 0).scale(1)); 
+            }  
             if (keypress["ShiftLeft"]) {
                 sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
             } 
