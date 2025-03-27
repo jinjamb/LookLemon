@@ -105,7 +105,7 @@ createScene().then((scene) => {
             let chose
             let old
             camera.target = sphere.position;
-
+            
             let origin = new BABYLON.Vector3(sphere.position.x, sphere.position.y, sphere.position.z);
             let ray_y = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 10000);
             let proxi_y = scene.pickWithRay(ray_y, (mesh) => { 
@@ -166,13 +166,12 @@ createScene().then((scene) => {
                     targetAngle = ((Math.atan2(-vector.z, -vector.x) + Math.PI / -2) - (Math.atan2(vector.z, vector.x) + Math.PI / -2));
                 }
                 if (keypress["KeyS"] && keypress["KeyA"]) {
-                    
+                    targetAngle = (((Math.atan2(vector.z, vector.x) + Math.PI / 2) - (Math.atan2(vector.z, vector.x) + Math.PI / 2)) / -2);
                 }
                 if (keypress["KeyS"] && keypress["KeyD"]) {
-                    
+                    targetAngle = (((Math.atan2(-vector.x, -vector.z) + Math.PI / -2) - (Math.atan2(vector.x, vector.z) + Math.PI / -2)) / 2);
                 }
-                //const targetAngle = Math.atan2(-vector.z, -vector.x);
-                
+
                 // Set the rotation of the lemon (y-axis rotation for turning left/right)
                 // Using a smooth rotation for better visual effect
                 const currentRotation = sphere.rotation.y;
@@ -193,8 +192,10 @@ createScene().then((scene) => {
             }  
             if (keypress["ShiftLeft"]) {
                 sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
-            } 
-            console.log(vector.asArray());
+            }
+
+            console.log(JSON.stringify(vector.asArray()));
+
             sphere.moveWithCollisions(vector.scale(1));
 
             scene.render();
