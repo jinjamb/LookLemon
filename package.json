@@ -20,6 +20,7 @@
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/cannon": "^0.1.13",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^9.19.0",
     "file-loader": "^6.2.0",
@@ -40,6 +41,7 @@
     "@babylonjs/inspector": "^7.48.0",
     "@babylonjs/loaders": "^7.47.2",
     "babylonjs-inspector": "^7.48.0",
+    "cannon": "^0.6.2",
     "eslint-plugin-import": "^2.31.0",
     "gh-pages": "^6.3.0",
     "inspector": "^0.5.0",

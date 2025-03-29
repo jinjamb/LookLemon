@@ -1,4 +1,4 @@
-import { SceneLoader, Engine, Scene,ArcRotateCamera, ShadowGenerator, FreeCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
+import { SceneLoader,SpotLight, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
 //import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
@@ -8,19 +8,20 @@ import "@babylonjs/loaders/glTF";
 import { CitronModel } from "./Citron.js"
 import { ArbreModel } from "./Arbre.js"
 import Map from "./../assets/mapSimple.glb"
+import Map2 from "./../assets/mapV0.2.glb"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
 let forceDirection;
-let spherePhysics;
+let camera;
 let sphere;
 
 let boxes;
 let keypress = {};
-let camera;let ground;
+let lemon;
+let ground;
 const createScene = async function () {
-
 
     const scene = new Scene(engine);
     scene.debugLayer.show();
@@ -29,31 +30,51 @@ const createScene = async function () {
 
     ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
         var ground = result.meshes[0];
-        result.meshes.forEach((mesh) => { mesh.name = "ground"; mesh.checkCollisions = true; });
-        ground.scaling = new Vector3(10, 10, 10);
-        ground.position = new Vector3(0, -15, 0);
-        result.meshes.forEach(element => {
-            element.checkCollisions = true;
+        result.meshes.forEach((mesh) => {
+            mesh.name = "ground";
+            mesh.checkCollisions = true; 
+            const groundMat = new StandardMaterial("groundMat", scene);
+            groundMat.diffuseColor = new Color3(1, 1, 1); // Blanc, réagit bien à la lumière
+            groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
+            groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
+            mesh.material = groundMat;
         });
-        //ground.physicsImpostor = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
+        ground.scaling = new Vector3(15, 15, 15);
+        ground.position = new Vector3(0, 0, 0);
+        
     });
+    
+    //creating a spotlight
+    let spotLight = new SpotLight(
+        "spotLight",
+        new Vector3(0, 5, 0), // Position (au-dessus du personnage)
+        new Vector3(0, -1, 0), // Direction (vers le bas)
+        Math.PI / 2, // Angle d'ouverture du faisceau (ajuster pour changer la taille du cercle)
+        1, // Atténuation (plus la valeur est grande, plus la lumière s'atténue rapidement)
+        scene
+    );
+    spotLight.range = 100; // Portée de la lumière
 
-    //ground.position = new Vector3(0, -15, 0);
-
-    // let groundPhysics;
-    // ground.onMeshReadyObservable.add(() => {
-    //     groundPhysics = new PhysicsAggregate(ground, PhysicsShapeType.MESH, { mass: 0 }, scene);
-    // });
-
+    // Couleur de la lumière
+    spotLight.diffuse = new Color3(1, 1, 1); // Lumière légèrement jaune
+    spotLight.specular = new Color3(1, 1, 1);
 
     const citron = new CitronModel();
-    citron.loadModel(scene);
+    const citronMesh = await citron.loadModel(scene);
 
     const arbre = new ArbreModel();
     arbre.loadModel(scene);
 
+    // Add a skybox 
 
     // Create sphere with physics
+    lemon = citron.getMesh();
+    
+    // Meshes for the collisions around the sphere
+    //box = MeshBuilder.CreateBox("box", { width: 10, height: 10, depth: 1 }, scene);
+    //box.position.y = 5;
+
+    sphere.position.y = 5;
 
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
     
@@ -78,11 +99,8 @@ const createScene = async function () {
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, sphere.position, scene);
     camera.attachControl(canvas, true);
+    camera.radius = 120 //distance from the sphere;
 
-    // Add a skybox 
-
-    //spherePhysics = new PhysicsAggregate(sphere, PhysicsShapeType.SPHERE, { mass: 0 }, scene);
-    //spherePhysics.body.setLinearDamping(1);
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
@@ -105,6 +123,7 @@ const createScene = async function () {
     });
     return scene;
 
+
 };
 
 function addVector(vectors_array) {
@@ -122,9 +141,16 @@ console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1)]).asArray());
 console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1), new Vector3(-1,0,1)]).asArray());
 console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1), new Vector3(-1,0,1), new Vector3(1,0,1)]).asArray());
 
+function changeCitronRotation(sens) {
+    let rotation = citron.getRotation();
+    rotation.y += sens;
+    citron.setRotation(rotation);
+}
+
 createScene().then((scene) => {
+  
     engine.runRenderLoop(function () {
-        
+
         if (scene) {
             let chose
             let old
