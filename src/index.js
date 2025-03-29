@@ -1,4 +1,4 @@
-import { SceneLoader, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
+import { SceneLoader,SpotLight, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
 //import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
@@ -8,7 +8,7 @@ import "@babylonjs/loaders/glTF";
 import { CitronModel } from "./Citron.js"
 import { ArbreModel } from "./Arbre.js"
 import Map from "./../assets/mapSimple.glb"
-import Map2 from "./../assets/maptest.glb"
+import Map2 from "./../assets/mapV0.2.glb"
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -26,12 +26,35 @@ const createScene = async function () {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    let ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
+    let ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
         var ground = result.meshes[0];
-        result.meshes.forEach((mesh) => { mesh.name = "ground"; });
-        ground.scaling = new Vector3(10, 10, 10);
-        ground.position = new Vector3(0, -15, 0);
+        result.meshes.forEach((mesh) => { 
+            mesh.name = "ground"; 
+            const groundMat = new StandardMaterial("groundMat", scene);
+            groundMat.diffuseColor = new Color3(1, 1, 1); // Blanc, réagit bien à la lumière
+            groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
+            groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
+            mesh.material = groundMat;
+        });
+        ground.scaling = new Vector3(15, 15, 15);
+        ground.position = new Vector3(0, 0, 0);
+        
     });
+    
+    //creating a spotlight
+    let spotLight = new SpotLight(
+        "spotLight",
+        new Vector3(0, 5, 0), // Position (au-dessus du personnage)
+        new Vector3(0, -1, 0), // Direction (vers le bas)
+        Math.PI / 2, // Angle d'ouverture du faisceau (ajuster pour changer la taille du cercle)
+        1, // Atténuation (plus la valeur est grande, plus la lumière s'atténue rapidement)
+        scene
+    );
+    spotLight.range = 100; // Portée de la lumière
+
+    // Couleur de la lumière
+    spotLight.diffuse = new Color3(1, 1, 1); // Lumière légèrement jaune
+    spotLight.specular = new Color3(1, 1, 1);
 
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
