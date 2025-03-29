@@ -15,8 +15,10 @@ let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: tr
 let forceDirection;
 let spherePhysics;
 let sphere;
+
+let boxes;
 let keypress = {};
-let camera;
+let camera;let ground;
 const createScene = async function () {
 
 
@@ -25,15 +27,9 @@ const createScene = async function () {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-
-    //const havokInst = await HavokPhysics();
-    //const physics = new HavokPlugin(true, havokInst);
-    //scene.enablePhysics(new Vector3(0, -9.81, 0), physics);
-    //const ground = MeshBuilder.CreateGround("ground", { width: 50, height: 50 }, scene);
-
-    //const ground = MeshBuilder.CreateGroundFromHeightMap("gdhm", Map,{width:500, height :500, subdivisions: 50, maxHeight: 40}, scene); //scene is optional and defaults to the current scene
-    const ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
+    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
         var ground = result.meshes[0];
+        result.meshes.forEach((mesh) => { mesh.name = "ground"; mesh.checkCollisions = true; });
         ground.scaling = new Vector3(10, 10, 10);
         ground.position = new Vector3(0, -15, 0);
         result.meshes.forEach(element => {
@@ -58,18 +54,26 @@ const createScene = async function () {
 
 
     // Create sphere with physics
-    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
-    sphere.position.y = 7;
-    sphere.checkCollisions = true;
-    let sphereMin = sphere.getBoundingInfo().boundingBox.minimum;
-    let sphereMax = sphere.getBoundingInfo().boundingBox.maximum;
-    let newMin = BABYLON.Vector3.Minimize(sphereMin, sphereMin);
-    let newMax = BABYLON.Vector3.Maximize(sphereMax, sphereMax);
-    newMax = newMax.add(new BABYLON.Vector3(1, 1, 1));
-    newMin = newMin.subtract(new BABYLON.Vector3(1, 1, 1));
-    console.log("sphere: " , (sphereMin, sphereMax))
-    console.log("new: " , (newMin, newMax));
-    sphere.setBoundingInfo(new BABYLON.BoundingInfo(newMax, newMin));
+
+    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
+    
+    // Meshes for the collisions around the sphere
+    boxes = [];
+    boxes["left"] = MeshBuilder.CreateBox("box_left", { width: 10, height: 2, depth: 1 }, scene);
+    boxes["right"] = MeshBuilder.CreateBox("box_right", { width: 10, height: 10, depth: 1 }, scene);
+    boxes["front"] = MeshBuilder.CreateBox("box_front", { width: 1, height: 2, depth: 10 }, scene);
+    boxes["back"] = MeshBuilder.CreateBox("box_back", { width: 1, height: 2, depth: 10 }, scene);
+    
+    for (let box of Object.values(boxes)) {
+        //box.isVisible = false;
+        box.checkCollisions = true;
+        box.position.y = 10;
+    };
+
+    boxes["left"].position.z = -5; boxes["right"].position.z = 5;
+    boxes["front"].position.x = 5; boxes["back"].position.x = -5;
+
+    sphere.position.y = 5;
 
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, sphere.position, scene);
@@ -107,37 +111,52 @@ createScene().then((scene) => {
     engine.runRenderLoop(function () {
         
         if (scene) {
-            camera.target = sphere.position;
-            //sphere.moveWithCollisions(new Vector3(0, -0.1, 0));
-            scene.meshes.forEach(mesh => {
-                if (mesh !== sphere && sphere.intersectsMesh(mesh, false)) {
-                    //sphere.moveWithCollisions(new Vector3(0, 0.3, 0));
-                }
-            });
-            //truc  
-            if (keypress["KeyW"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, -1).scale(1));
-            } else if (keypress["KeyW"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 0).scale(1));
-            } else if (keypress["KeyS"] && keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 0).scale(1));
-            } else if (keypress["KeyS"] && keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(0, 0, 1).scale(1));
-            } else
+            let chose
+            let old
+            camera.target = sphere.position
+            
+            let origin = new BABYLON.Vector3(sphere.position.x, sphere.position.y, sphere.position.z);
+            let ray_y = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 10000);
+            let proxi_y = scene.pickWithRay(ray_y, (mesh) => { 
+                chose = mesh;
+                return(mesh.name === "ground"); 
+            }).pickedPoint.y
+
+            
+            //console.log(chose.name);
+            //console.log("proxi:" + "("+proxi_x+","+ proxi_y+","+proxi_z+")");
+            old = sphere.position.y;
+            sphere.position.y = proxi_y + 5;
+            
+            //truc
+            let vector = new Vector3(0, 0, 0);
             if (keypress["KeyW"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, -1).scale(1));
-            } else if (keypress["KeyS"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, 1).scale(1));
-            } else if (keypress["KeyA"]) {
-                sphere.moveWithCollisions(new Vector3(1, 0, -1).scale(1));
-            } else if (keypress["KeyD"]) {
-                sphere.moveWithCollisions(new Vector3(-1, 0, 1).scale(1));
-            }else if (keypress["Space"]) {
-                sphere.moveWithCollisions(new Vector3(0, 1, 0).scale(1));
-            }else if (keypress["ShiftLeft"]) {
-                sphere.moveWithCollisions(new Vector3(0, -1, 0).scale(1));
+                vector = addVector(vector, new Vector3(-1, 0, -1));
+            } 
+            if (keypress["KeyS"]) {
+                vector = addVector(vector, new Vector3(1, 0, 1));
+            } 
+            if (keypress["KeyA"]) {
+                vector = addVector(vector, new Vector3(1, 0, -1));
+            } 
+            if (keypress["KeyD"]) {
+                vector = addVector(vector, new Vector3(-1, 0, 1));
+            } 
+            if (keypress["Space"]) {
+                vector = addVector(vector, new Vector3(0, 1, 0));
+            }
+            if (keypress["ShiftLeft"]) {
+                vector = addVector(vector, new Vector3(0, -1, 0));
             }
 
+            sphere.moveWithCollisions(vector.scale(1));
+            for (let box of Object.values(boxes)) {
+                box.position.y = proxi_y + 5;
+                box.moveWithCollisions(vector.scale(1));
+                box.onCollideObservable.add(() => {
+                    console.log("Collision detected");
+                });
+            }
             scene.render();
         }
     });
