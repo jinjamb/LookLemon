@@ -107,6 +107,21 @@ const createScene = async function () {
 
 };
 
+function addVector(vectors_array) {
+
+    let vector = new Vector3(0, 0, 0);
+
+    for (let i = 0; i < vectors_array.length; i++) {
+        vector= vector.add(vectors_array[i]);
+        console.log(vector);
+    }
+    return vector;
+}
+console.log(addVector([new Vector3(-1,0,-1)]).asArray());
+console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1)]).asArray());
+console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1), new Vector3(-1,0,1)]).asArray());
+console.log(addVector([new Vector3(-1,0,-1), new Vector3(1,0-1), new Vector3(-1,0,1), new Vector3(1,0,1)]).asArray());
+
 createScene().then((scene) => {
     engine.runRenderLoop(function () {
         
@@ -125,31 +140,27 @@ createScene().then((scene) => {
             
             //console.log(chose.name);
             //console.log("proxi:" + "("+proxi_x+","+ proxi_y+","+proxi_z+")");
-            old = sphere.position.y;
             sphere.position.y = proxi_y + 5;
+            let vectors_array = [];
             
             //truc
-            let vector = new Vector3(0, 0, 0);
+            
             if (keypress["KeyW"]) {
-                vector = addVector(vector, new Vector3(-1, 0, -1));
-            } 
+                vectors_array.push(new Vector3(-1, 0, -1));} 
             if (keypress["KeyS"]) {
-                vector = addVector(vector, new Vector3(1, 0, 1));
-            } 
+                vectors_array.push(new Vector3(1, 0, 1));} 
             if (keypress["KeyA"]) {
-                vector = addVector(vector, new Vector3(1, 0, -1));
-            } 
+                vectors_array.push(new Vector3(1, 0, -1));} 
             if (keypress["KeyD"]) {
-                vector = addVector(vector, new Vector3(-1, 0, 1));
-            } 
+                vectors_array.push(new Vector3(-1, 0, 1));} 
             if (keypress["Space"]) {
-                vector = addVector(vector, new Vector3(0, 1, 0));
-            }
+                vectors_array.push(new Vector3(0, 1, 0));} 
             if (keypress["ShiftLeft"]) {
-                vector = addVector(vector, new Vector3(0, -1, 0));
-            }
-
-            sphere.moveWithCollisions(vector.scale(1));
+                vectors_array.push(new Vector3(0, -1, 0));}
+            
+            //let vector = addVector(vectors_array);
+            vectors_array = [];
+            //sphere.moveWithCollisions(vector.scale(1));
             for (let box of Object.values(boxes)) {
                 box.position.y = proxi_y + 5;
                 box.moveWithCollisions(vector.scale(1));
