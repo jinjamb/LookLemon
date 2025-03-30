@@ -19,7 +19,6 @@ let forceDirection;
 let keypress = {};
 
 let sphere;
-let boxes;
 let lemon;
 let ground;
 
@@ -74,26 +73,13 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
+    lemon.position.y = 5;
     //sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
     
-    // Meshes for the collisions around the lemon
-    boxes = [];
-    boxes["left"] = MeshBuilder.CreateBox("box_left", { width: 10, height: 1, depth: 1 }, scene);
-    boxes["right"] = MeshBuilder.CreateBox("box_right", { width: 10, height: 1, depth: 1 }, scene);
-    boxes["front"] = MeshBuilder.CreateBox("box_front", { width: 10, height: 300, depth: 10 }, scene);
-    boxes["back"] = MeshBuilder.CreateBox("box_back", { width: 1, height: 1, depth: 10 }, scene);
-    
+    //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
     jumpPad.position.y = -100
-    for (let box of Object.values(boxes)) {
-        //box.isVisible = false;
-        box.position.y = 10;
-    };
 
-    boxes["left"].position.z = -10; boxes["right"].position.z = 10;
-    boxes["front"].position.x = 40; boxes["back"].position.x = -10;
-
-    lemon.position.y = 5;
 
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, lemon.position, scene);
@@ -121,14 +107,11 @@ const createScene = async function () {
         keypress[event.code] = false;
     });
     return scene;
-
-
 };
 
 function addVector(vectors_array) {
 
     let vector = new Vector3(0, 0, 0);
-
     for (let i = 0; i < vectors_array.length; i++) {
         vector= vector.add(vectors_array[i]);
     }
