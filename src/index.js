@@ -13,14 +13,19 @@ import Map2 from "./../assets/mapV0.2.glb"
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
-let forceDirection;
 let camera;
-let sphere;
-
-let boxes;
+let spotLight;
+let forceDirection;
 let keypress = {};
+
+let sphere;
+let boxes;
 let lemon;
 let ground;
+
+let jumpPad;
+let jumping = false;
+
 const createScene = async function () {
 
     const scene = new Scene(engine);
@@ -45,7 +50,7 @@ const createScene = async function () {
     });
     
     //creating a spotlight
-    let spotLight = new SpotLight(
+    spotLight = new SpotLight(
         "spotLight",
         new Vector3(0, 5, 0), // Position (au-dessus du personnage)
         new Vector3(0, -1, 0), // Direction (vers le bas)
@@ -69,13 +74,6 @@ const createScene = async function () {
 
     // Create sphere with physics
     lemon = citron.getMesh();
-    
-    // Meshes for the collisions around the sphere
-    //box = MeshBuilder.CreateBox("box", { width: 10, height: 10, depth: 1 }, scene);
-    //box.position.y = 5;
-
-    sphere.position.y = 5;
-
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
     
     // Meshes for the collisions around the sphere
@@ -85,6 +83,8 @@ const createScene = async function () {
     boxes["front"] = MeshBuilder.CreateBox("box_front", { width: 1, height: 2, depth: 10 }, scene);
     boxes["back"] = MeshBuilder.CreateBox("box_back", { width: 1, height: 2, depth: 10 }, scene);
     
+    jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
+    jumpPad.position.y = -100
     for (let box of Object.values(boxes)) {
         //box.isVisible = false;
         box.checkCollisions = true;
@@ -132,7 +132,6 @@ function addVector(vectors_array) {
 
     for (let i = 0; i < vectors_array.length; i++) {
         vector= vector.add(vectors_array[i]);
-        console.log(vector);
     }
     return vector;
 }
@@ -147,54 +146,85 @@ function changeCitronRotation(sens) {
     citron.setRotation(rotation);
 }
 
+let jumpY=0;
 createScene().then((scene) => {
-  
-    engine.runRenderLoop(function () {
-
+      engine.runRenderLoop(function () {
         if (scene) {
-            let chose
-            let old
             camera.target = sphere.position
+            let chose  
+            let origin 
+            let ray_y  
+            let groundCollision
             
-            let origin = new BABYLON.Vector3(sphere.position.x, sphere.position.y, sphere.position.z);
-            let ray_y = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 10000);
-            let proxi_y = scene.pickWithRay(ray_y, (mesh) => { 
-                chose = mesh;
-                return(mesh.name === "ground"); 
-            }).pickedPoint.y
-
+            try {
+                origin = new BABYLON.Vector3(sphere.position.x, sphere.position.y, sphere.position.z);
+                ray_y = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 100);
+                groundCollision = scene.pickWithRay(ray_y, (mesh) => { 
+                    chose = mesh;
+                    return(mesh.name === "ground"); 
+                }).pickedPoint.y
+            }
+            catch(e) {
+                groundCollision = sphere.position.y -5.5
+            }
             
-            //console.log(chose.name);
-            //console.log("proxi:" + "("+proxi_x+","+ proxi_y+","+proxi_z+")");
-            sphere.position.y = proxi_y + 5;
             let vectors_array = [];
-            
+            if (sphere.position.y - groundCollision > 5){
+                groundCollision = sphere.position.y -5.5
+            }
+        
+            sphere.position.y = groundCollision + 5;
+                        
             //truc
+            if (keypress["KeyW"]) { vectors_array.push(new Vector3(-1, 0, -1));} 
+            if (keypress["KeyS"]) { vectors_array.push(new Vector3(1, 0, 1));} 
+            if (keypress["KeyA"]) { vectors_array.push(new Vector3(1, 0, -1));} 
+            if (keypress["KeyD"]) { vectors_array.push(new Vector3(-1, 0, 1));} 
+
+            if (keypress["KeyT"]) {sphere.position.y = 5; sphere.position.x = 0; sphere.position.z = 0}
             
-            if (keypress["KeyW"]) {
-                vectors_array.push(new Vector3(-1, 0, -1));} 
-            if (keypress["KeyS"]) {
-                vectors_array.push(new Vector3(1, 0, 1));} 
-            if (keypress["KeyA"]) {
-                vectors_array.push(new Vector3(1, 0, -1));} 
-            if (keypress["KeyD"]) {
-                vectors_array.push(new Vector3(-1, 0, 1));} 
-            if (keypress["Space"]) {
-                vectors_array.push(new Vector3(0, 1, 0));} 
-            if (keypress["ShiftLeft"]) {
-                vectors_array.push(new Vector3(0, -1, 0));}
-            
-            //let vector = addVector(vectors_array);
-            vectors_array = [];
-            //sphere.moveWithCollisions(vector.scale(1));
+            if (jumping){
+                if (jumpPad.position.y - jumpY <= 2.5){
+                    jumpPad.position.y += 0.2;
+                }
+                else jumping = false;
+            }
+            else {
+                if (jumpPad.position.y <= jumpY -0.1) { // if the sphere is on the ground
+                    if (keypress["Space"]) {
+                        jumping = true; // we can jump
+                        jumpY = groundCollision;
+                        jumpPad.position.y = jumpY;
+                        jumpPad.position.x = sphere.position.x;
+                        jumpPad.position.z = sphere.position.z
+                    }
+                    else {
+                        jumpPad.position.y = - 100
+                    }
+                }
+                else { // if we are still up
+                    jumpPad.position.y += -0.2
+                }
+            }
+                      
+            if (jumpPad.position.y < jumpY) {
+                jumpPad.position.y = -1000;
+                jumpPad.position.x = -1000;
+                jumpPad.position.z = -1000
+            }
+            let vector = addVector(vectors_array);
+            sphere.moveWithCollisions(vector.scale(1));
+            lemon.moveWithCollisions(vector.scale(1));
+
             for (let box of Object.values(boxes)) {
-                box.position.y = proxi_y + 5;
-                box.moveWithCollisions(vector.scale(1));
+                box.position.y = groundCollision + 50;
+                //box.moveWithCollisions(vector.scale(1));
                 box.onCollideObservable.add(() => {
                     console.log("Collision detected");
                 });
             }
             scene.render();
+            vectors_array = [];
         }
     });
 });
