@@ -32,9 +32,10 @@ const createScene = async function () {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
+    ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
+            //mesh.scaling = new BABYLON.Vector3(5, 5, 5)
             mesh.name = "ground";
             mesh.checkCollisions = true; 
             const groundMat = new StandardMaterial("groundMat", scene);
@@ -53,7 +54,7 @@ const createScene = async function () {
         "spotLight",
         new Vector3(0, 5, 0), // Position (au-dessus du personnage)
         new Vector3(0, -1, 0), // Direction (vers le bas)
-        Math.PI / 2, // Angle d'ouverture du faisceau (ajuster pour changer la taille du cercle)
+        Math.PI / 6, // Angle d'ouverture du faisceau (ajuster pour changer la taille du cercle)
         1, // Atténuation (plus la valeur est grande, plus la lumière s'atténue rapidement)
         scene
     );
@@ -73,12 +74,22 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    lemon.position.y = 5;
-    //sphere = MeshBuilder.CreateSphere("sphere", { diameter: 10 }, scene);
+    lemon.scaling = new Vector3(0.5,0.5,0.5);
+    lemon.position.y = 1;
+    
+    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
     
     //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
     jumpPad.position.y = -100
+    
+    const jumpPadMaterial = new StandardMaterial("jumpPadMaterial", scene);
+
+    jumpPadMaterial.diffuseTexture = new Texture("textures/transparentTexture.png", scene);
+    jumpPadMaterial.diffuseTexture.hasAlpha = true;
+    jumpPadMaterial.alpha = 0.5; // Ajustez la transparence (0 = complètement transparent, 1 = opaque)
+    jumpPad.material = jumpPadMaterial;
+
 
 
     //create a camera
@@ -141,6 +152,7 @@ createScene().then((scene) => {
             camera.target = lemon.position
             let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
             
+            spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
             try {
                 groundCollision.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 100);
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
@@ -150,28 +162,28 @@ createScene().then((scene) => {
 
             //bottom right collisions
             try {
-                sideCollision.botRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, 1), 20);
+                sideCollision.botRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, 1), 1);
                 sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             }  catch(e){ sideCollision.botRight.point = null }
             //top left 
             try {
-                sideCollision.topLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, -1), 20);
+                sideCollision.topLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, -1), 1);
                 sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.topLeft.point = null }
             //bottom left
             try {
-                sideCollision.botLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(1, 0, 0), 20);
+                sideCollision.botLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(1, 0, 0), 1);
                 sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botLeft.point = null }
             //top right
             try {
-                sideCollision.topRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(-1, 0, 0), 20);
+                sideCollision.topRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(-1, 0, 0), 1);
                 sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
@@ -181,7 +193,7 @@ createScene().then((scene) => {
                 groundCollision.point = lemon.position.y -5.5
             }
         
-            lemon.position.y = groundCollision.point + 5;
+            lemon.position.y = groundCollision.point + 1;
                         
             // mouvements 
             let vectors_array = [];
@@ -259,7 +271,7 @@ createScene().then((scene) => {
                 lemon.rotation.y += angleDiff * rotationSpeed;
             }
 
-            lemon.moveWithCollisions(vector.scale(1));
+            lemon.moveWithCollisions(vector.scale(0.1));
 
             scene.render();
             vectors_array = [];
