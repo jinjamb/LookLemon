@@ -7,8 +7,10 @@ import "@babylonjs/loaders/glTF";
 
 import { CitronModel } from "./Citron.js"
 import { ArbreModel } from "./Arbre.js"
+import { NuageModel } from "./Nuage.js"
 import Map from "./../assets/mapSimple.glb"
-import Map2 from "./../assets/mapV0.2.glb"
+import Map2 from "./../assets/mapV0.3.glb"
+
 
 let canvas = document.getElementById("maCanvas");
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -66,11 +68,16 @@ const createScene = async function () {
 
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
+    
 
     const arbre = new ArbreModel();
     arbre.loadModel(scene);
 
+    const nuage = new NuageModel();
+    nuage.loadModel(scene);
+
     // Add a skybox 
+
 
     // Create lemon with physics
     lemon = citron.getMesh();
