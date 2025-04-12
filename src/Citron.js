@@ -1,11 +1,15 @@
 import { SceneLoader, Vector3, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
-import Citron from "./../assets/CoolLemon.glb";
+import Citron from "./../assets/animations/animtest.glb";
 
 export class CitronModel {
     constructor(scene) {
         this.scene = scene;
         this.model = null;
         this.citronphy = null;
+        this.animationGroups = null;
+        this.currentAnimation = null;
+        this.state = "Stand";
+        
 //
 //        if (CitronModel.boundingBoxParameters == undefined) {
 //            CitronModel.boundingBoxParameters = this.getBoundingInfo();
@@ -85,10 +89,88 @@ export class CitronModel {
             this.model.position = new Vector3(0, 0, 3);
             this.model.rotation = new Vector3(0, -4, 0);
 
+            this.animationGroups = result.animationGroups;
+
+            if (this.animationGroups && this.animationGroups.length > 0) {
+                console.log("Anim dispo :");
+                this.animationGroups.forEach((ag, index) => {
+                    console.log(`${index}: ${ag.name}`);
+                });
+
+                this.playAnimation("Stand");
+            }
+
             console.log("Citron model loaded successfully");
         } catch (error) {
             console.error("Error loading citron model:", error);
         }
+    }
+
+        /**
+         * Plays the specified animation by name.
+         * @param {string} name - The name of the animation to play.
+         */
+
+        playAnimation(name) {
+            if (this.currentAnimation) {
+                this.currentAnimation.stop();
+            }
+
+            const animation = this.findAnimation(name);
+            if (animation) {
+                animation.play(true);
+                this.currentAnimation = animation;
+                this.state = name;
+                console.log("Animation:", name);
+            } else {
+                console.log("Animation not found:", name);
+            }
+        }
+
+        /**
+     * Trouve une animation par son nom
+     * @param {string} name - Nom complet ou partiel de l'animation
+     * @returns {BABYLON.AnimationGroup|null} - Le groupe d'animation ou null si non trouvé
+     */
+    findAnimation(name) {
+        if (!this.animationGroups) return null;
+        
+        // Recherche exacte
+        const exactMatch = this.animationGroups.find(ag => ag.name === name);
+        if (exactMatch) return exactMatch;
+        
+        // Recherche partielle (si le nom contient la chaîne recherchée)
+        const partialMatch = this.animationGroups.find(ag => 
+            ag.name.toLowerCase().includes(name.toLowerCase()));
+        return partialMatch || null;
+    }
+
+    /**
+     * Définit l'état et joue l'animation correspondante
+     * @param {string} state - L'état à définir
+     */
+    setState(state) {
+        if (this.state !== state) {
+            this.state = state;
+            this.playAnimation(state);
+        }
+    }
+
+    stand() {
+        this.setState('Stand');
+    }
+    
+    runBackward() {
+        this.setState('Backward');
+    }
+    
+    runForward() {
+        this.setState('Forward');
+    }
+
+    getMesh() {
+        return this.model;
+    }
 
         /*return new Promise((resolve) => {
             SceneLoader.ImportMeshAsync("", Citron, "", scene).then((result) => {
@@ -98,9 +180,4 @@ export class CitronModel {
                 resolve(this.model);
             });
         });*/
-    }
-
-    getMesh() {
-        return this.model;
-    }
 }

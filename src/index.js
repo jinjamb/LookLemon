@@ -76,6 +76,8 @@ const createScene = async function () {
     lemon = citron.getMesh();
     lemon.scaling = new Vector3(0.5,0.5,0.5);
     lemon.position.y = 1;
+
+    window.gameCitron = citron;
     
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
     
@@ -197,11 +199,19 @@ createScene().then((scene) => {
                         
             // mouvements 
             let vectors_array = [];
-            if (keypress["KeyW"] && !keypress["KeyS"]) { vectors_array.push(new Vector3(-1,0,-1));} 
-            if (keypress["KeyS"] && !keypress["KeyW"]) { vectors_array.push(new Vector3(1, 0, 1));}
+            if (keypress["KeyW"] && !keypress["KeyS"]) { 
+                vectors_array.push(new Vector3(-1,0,-1));
+                gameCitron.runForward();
+            } 
+            if (keypress["KeyS"] && !keypress["KeyW"]) { 
+                vectors_array.push(new Vector3(1, 0, 1));
+                gameCitron.runBackward();
+            }
             if (keypress["KeyA"] && !keypress["KeyD"]) { vectors_array.push(new Vector3(1, 0,-1));} 
             if (keypress["KeyD"] && !keypress["KeyA"]) { vectors_array.push(new Vector3(-1,0, 1));} 
-
+            if (vectors_array.length === 0) {
+                gameCitron.stand();
+            }
             if (keypress["KeyT"]) {lemon.position.y = 5; lemon.position.x = 0; lemon.position.z = 0} //reset position
             
             //gestion du saut et du déplacement aérien
