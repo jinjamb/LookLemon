@@ -12,9 +12,9 @@ export class GrotteModel {
         try {
             const result = await SceneLoader.ImportMeshAsync("", Grotte, "", scene);
             this.model = result.meshes[0];
-            this.model.scaling = new Vector3(40, 45, 40);
-            this.model.position = new Vector3(-100, 0, 10);
-            this.model.rotation = new Vector3(0, Math.PI, 0);
+            this.model.scaling = new Vector3(10, 10, 10);
+            this.model.position = new Vector3(0, 0, -100);
+            this.model.rotation = new Vector3(0, 0,0);
 
             this.applyTexture("TexGrotte.png");
 

@@ -8,6 +8,8 @@ import "@babylonjs/loaders/glTF";
 import { CitronModel } from "./Citron.js"
 import { ArbreModel } from "./Arbre.js"
 import { NuageModel } from "./Nuage.js"
+import { GrotteModel } from "./Grotte.js"
+import { MapLoader } from "./MapLoader.js"
 import Map from "./../assets/mapSimple.glb"
 import Map2 from "./../assets/mapV0.3.glb"
 
@@ -68,14 +70,9 @@ const createScene = async function () {
 
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
-    
 
-    const arbre = new ArbreModel();
-    arbre.loadModel(scene);
 
-    const nuage = new NuageModel();
-    nuage.loadModel(scene);
-
+    new MapLoader(scene).load(); // Load the map
     // Add a skybox 
 
 
