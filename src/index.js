@@ -84,7 +84,7 @@ const createScene = async function () {
     lemon.position.y = 1;
 
     window.gameCitron = citron;
-    
+    scene.player = lemon;
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
     
     //"jump" collision

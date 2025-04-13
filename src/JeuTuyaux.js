@@ -40,7 +40,7 @@ export class JeuTuyaux {
                     console.log("O pressed");
                     console.log(this.scene.activeCamera.position);
                     //le joeur a changer apres c'est juste pour test
-                    const playerPosition = this.scene.activeCamera.position;
+                    const playerPosition = this.scene.player.position;
                     this.rotateClosestTuyau(playerPosition);
                     this.changeVisibility();
                 }
@@ -48,9 +48,6 @@ export class JeuTuyaux {
         });
     }
 
-    async load() {
-        this.loadModel(TuyauDV, new Vector3(10, 10, 10), new Vector3(0, 0, 0), new Vector3(0, 0, 0), "TexTuyau.png");
-    }
 
 
     async createFromMatrice(positionInit){
@@ -78,8 +75,7 @@ export class JeuTuyaux {
             for (let mesh of result.meshes) {
                 mesh.isVisible = visibility;
             }
-
-
+            //permet de gerer avec les matrice leur pos et rota
             this.model.metadata = {
                 modelType: model,
                 gridPosition:{
@@ -126,6 +122,8 @@ export class JeuTuyaux {
         console.log("matrice=",this.rotations);
         //this.waterPropa(1,1);
     }
+
+    //fonction de test je la laisse au cas ou
     waterPropa(x,y){
         console.log("waterpropa");
         
@@ -147,6 +145,8 @@ export class JeuTuyaux {
             }
         }
     }
+
+    //retourne les coo des tuyaux bien placés
     tuplesCorrecte(){
         var valides = [];
         for(let i = 0; i < this.chemin.length; i++){
@@ -163,6 +163,8 @@ export class JeuTuyaux {
         console.log("valides=",valides);
         return valides;
     }
+
+    //change la visibilite des tuyaux bien et mal places
     changeVisibility(){
         let valides = this.tuplesCorrecte();
         for(let i = 0; i < this.modelsP.length; i++) {
