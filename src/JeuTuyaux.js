@@ -28,6 +28,7 @@ export class JeuTuyaux {
                 [0,2,5,1,0,6],
                 [0,0,0,0,0,6],
                 [0,3,5,5,5,1]];
+        this.chemin = [[4,1],[4,2],[4,3],[4,4],[4,5],[3,5],[2,5],[1,5],[1,4],[1,3],[2,3],[2,2],[2,1],[1,1],[0,1],[0,0]];
         this.KeyControles();
         this.log=console.log("JeuTuyaux");
     }
@@ -41,6 +42,7 @@ export class JeuTuyaux {
                     //le joeur a changer apres c'est juste pour test
                     const playerPosition = this.scene.activeCamera.position;
                     this.rotateClosestTuyau(playerPosition);
+                    this.changeVisibility();
                 }
             }
         });
@@ -122,7 +124,7 @@ export class JeuTuyaux {
             }
         }
         console.log("matrice=",this.rotations);
-        this.waterPropa(1,1);
+        //this.waterPropa(1,1);
     }
     waterPropa(x,y){
         console.log("waterpropa");
@@ -141,6 +143,65 @@ export class JeuTuyaux {
                             
                         }
                     }
+                }
+            }
+        }
+    }
+    tuplesCorrecte(){
+        var valides = [];
+        for(let i = 0; i < this.chemin.length; i++){
+            let tuple = this.chemin[i];
+            if(this.rotations[tuple[0]][tuple[1]] == this.res[tuple[0]][tuple[1]] || (this.res[tuple[0]][tuple[1]] > 4 && this.res[tuple[0]][tuple[1]]%2 == this.rotations[tuple[0]][tuple[1]]%2)){
+                console.log("flow");
+                valides.push(tuple);
+            }else{
+                console.log("no flow");
+                console.log("valides=",valides);
+                return valides;
+            }
+        }
+        console.log("valides=",valides);
+        return valides;
+    }
+    changeVisibility(){
+        let valides = this.tuplesCorrecte();
+        for(let i = 0; i < this.modelsP.length; i++) {
+            console.log("tuple=",this.modelsP[i].metadata.gridPosition,"onValide?=",this.modelsP[i].metadata.gridPosition in valides);
+            let tuple = this.modelsP[i].metadata.gridPosition;
+            let presence = false;
+            for(let possi of valides){
+                if(tuple.x == possi[0] && tuple.z == possi[1]){
+                    console.log("on rend visible ",tuple);
+                    presence = true;
+                    for(let mesh of this.modelsP[i].getChildMeshes()) {
+                        mesh.isVisible = true;
+                    }
+                }
+            }
+            if(!presence){
+                console.log("on rend invisible ",tuple);
+                for(let mesh of this.modelsP[i].getChildMeshes()) {
+                    mesh.isVisible = false;
+                }
+            }
+        }
+
+        for(let i = 0; i < this.models.length; i++) {
+            let tuple = this.models[i].metadata.gridPosition;
+            let presence = false;
+            for(let possi of valides){
+                if(tuple.x == possi[0] && tuple.z == possi[1]){
+                    console.log("on rend invisible ",tuple);
+                    presence = true;
+                    for(let mesh of this.models[i].getChildMeshes()) {
+                        mesh.isVisible = false;
+                    }
+                }
+            }
+            if(!presence){
+                console.log("on rend visible ",tuple);
+                for(let mesh of this.models[i].getChildMeshes()) {
+                    mesh.isVisible = true;
                 }
             }
         }
