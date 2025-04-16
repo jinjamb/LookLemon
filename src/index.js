@@ -157,7 +157,6 @@ createScene().then((scene) => {
         if (scene) {
             camera.target = lemon.position
             let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
-            
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
             try {
                 groundCollision.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 100);
@@ -285,6 +284,7 @@ createScene().then((scene) => {
                 lemon.rotation.y += angleDiff * rotationSpeed;
             }
 
+            if (vectors_array.length === 2) { vector.scale(0.5);}
             lemon.moveWithCollisions(vector.scale(0.1));
 
             scene.render();
