@@ -22,7 +22,7 @@ export class MapLoader {
             this.model.position = new Vector3(position.x, position.y, position.z);
             this.model.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
 
-            this.applyTexture(texturePath);
+            //this.applyTexture(texturePath);
         } catch (error) {
             console.error("Error loading model:", error);
         }

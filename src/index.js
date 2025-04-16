@@ -1,4 +1,4 @@
-import { SceneLoader,SpotLight, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight, Vector4 } from "@babylonjs/core";
+import { Ray,SceneLoader,SpotLight, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight, Vector4 } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
 //import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
@@ -10,6 +10,7 @@ import { ArbreModel } from "./Arbre.js"
 import { NuageModel } from "./Nuage.js"
 import { GrotteModel } from "./Grotte.js"
 import { MapLoader } from "./MapLoader.js"
+import { JeuTuyaux } from "./JeuTuyaux.js"
 import Map from "./../assets/mapSimple.glb"
 import Map2 from "./../assets/mapV0.3.glb"
 
@@ -73,6 +74,7 @@ const createScene = async function () {
 
 
     new MapLoader(scene).load(); // Load the map
+    new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
     // Add a skybox 
 
 
@@ -82,7 +84,7 @@ const createScene = async function () {
     lemon.position.y = 1;
 
     window.gameCitron = citron;
-    
+    scene.player = lemon;
     sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
     
     //"jump" collision
@@ -159,7 +161,7 @@ createScene().then((scene) => {
             let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
             try {
-                groundCollision.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, -1, 0), 100);
+                groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint.y
@@ -167,28 +169,28 @@ createScene().then((scene) => {
 
             //bottom right collisions
             try {
-                sideCollision.botRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, 1), 1);
+                sideCollision.botRight.ray = new Ray(origin, new Vector3(0, 0, 1), 1);
                 sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             }  catch(e){ sideCollision.botRight.point = null }
             //top left 
             try {
-                sideCollision.topLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(0, 0, -1), 1);
+                sideCollision.topLeft.ray = new Ray(origin, new Vector3(0, 0, -1), 1);
                 sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.topLeft.point = null }
             //bottom left
             try {
-                sideCollision.botLeft.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(1, 0, 0), 1);
+                sideCollision.botLeft.ray = new Ray(origin, new Vector3(1, 0, 0), 1);
                 sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botLeft.point = null }
             //top right
             try {
-                sideCollision.topRight.ray = new BABYLON.Ray(origin, new BABYLON.Vector3(-1, 0, 0), 1);
+                sideCollision.topRight.ray = new Ray(origin, new Vector3(-1, 0, 0), 1);
                 sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
