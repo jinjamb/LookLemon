@@ -12,7 +12,7 @@ import { GrotteModel } from "./Grotte.js"
 import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import Map from "./../assets/mapSimple.glb"
-import Map2 from "./../assets/mapV0.3.glb"
+import Map2 from "./../assets/mapfinalV0.1.glb"
 
 
 let canvas = document.getElementById("maCanvas");
@@ -40,7 +40,7 @@ const createScene = async function () {
     ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
-            //mesh.scaling = new BABYLON.Vector3(5, 5, 5)
+            mesh.scaling = new Vector3(7, 7, 7)
             mesh.name = "ground";
             mesh.checkCollisions = true; 
             const groundMat = new StandardMaterial("groundMat", scene);
@@ -81,7 +81,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    lemon.position.y = 1;
+    lemon.position.y = 40;
 
     window.gameCitron = citron;
     scene.player = lemon;
@@ -217,7 +217,7 @@ createScene().then((scene) => {
             if (vectors_array.length === 0) {
                 gameCitron.stand();
             }
-            if (keypress["KeyT"]) {lemon.position.y = 5; lemon.position.x = 0; lemon.position.z = 0} //reset position
+            if (keypress["KeyT"]) {lemon.position.y = 25; lemon.position.x = 0; lemon.position.z = 0} //reset position
             
             //gestion du saut et du déplacement aérien
             if (jumping){
