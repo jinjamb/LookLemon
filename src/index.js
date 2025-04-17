@@ -12,7 +12,7 @@ import { GrotteModel } from "./Grotte.js"
 import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import Map from "./../assets/mapSimple.glb"
-import Map2 from "./../assets/mapV0.3.glb"
+import Map2 from "./../assets/mapfinalV0.1.glb"
 
 
 let canvas = document.getElementById("maCanvas");
@@ -30,6 +30,26 @@ let ground;
 let jumpPad;
 let jumping = false;
 
+function spawnCitron(lemon, position, rotation) {
+    if (!lemon) {
+        console.error("Le citron n'est pas initialisé!");
+        return;
+    }
+
+    lemon.position.x = position.x;
+    lemon.position.y = position.y;
+    lemon.position.z = position.z;
+        
+    lemon.rotation.x = rotation.x;
+    lemon.rotation.y = rotation.y;
+    lemon.rotation.z = rotation.z;
+        
+    jumping = false;
+    if (jumpPad) {
+        jumpPad.position.y = -100;
+    }
+}
+
 const createScene = async function () {
 
     const scene = new Scene(engine);
@@ -40,7 +60,7 @@ const createScene = async function () {
     ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
-            //mesh.scaling = new BABYLON.Vector3(5, 5, 5)
+            mesh.scaling = new Vector3(7, 7, 7)
             mesh.name = "ground";
             mesh.checkCollisions = true; 
             const groundMat = new StandardMaterial("groundMat", scene);
@@ -48,6 +68,7 @@ const createScene = async function () {
             groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
             groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
             mesh.material = groundMat;
+
         });
         ground.scaling = new Vector3(15, 15, 15);
         ground.position = new Vector3(0, 0, 0);
@@ -75,13 +96,14 @@ const createScene = async function () {
 
     new MapLoader(scene).load(); // Load the map
     new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
-    // Add a skybox 
+    // Add a skybox
 
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    lemon.scaling = new Vector3(0.5,0.5,0.5);
-    lemon.position.y = 1;
+    let position = new Vector3(0, 40, 0);
+    let rotation = new Vector3(0, -10, 0);
+    spawnCitron(lemon, position, rotation);
 
     window.gameCitron = citron;
     scene.player = lemon;
@@ -97,8 +119,6 @@ const createScene = async function () {
     jumpPadMaterial.diffuseTexture.hasAlpha = true;
     jumpPadMaterial.alpha = 0.5; // Ajustez la transparence (0 = complètement transparent, 1 = opaque)
     jumpPad.material = jumpPadMaterial;
-
-
 
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, lemon.position, scene);
@@ -128,6 +148,8 @@ const createScene = async function () {
     return scene;
 };
 
+
+
 function addVector(vectors_array) {
 
     let vector = new Vector3(0, 0, 0);
@@ -135,12 +157,6 @@ function addVector(vectors_array) {
         vector= vector.add(vectors_array[i]);
     }
     return vector;
-}
-
-function changeCitronRotation(sens) {
-    let rotation = citron.getRotation();
-    rotation.y += sens;
-    citron.setRotation(rotation);
 }
 
 createScene().then((scene) => {
@@ -154,6 +170,9 @@ createScene().then((scene) => {
         botLeft:{ray:null, dist:new Vector3(0,0,0)}
     };
     let delay = 0;
+
+    let position = new Vector3(0, 40, 0);
+    let rotation = new Vector3(0, Math.PI/2, 0);
 
       engine.runRenderLoop(function () {
         if (scene) {
@@ -204,20 +223,29 @@ createScene().then((scene) => {
                         
             // mouvements 
             let vectors_array = [];
-            if (keypress["KeyW"] && !keypress["KeyS"]) { 
+            if (keypress["KeyW"] && !keypress["KeyS"]) {
                 vectors_array.push(new Vector3(-1,0,-1));
                 gameCitron.runForward();
             } 
-            if (keypress["KeyS"] && !keypress["KeyW"]) { 
+            if (keypress["KeyS"] && !keypress["KeyW"]) {
+                gameCitron.changeCitronRotation(rotation);
                 vectors_array.push(new Vector3(1, 0, 1));
-                gameCitron.runBackward();
+                gameCitron.runForward();
             }
-            if (keypress["KeyA"] && !keypress["KeyD"]) { vectors_array.push(new Vector3(1, 0,-1));} 
-            if (keypress["KeyD"] && !keypress["KeyA"]) { vectors_array.push(new Vector3(-1,0, 1));} 
+            if (keypress["KeyA"] && !keypress["KeyD"]) { 
+                vectors_array.push(new Vector3(1, 0,-1));
+                gameCitron.runForward();
+            } 
+            if (keypress["KeyD"] && !keypress["KeyA"]) { 
+                vectors_array.push(new Vector3(-1,0, 1));
+                gameCitron.runForward();
+            } 
             if (vectors_array.length === 0) {
                 gameCitron.stand();
             }
-            if (keypress["KeyT"]) {lemon.position.y = 5; lemon.position.x = 0; lemon.position.z = 0} //reset position
+            if (keypress["KeyT"]) {
+                spawnCitron(lemon, position, rotation);
+            } //reset position
             
             //gestion du saut et du déplacement aérien
             if (jumping){
