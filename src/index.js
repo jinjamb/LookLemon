@@ -48,6 +48,7 @@ const createScene = async function () {
             groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
             groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
             mesh.material = groundMat;
+
         });
         ground.scaling = new Vector3(15, 15, 15);
         ground.position = new Vector3(0, 0, 0);
@@ -80,7 +81,6 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    lemon.scaling = new Vector3(0.5,0.5,0.5);
     lemon.position.y = 1;
 
     window.gameCitron = citron;
