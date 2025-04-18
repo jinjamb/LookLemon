@@ -10,14 +10,18 @@
 </head>
 <body>
     <div id="game" class="game">
-        <div class="buttons" id="buttons" style="display: none;">
+        <div class="buttons" id="buttons">
             <a class="button-link" id="playbutton" > Play </a>
             <a href="https://www.google.com" class="button-link" id="exitbutton"> Exit </a>
         </div>  
-        <div id="loading" style="font-size: 24px;">
+        <div id="loading">
             Chargement en cours...
         </div>
+        <img src="pauseButton.png" id="pauseButton">
         <canvas id="maCanvas" touch-action="none"></canvas>
+        <div id="pauseMenu">
+            <a class="button-link" id="resumeButton" > Resume </a>
+        </div>
     </div>
 </body>
 </html>

@@ -132,16 +132,19 @@ const createScene = async function () {
     // Add keyboard controls
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
-
-        switch (event.code) {
-            case "KeyI":
-                if (playing){
-                if (scene.debugLayer.isVisible()) {
-                    scene.debugLayer.hide();
-                } else {
-                    scene.debugLayer.show();
-                }
-                break;}
+        if (playing){
+            switch (event.code) {
+                case "KeyI":
+                    if (scene.debugLayer.isVisible()) {
+                        scene.debugLayer.hide();
+                    } else {
+                        scene.debugLayer.show();
+                    }
+                    break;
+                case "KeyP":
+                    pauseResume()
+                    break;
+            }
         }
     });
     window.addEventListener("keyup", (event) => {
@@ -160,16 +163,30 @@ function addVector(vectors_array) {
 }
 
 let playing = false;
+let pause = false;
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     playing = !playing;
     document.getElementById("buttons").style.display =  playing? 'none' : 'flex'
+    document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
 })
+
 window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
 });
 
+const pauseButton = document.getElementById("pauseButton")
+const pauseMenu = document.getElementById("pauseMenu")
+
+function pauseResume() {
+    pause = !pause;
+    pauseButton.style.display = pause ? 'none' : 'block'
+    pauseMenu.style.display = pause ? 'flex' : 'none'
+}
+
+pauseButton.addEventListener("click", (event) => {pauseResume()})
+document.getElementById("resumeButton").addEventListener("click", (event) => {pauseResume()})
 
 createScene().then((scene) => {
 
@@ -187,7 +204,8 @@ createScene().then((scene) => {
     let rotation = new Vector3(0, Math.PI/2, 0);
 
     engine.runRenderLoop(function () {
-        if (!playing) {}
+        if (!playing ) {}
+        else if (pause) {document.getElementById("pauseMenu").style.display='flex'}
         else if (scene) {
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
@@ -330,7 +348,6 @@ createScene().then((scene) => {
             }
 
             if (vectors_array.length === 2) { vector.scale(0.5);}
-            lemon.moveWithCollisions(vector.scale(0.1));
 
             scene.render();
             vectors_array = [];
