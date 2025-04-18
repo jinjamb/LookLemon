@@ -1,6 +1,7 @@
 import { SceneLoader, Vector3, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
 import Nuage from "./../assets/Nuage.glb";
 import Grotte from "./../assets/Grotte.glb";
+import {LabyrintheModel} from "./Labyrinthe.js"
 
 export class MapLoader {
     constructor(scene) {
@@ -11,7 +12,7 @@ export class MapLoader {
     async load(){
         this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0), "TexNuage.png");
         this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0), "TexGrotte.png");
-        
+        new LabyrintheModel(this.scene).loadModel();
     }
 
     async loadModel(model, scale, position, rotation, texturePath) {
