@@ -16,6 +16,8 @@ import Map2 from "./../assets/mapfinalV0.1.glb"
 
 
 let canvas = document.getElementById("maCanvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
 let camera;
@@ -53,7 +55,6 @@ function spawnCitron(lemon, position, rotation) {
 const createScene = async function () {
 
     const scene = new Scene(engine);
-    scene.debugLayer.show();
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
@@ -134,12 +135,13 @@ const createScene = async function () {
 
         switch (event.code) {
             case "KeyI":
+                if (playing){
                 if (scene.debugLayer.isVisible()) {
                     scene.debugLayer.hide();
                 } else {
                     scene.debugLayer.show();
                 }
-                break;
+                break;}
         }
     });
     window.addEventListener("keyup", (event) => {
@@ -147,8 +149,6 @@ const createScene = async function () {
     });
     return scene;
 };
-
-
 
 function addVector(vectors_array) {
 
@@ -159,175 +159,187 @@ function addVector(vectors_array) {
     return vector;
 }
 
+let playing = false;
+
+document.getElementById("playbutton").addEventListener("click", function (e) {
+    playing = !playing;
+    document.getElementById("buttons").style.display =  playing? 'none' : 'flex'
+})
+window.addEventListener('load', () => {
+    document.getElementById("buttons").style.display = 'flex'
+    document.getElementById("loading").style.display = 'none'
+});
+
+
 createScene().then((scene) => {
-
-    let jumpY=0;
-    let groundCollision = {ray:null, point:0, lastY:lemon.position.y};
-    let sideCollision = {
-        topLeft:{ray:null, dist:new Vector3(0,0,0)} ,
-        topRight:{ray:null, dist:new Vector3(0,0,0)},
-        botRight:{ray:null, dist:new Vector3(0,0,0)},
-        botLeft:{ray:null, dist:new Vector3(0,0,0)}
-    };
-    let delay = 0;
-
-    let position = new Vector3(0, 40, 0);
-    let rotation = new Vector3(0, Math.PI/2, 0);
-
-      engine.runRenderLoop(function () {
-        if (scene) {
-            camera.target = lemon.position
-            let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
-            spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
-            try {
-                groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
-                groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
-                }).pickedPoint.y
-            } catch(e) { groundCollision.point = lemon.position.y -7; }
-
-            //bottom right collisions
-            try {
-                sideCollision.botRight.ray = new Ray(origin, new Vector3(0, 0, 1), 1);
-                sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
-                }).pickedPoint
-            }  catch(e){ sideCollision.botRight.point = null }
-            //top left 
-            try {
-                sideCollision.topLeft.ray = new Ray(origin, new Vector3(0, 0, -1), 1);
-                sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
-                }).pickedPoint
-            } catch(e){ sideCollision.topLeft.point = null }
-            //bottom left
-            try {
-                sideCollision.botLeft.ray = new Ray(origin, new Vector3(1, 0, 0), 1);
-                sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
-                }).pickedPoint
-            } catch(e){ sideCollision.botLeft.point = null }
-            //top right
-            try {
-                sideCollision.topRight.ray = new Ray(origin, new Vector3(-1, 0, 0), 1);
-                sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
-                }).pickedPoint
-            } catch(e){ sideCollision.botRight.point = null }
-
-            if (lemon.position.y - groundCollision.point > 5){
-                groundCollision.point = lemon.position.y -5.5
-            }
+        let jumpY=0;
+        let groundCollision = {ray:null, point:0, lastY:lemon.position.y};
+        let sideCollision = {
+            topLeft:{ray:null, dist:new Vector3(0,0,0)} ,
+            topRight:{ray:null, dist:new Vector3(0,0,0)},
+            botRight:{ray:null, dist:new Vector3(0,0,0)},
+            botLeft:{ray:null, dist:new Vector3(0,0,0)}
+        };
+        let delay = 0;
+    
+        let position = new Vector3(0, 40, 0);
+        let rotation = new Vector3(0, Math.PI/2, 0);
         
-            lemon.position.y = groundCollision.point + 1;
-                        
-            // mouvements 
-            let vectors_array = [];
-            if (keypress["KeyW"] && !keypress["KeyS"]) {
-                vectors_array.push(new Vector3(-1,0,-1));
-                gameCitron.runForward();
-            } 
-            if (keypress["KeyS"] && !keypress["KeyW"]) {
-                gameCitron.changeCitronRotation(rotation);
-                vectors_array.push(new Vector3(1, 0, 1));
-                gameCitron.runForward();
-            }
-            if (keypress["KeyA"] && !keypress["KeyD"]) { 
-                vectors_array.push(new Vector3(1, 0,-1));
-                gameCitron.runForward();
-            } 
-            if (keypress["KeyD"] && !keypress["KeyA"]) { 
-                vectors_array.push(new Vector3(-1,0, 1));
-                gameCitron.runForward();
-            } 
-            if (vectors_array.length === 0) {
-                gameCitron.stand();
-            }
-            if (keypress["KeyT"]) {
-                spawnCitron(lemon, position, rotation);
-            } //reset position
+        engine.runRenderLoop(function () {
+            if (!playing) {}
+            else if (scene && playing) {
+                camera.target = lemon.position
+                let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
+                spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
+                try {
+                    groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
+                    groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
+                        return(mesh.name === "ground"); 
+                    }).pickedPoint.y
+                } catch(e) { groundCollision.point = lemon.position.y -7; }
+    
+                //bottom right collisions
+                try {
+                    sideCollision.botRight.ray = new Ray(origin, new Vector3(0, 0, 1), 1);
+                    sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
+                        return(mesh.name === "ground"); 
+                    }).pickedPoint
+                }  catch(e){ sideCollision.botRight.point = null }
+                //top left 
+                try {
+                    sideCollision.topLeft.ray = new Ray(origin, new Vector3(0, 0, -1), 1);
+                    sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
+                        return(mesh.name === "ground"); 
+                    }).pickedPoint
+                } catch(e){ sideCollision.topLeft.point = null }
+                //bottom left
+                try {
+                    sideCollision.botLeft.ray = new Ray(origin, new Vector3(1, 0, 0), 1);
+                    sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
+                        return(mesh.name === "ground"); 
+                    }).pickedPoint
+                } catch(e){ sideCollision.botLeft.point = null }
+                //top right
+                try {
+                    sideCollision.topRight.ray = new Ray(origin, new Vector3(-1, 0, 0), 1);
+                    sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
+                        return(mesh.name === "ground"); 
+                    }).pickedPoint
+                } catch(e){ sideCollision.botRight.point = null }
+    
+                if (lemon.position.y - groundCollision.point > 5){
+                    groundCollision.point = lemon.position.y -5.5
+                }
             
-            //gestion du saut et du déplacement aérien
-            if (jumping){
-                if (jumpPad.position.y - jumpY <= 2.5){
-                    jumpPad.position.y += 0.2;
+                lemon.position.y = groundCollision.point + 1;
+                            
+                // mouvements 
+                let vectors_array = [];
+                if (keypress["KeyW"] && !keypress["KeyS"]) {
+                    vectors_array.push(new Vector3(-1,0,-1));
+                    gameCitron.runForward();
+                } 
+                if (keypress["KeyS"] && !keypress["KeyW"]) {
+                    gameCitron.changeCitronRotation(rotation);
+                    vectors_array.push(new Vector3(1, 0, 1));
+                    gameCitron.runForward();
                 }
-                else {
-                    jumping = false;
+                if (keypress["KeyA"] && !keypress["KeyD"]) { 
+                    vectors_array.push(new Vector3(1, 0,-1));
+                    gameCitron.runForward();
+                } 
+                if (keypress["KeyD"] && !keypress["KeyA"]) { 
+                    vectors_array.push(new Vector3(-1,0, 1));
+                    gameCitron.runForward();
+                } 
+                if (vectors_array.length === 0) {
+                    gameCitron.stand();
                 }
-                jumpPad.position.x = lemon.position.x;
-                jumpPad.position.z = lemon.position.z
-            }
-            else {
-                if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001 ) { // if the lemon is on the ground
-                    if (keypress["Space"]) {
-                        jumping = true; // we can jump
-                        jumpY = groundCollision.point;
-                        jumpPad.position.y = jumpY;
-                        jumpPad.position.x = lemon.position.x;
-                        jumpPad.position.z = lemon.position.z
+                if (keypress["KeyT"]) {
+                    spawnCitron(lemon, position, rotation);
+                } //reset position
+                
+                //gestion du saut et du déplacement aérien
+                if (jumping){
+                    if (jumpPad.position.y - jumpY <= 2.5){
+                        jumpPad.position.y += 0.2;
                     }
                     else {
-                        jumpPad.position.y = - 100
+                        jumping = false;
+                    }
+                    jumpPad.position.x = lemon.position.x;
+                    jumpPad.position.z = lemon.position.z
+                }
+                else {
+                    if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001 ) { // if the lemon is on the ground
+                        if (keypress["Space"]) {
+                            jumping = true; // we can jump
+                            jumpY = groundCollision.point;
+                            jumpPad.position.y = jumpY;
+                            jumpPad.position.x = lemon.position.x;
+                            jumpPad.position.z = lemon.position.z
+                        }
+                        else {
+                            jumpPad.position.y = - 100
+                        }
+                    }
+                    else { // if we are still up
+                        jumpPad.position.y += -0.2
                     }
                 }
-                else { // if we are still up
-                    jumpPad.position.y += -0.2
+    
+                let vector = addVector(vectors_array);
+                if (sideCollision.botRight.dist && vector.z > 0){ vector.z = 0; }
+                if (sideCollision.botLeft.dist && vector.x > 0){ vector.x = 0; }
+                if (sideCollision.topLeft.dist && vector.z < 0){ vector.z = 0; }
+                if (sideCollision.topRight.dist && vector.x < 0){ vector.x = 0; }
+                
+                          
+                // Rotate the lemon to face movement direction
+                    // Calculate angle based on movement direction
+                    //Trouver un autre moyen de faire ça
+                if (vector.length() > 0.1) {    
+                    let targetAngle;
+    
+                    if (keypress["KeyW"] && keypress["KeyA"]) { targetAngle = Math.PI/2; }
+                    else if (keypress["KeyW"] && keypress["KeyD"]) { targetAngle = Math.PI; }
+                    else if (keypress["KeyS"] && keypress["KeyA"]) { targetAngle = 0 ; }
+                    else if (keypress["KeyS"] && keypress["KeyD"]) { targetAngle = -Math.PI/2 ; }
+    
+                    else if (keypress["KeyA"]) { targetAngle = Math.PI/4 }
+                    else if (keypress["KeyD"]) { targetAngle = -3*Math.PI/4 }
+                    else if (keypress["KeyW"]) { targetAngle = 3*Math.PI/4 }
+                    else if (keypress["KeyS"]) { targetAngle = -Math.PI/4 }
+    
+                    
+                    // Set the rotation of the lemon (y-axis rotation for turning left/right)
+                    // Using a smooth rotation for better visual effect
+                    const currentRotation = lemon.rotation.y;
+                    const rotationSpeed = 0.1; 
+                
+                    // Calculate the shortest path to the target angle
+                    let angleDiff = targetAngle - currentRotation;
+                    if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+                    if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+                    
+                    // Apply smooth rotation
+                    lemon.rotation.y += angleDiff * rotationSpeed;
+                }
+    
+                if (vectors_array.length === 2) { vector.scale(0.5);}
+                lemon.moveWithCollisions(vector.scale(0.1));
+    
+                scene.render();
+                vectors_array = [];
+                delay = (delay + 1) % 10
+    
+                // on check l'altitude du le citron pour pas qu'il vole indéfiniment            
+                if (delay === 0){
+                    groundCollision.lastY = lemon.position.y
                 }
             }
-
-            let vector = addVector(vectors_array);
-            if (sideCollision.botRight.dist && vector.z > 0){ vector.z = 0; }
-            if (sideCollision.botLeft.dist && vector.x > 0){ vector.x = 0; }
-            if (sideCollision.topLeft.dist && vector.z < 0){ vector.z = 0; }
-            if (sideCollision.topRight.dist && vector.x < 0){ vector.x = 0; }
-            
-                      
-            // Rotate the lemon to face movement direction
-                // Calculate angle based on movement direction
-                //Trouver un autre moyen de faire ça
-            if (vector.length() > 0.1) {    
-                let targetAngle;
-
-                if (keypress["KeyW"] && keypress["KeyA"]) { targetAngle = Math.PI/2; }
-                else if (keypress["KeyW"] && keypress["KeyD"]) { targetAngle = Math.PI; }
-                else if (keypress["KeyS"] && keypress["KeyA"]) { targetAngle = 0 ; }
-                else if (keypress["KeyS"] && keypress["KeyD"]) { targetAngle = -Math.PI/2 ; }
-
-                else if (keypress["KeyA"]) { targetAngle = Math.PI/4 }
-                else if (keypress["KeyD"]) { targetAngle = -3*Math.PI/4 }
-                else if (keypress["KeyW"]) { targetAngle = 3*Math.PI/4 }
-                else if (keypress["KeyS"]) { targetAngle = -Math.PI/4 }
-
-                
-                // Set the rotation of the lemon (y-axis rotation for turning left/right)
-                // Using a smooth rotation for better visual effect
-                const currentRotation = lemon.rotation.y;
-                const rotationSpeed = 0.1; 
-            
-                // Calculate the shortest path to the target angle
-                let angleDiff = targetAngle - currentRotation;
-                if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-                if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-                
-                // Apply smooth rotation
-                lemon.rotation.y += angleDiff * rotationSpeed;
-            }
-
-            if (vectors_array.length === 2) { vector.scale(0.5);}
-            lemon.moveWithCollisions(vector.scale(0.1));
-
-            scene.render();
-            vectors_array = [];
-            delay = (delay + 1) % 10
-
-            // on check l'altitude du le citron pour pas qu'il vole indéfiniment            
-            if (delay === 0){
-                groundCollision.lastY = lemon.position.y
-            }
-        }
+        });
     });
-});
 
 window.addEventListener("resize", function () {
     engine.resize();
