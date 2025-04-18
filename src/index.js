@@ -6,13 +6,10 @@ import 'babylonjs-inspector';
 import "@babylonjs/loaders/glTF";
 
 import { CitronModel } from "./Citron.js"
-import { ArbreModel } from "./Arbre.js"
-import { NuageModel } from "./Nuage.js"
-import { GrotteModel } from "./Grotte.js"
 import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
-import Map from "./../assets/mapSimple.glb"
-import Map2 from "./../assets/mapfinalV0.1.glb"
+
+import Map from "./../assets/mapfinalV0.2.glb"
 
 
 let canvas = document.getElementById("maCanvas");
@@ -56,8 +53,10 @@ const createScene = async function () {
     scene.debugLayer.show();
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
+    scene.light = light;
+    
 
-    ground = await SceneLoader.ImportMeshAsync("", Map2, "", scene).then((result) => {
+    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
             mesh.scaling = new Vector3(7, 7, 7)
@@ -84,12 +83,13 @@ const createScene = async function () {
         1, // Atténuation (plus la valeur est grande, plus la lumière s'atténue rapidement)
         scene
     );
-    spotLight.range = 100; // Portée de la lumière
+    spotLight.range = 200; // Portée de la lumière
 
     // Couleur de la lumière
     spotLight.diffuse = new Color3(1, 1, 1); // Lumière légèrement jaune
     spotLight.specular = new Color3(1, 1, 1);
-
+    spotLight.intensity = 1; // Intensité de la lumière
+    
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
 
@@ -171,14 +171,14 @@ createScene().then((scene) => {
     };
     let delay = 0;
 
-    let position = new Vector3(0, 40, 0);
+    let position = new Vector3(0, 60, 0);
     let rotation = new Vector3(0, Math.PI/2, 0);
 
       engine.runRenderLoop(function () {
         if (scene) {
             camera.target = lemon.position
-            let origin = new BABYLON.Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
-            spotLight.position = new Vector3(lemon.position.x,lemon.position.y +10, lemon.position.z);
+            let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
+            spotLight.position = new Vector3(lemon.position.x,lemon.position.y +100, lemon.position.z);
             try {
                 groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
@@ -246,7 +246,9 @@ createScene().then((scene) => {
             if (keypress["KeyT"]) {
                 spawnCitron(lemon, position, rotation);
             } //reset position
-            
+            if(keypress["KeyU"]){
+                spawnCitron(lemon, new Vector3(0, 0, 0), rotation);
+            }
             //gestion du saut et du déplacement aérien
             if (jumping){
                 if (jumpPad.position.y - jumpY <= 2.5){

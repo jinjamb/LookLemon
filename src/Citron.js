@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
+import { SceneLoader, Vector3,StandardMaterial,Color3,Texture, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
 import Citron from "./../assets/animations/CitronPLAYER.glb";
 
 export class CitronModel {
@@ -89,17 +89,8 @@ export class CitronModel {
             this.model.position = new Vector3(0, 0, 3);
             this.model.rotation = new Vector3(0, -4, 0);
             
-            //test pour la spotlight
-            const citronMat = new StandardMaterial("Citronmat", scene);
-        
-                    // Utiliser une texture au lieu d'une couleur unie
-            citronMat.diffuseTexture = new Texture(CitronTexture, scene);                    
-                    // Options pour améliorer le rendu de la texture
-            citronMat.diffuseTexture.hasAlpha = false;
-            citronMat.specularColor = new Color3(0.2, 0.2, 0.2); // Légère brillance
-            citronMat.roughness = 0.8; // Surface moins lisse
+    
                     
-            this.model.material = citronMat;
             
             // this.model.getChildMeshes().forEach((mesh) => {
             //     if (mesh.material) {
