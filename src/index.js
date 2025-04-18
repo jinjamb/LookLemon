@@ -13,6 +13,8 @@ import Map from "./../assets/Sol.glb"
 import text from "./../assets/texture.png"
 
 let canvas = document.getElementById("maCanvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
 let camera;
@@ -50,7 +52,6 @@ function spawnCitron(lemon, position, rotation) {
 const createScene = async function () {
 
     const scene = new Scene(engine);
-    scene.debugLayer.show();
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
     scene.light = light;
@@ -128,12 +129,13 @@ const createScene = async function () {
 
         switch (event.code) {
             case "KeyI":
+                if (playing){
                 if (scene.debugLayer.isVisible()) {
                     scene.debugLayer.hide();
                 } else {
                     scene.debugLayer.show();
                 }
-                break;
+                break;}
         }
     });
     window.addEventListener("keyup", (event) => {
@@ -141,8 +143,6 @@ const createScene = async function () {
     });
     return scene;
 };
-
-
 
 function addVector(vectors_array) {
 
@@ -152,6 +152,18 @@ function addVector(vectors_array) {
     }
     return vector;
 }
+
+let playing = false;
+
+document.getElementById("playbutton").addEventListener("click", function (e) {
+    playing = !playing;
+    document.getElementById("buttons").style.display =  playing? 'none' : 'flex'
+})
+window.addEventListener('load', () => {
+    document.getElementById("buttons").style.display = 'flex'
+    document.getElementById("loading").style.display = 'none'
+});
+
 
 createScene().then((scene) => {
 
@@ -168,8 +180,9 @@ createScene().then((scene) => {
     let position = new Vector3(0, 60, 0);
     let rotation = new Vector3(0, Math.PI/2, 0);
 
-      engine.runRenderLoop(function () {
-        if (scene) {
+    engine.runRenderLoop(function () {
+        if (!playing) {}
+        else if (scene) {
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +100, lemon.position.z);
