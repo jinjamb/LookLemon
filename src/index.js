@@ -165,6 +165,7 @@ const createScene = async function () {
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
         if (playing){
+            console.log(event.code)
             switch (event.code) {
                 case "KeyI":
                     if (scene.debugLayer.isVisible()) {
@@ -204,9 +205,11 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
+    canvas.style.display =  playing? 'block' : 'none'
     if (playing) {
         backgroundMusicMenu.stopMusic();
         backgroundMusicGame.playMusic();
+        console.log('jouer')
     } else {
         backgroundMusicGame.stopMusic();
         backgroundMusicMenu.playMusic();
@@ -217,6 +220,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
 window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
+
 });
 
 const pauseButton = document.getElementById("pauseButton")
