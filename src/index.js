@@ -25,7 +25,7 @@ let keypress = {};
 
 let sphere;
 let lemon;
-let ground;
+
 
 let jumpPad;
 let jumping = false;
@@ -53,22 +53,6 @@ function spawnCitron(lemon, position, rotation) {
 const createScene = async function () {
 
     const scene = new Scene(engine);
-    const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
-    scene.light = light;
-    
-
-    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
-        var ground = result.meshes[0];
-        result.meshes.forEach((mesh) => {
-            mesh.scaling = new Vector3(7, 7, 7);
-            mesh.name = "ground";
-            mesh.checkCollisions = true;
-            
-        });
-        ground.scaling = new Vector3(15, 15, 15);
-        ground.position = new Vector3(0, 0, 0);
-    });
     
     //creating a spotlight
     spotLight = new SpotLight(
