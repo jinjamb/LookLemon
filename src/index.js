@@ -8,7 +8,7 @@ import "@babylonjs/loaders/glTF";
 
 import { CitronModel } from "./Citron.js"
 import { MapLoader } from "./MapLoader.js"
-import { JeuTuyaux } from "./JeuTuyaux.js"
+
 import { Pnj } from "./Pnj.js";
 import { Music } from "./Music.js";
 import BubbleGum from "../assets/sounds/music/BubbleGum.mp3";
@@ -89,18 +89,6 @@ const createScene = async function () {
 
     backgroundMusicGame = new Music(HowSweet);
     backgroundMusicGame.setVolume(0.5);
-
-    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
-        var ground = result.meshes[0];
-        result.meshes.forEach((mesh) => {
-            mesh.scaling = new Vector3(7, 7, 7);
-            mesh.name = "ground";
-            mesh.checkCollisions = true;
-            
-        });
-        ground.scaling = new Vector3(15, 15, 15);
-        ground.position = new Vector3(0, 0, 0);
-    });
     
     //creating a spotlight
     spotLight = new SpotLight(
@@ -128,8 +116,7 @@ const createScene = async function () {
     await pnj1.loadPnj(scene);
     pnj1.model.position = new Vector3(10, 50, 0);
     
-    new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
-    // Add a skybox
+
 
 
     // Create lemon with physics
@@ -254,8 +241,13 @@ createScene().then((scene) => {
     let rotation = new Vector3(0, Math.PI/2, 0);
 
     engine.runRenderLoop(function () {
+<<<<<<< HEAD
         if (!playing ) {}
+=======
+        if (!playing) {}
         else if (scene && !pause) {
+            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+>>>>>>> 6539ad22e125062880161623df25036606e70a21
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);

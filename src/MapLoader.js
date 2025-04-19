@@ -2,6 +2,8 @@ import { SceneLoader, Vector3,HemisphericLight } from "@babylonjs/core";
 import Nuage from "./../assets/Nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
 import Map from "./../assets/Sol.glb"
+import Citerne from "./../assets/Citerne.glb"
+import { JeuTuyaux } from "./JeuTuyaux.js"
 import {LabyrintheModel} from "./Labyrinthe.js"
 
 export class MapLoader {
@@ -17,7 +19,9 @@ export class MapLoader {
         new LabyrintheModel(this.scene).loadModel();
         this.loadModel(Nuage,new Vector3(200, 200, 200), new Vector3(-350, 15, -200), new Vector3(0, 5/6*Math.PI, 0));
         this.loadModel(Nuage,new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4/6*Math.PI, 0));
-    
+        this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(60,67,-540), new Vector3(0, Math.PI, 0));
+        new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-14,68,-523)); // load le jeu des tuyaux
+
     }
 
     async loadModel(model, scale, position, rotation) {
