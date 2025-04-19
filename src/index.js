@@ -7,7 +7,7 @@ import "@babylonjs/loaders/glTF";
 
 import { CitronModel } from "./Citron.js"
 import { MapLoader } from "./MapLoader.js"
-import { JeuTuyaux } from "./JeuTuyaux.js"
+
 import { Pnj } from "./Pnj.js";
 
 import Map from "./../assets/Sol.glb"
@@ -80,8 +80,7 @@ const createScene = async function () {
     await pnj1.loadPnj(scene);
     pnj1.model.position = new Vector3(10, 50, 0);
     
-    new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
-    // Add a skybox
+
 
 
     // Create lemon with physics
@@ -173,6 +172,7 @@ createScene().then((scene) => {
     engine.runRenderLoop(function () {
         if (!playing) {}
         else if (scene) {
+            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +100, lemon.position.z);

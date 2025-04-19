@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3, PhysicsAggregate, PhysicsShapeType, KeyBoardEventTypes } from "@babylonjs/core";
+import { SceneLoader, Vector3,KeyboardEventTypes } from "@babylonjs/core";
 
 import TuyauDV from "./../assets/TuyauDroitVide.glb";
 import TuyauDP from "./../assets/TuyauDroitPlein.glb";
@@ -35,7 +35,7 @@ export class JeuTuyaux {
 
     KeyControles() {
         this.scene.onKeyboardObservable.add((kbInfo) => {
-            if (kbInfo.type === BABYLON.KeyboardEventTypes.KEYDOWN) { // KEYDOWN event
+            if (kbInfo.type === KeyboardEventTypes.KEYDOWN) { // KEYDOWN event
                 if (kbInfo.event.key.toLowerCase() === 'o') {
                     console.log("O pressed");
                     console.log(this.scene.activeCamera.position);
@@ -51,14 +51,16 @@ export class JeuTuyaux {
 
 
     async createFromMatrice(positionInit){
+        let vec = new Vector3(20, 20, 20);
+        let coef = 20;
         for(let i = 0; i < this.matrice.length; i++) {
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
-                    this.loadModel(TuyauDV, new Vector3(5, 5, 5), new Vector3(positionInit.x + i * 5, positionInit.y, positionInit.z + j * 5), new Vector3(0, 0, 0), "TexTuyau.png",positionInit,true);
-                    this.loadModel(TuyauDP, new Vector3(5, 5, 5), new Vector3(positionInit.x + i * 5, positionInit.y, positionInit.z + j * 5), new Vector3(0, (this.res[i][j]-1)* (Math.PI/2), 0), "TexTuyau.png",positionInit,false);
+                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), "TexTuyau.png",positionInit,true);
+                    this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j]-1)* (Math.PI/2), 0), "TexTuyau.png",positionInit,false);
                 }else if (this.matrice[i][j] == 2) {
-                    this.loadModel(TuyauAV, new Vector3(5, 5, 5), new Vector3(positionInit.x + i * 5, positionInit.y, positionInit.z + j * 5), new Vector3(0, Math.PI / 2, 0), "TexTuyau.png",positionInit,true);
-                    this.loadModel(TuyauAP, new Vector3(5, 5, 5), new Vector3(positionInit.x + i * 5, positionInit.y, positionInit.z + j * 5), new Vector3(0, this.res[i][j]*(Math.PI / 2), 0), "TexTuyau.png",positionInit,false);
+                    this.loadModel(TuyauAV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), "TexTuyau.png",positionInit,true);
+                    this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j]*(Math.PI / 2), 0), "TexTuyau.png",positionInit,false);
                 }
             }
         }
@@ -79,8 +81,8 @@ export class JeuTuyaux {
             this.model.metadata = {
                 modelType: model,
                 gridPosition:{
-                    x:Math.floor((position.x-posInit.x)/5),
-                    z:Math.floor((position.z-posInit.z)/5)
+                    x:Math.floor((position.x-posInit.x)/20),
+                    z:Math.floor((position.z-posInit.z)/20)
                 }//on soutrais pour avoir des valeur quon peut utilisr dans la matrice
             };
             if(visibility){
