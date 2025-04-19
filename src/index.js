@@ -89,18 +89,6 @@ const createScene = async function () {
 
     backgroundMusicGame = new Music(HowSweet);
     backgroundMusicGame.setVolume(0.5);
-
-    ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
-        var ground = result.meshes[0];
-        result.meshes.forEach((mesh) => {
-            mesh.scaling = new Vector3(7, 7, 7);
-            mesh.name = "ground";
-            mesh.checkCollisions = true;
-            
-        });
-        ground.scaling = new Vector3(15, 15, 15);
-        ground.position = new Vector3(0, 0, 0);
-    });
     
     //creating a spotlight
     spotLight = new SpotLight(
