@@ -241,13 +241,9 @@ createScene().then((scene) => {
     let rotation = new Vector3(0, Math.PI/2, 0);
 
     engine.runRenderLoop(function () {
-<<<<<<< HEAD
-        if (!playing ) {}
-=======
         if (!playing) {}
         else if (scene && !pause) {
             console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
->>>>>>> 6539ad22e125062880161623df25036606e70a21
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
