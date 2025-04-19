@@ -24,7 +24,7 @@ export class LabyrintheModel {
                 groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
                 mesh.material = groundMat;
             });
-            this.model.scaling = new Vector3(80, 40, 80);
+            this.model.scaling = new Vector3(160, 80, 160);
             this.model.position = new Vector3(0, -90, 0);
             this.model.rotation = new Vector3(0, 0,0);
 

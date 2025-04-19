@@ -41,23 +41,21 @@ body {
   font-size: large;
 }
 
-#buttons{
+#buttons {
   width: 30%;
-  display: flex;
+  display: none;
   flex-direction: column;
   position: absolute;
   text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 a {
     font-size: 20px;
     margin: 10px;
     size: 30px;
-}
-
-#maCanvas {
-  width: 100%;
-  height: 100%;
 }
 
 #game {
@@ -70,4 +68,32 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-size: 24px;
+}
+
+#pauseButton {
+  position: absolute;
+  top: 5%;
+  left: 95%;
+  display: none;
+}
+
+#pauseMenu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45%;
+  aspect-ratio: 1 / 1;
+  background-size: cover; /* Makes sure it covers the whole screen */
+  background-position: center;
+  background-repeat: no-repeat;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resumeButton, #resetButton {
+  background-color: black;
 }

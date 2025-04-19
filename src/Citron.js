@@ -138,7 +138,7 @@ export class CitronModel {
                 animation.play(true);
                 this.currentAnimation = animation;
                 this.state = name;
-                console.log("Animation:", name);
+                //console.log("Animation:", name);
             } else {
                 console.log("Animation not found:", name);
             }

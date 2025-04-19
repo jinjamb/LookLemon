@@ -121,7 +121,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(0, 55, 0);
+    let position = new Vector3(100, 90, 0);
     let rotation = new Vector3(0, -10, 0);
     spawnCitron(lemon, position, rotation);
 
@@ -151,16 +151,23 @@ const createScene = async function () {
     // Add keyboard controls
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
-
-        switch (event.code) {
-            case "KeyI":
-                if (playing){
-                if (scene.debugLayer.isVisible()) {
-                    scene.debugLayer.hide();
-                } else {
-                    scene.debugLayer.show();
-                }
-                break;}
+        if (playing){
+            console.log(event.code)
+            switch (event.code) {
+                case "KeyI":
+                    if (scene.debugLayer.isVisible()) {
+                        scene.debugLayer.hide();
+                    } else {
+                        scene.debugLayer.show();
+                    }
+                    break;
+                case "KeyP":
+                    pauseResume()
+                    break;
+                case "Semicolon":
+                    spawnCitron(lemon, position, rotation);
+                    pauseResume()
+            }
         }
     });
     window.addEventListener("keyup", (event) => {
@@ -179,34 +186,54 @@ function addVector(vectors_array) {
 }
 
 let playing = false;
+let pause = false;
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
+    document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
+    canvas.style.display =  playing? 'block' : 'none'
     if (playing) {
         backgroundMusicMenu.stopMusic();
         backgroundMusicGame.playMusic();
+        console.log('jouer')
     } else {
         backgroundMusicGame.stopMusic();
         backgroundMusicMenu.playMusic();
     }
 });
 
+
 window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
+
 });
 
+const pauseButton = document.getElementById("pauseButton")
+const pauseMenu = document.getElementById("pauseMenu")
 
+function pauseResume() {
+    pause = !pause;
+    pauseButton.style.display = pause ? 'none' : 'block'
+    pauseMenu.style.display = pause ? 'flex' : 'none'
+}
+
+pauseButton.addEventListener("click", (event) => {pauseResume()})
+document.getElementById("resumeButton").addEventListener("click", () => {pauseResume()})
+document.getElementById("resetButton").addEventListener("click", () => {
+    pauseResume();
+    spawnCitron(lemon, position, rotation);
+})
 createScene().then((scene) => {
 
     let jumpY=0;
     let groundCollision = {ray:null, point:0, lastY:lemon.position.y};
     let sideCollision = {
-        topLeft:{ray:null, dist:new Vector3(0,0,0)} ,
+        topLeft: {ray:null, dist:new Vector3(0,0,0)},
         topRight:{ray:null, dist:new Vector3(0,0,0)},
         botRight:{ray:null, dist:new Vector3(0,0,0)},
-        botLeft:{ray:null, dist:new Vector3(0,0,0)}
+        botLeft: {ray:null, dist:new Vector3(0,0,0)}
     };
     let delay = 0;
 
@@ -215,52 +242,53 @@ createScene().then((scene) => {
 
     engine.runRenderLoop(function () {
         if (!playing) {}
-        else if (scene) {
+        else if (scene && !pause) {
             console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
-            let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
+            let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
+            let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +100, lemon.position.z);
             try {
                 groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint.y
-            } catch(e) { groundCollision.point = lemon.position.y -7; }
+            } catch(e) { groundCollision.point = lemon.position.y -10;}
 
             //bottom right collisions
             try {
-                sideCollision.botRight.ray = new Ray(origin, new Vector3(0, 0, 1), 1);
+                sideCollision.botRight.ray = new Ray(sideOrigin, new Vector3(0, 0, 1.5), 2.5);
                 sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
+                    return(mesh.name === "ground");
                 }).pickedPoint
-            }  catch(e){ sideCollision.botRight.point = null }
+            }  catch(e){ sideCollision.botRight.point = null; }
             //top left 
             try {
-                sideCollision.topLeft.ray = new Ray(origin, new Vector3(0, 0, -1), 1);
+                sideCollision.topLeft.ray = new Ray(sideOrigin, new Vector3(0, 0, -1.5), 2.5);
                 sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
-            } catch(e){ sideCollision.topLeft.point = null }
+            } catch(e){ sideCollision.topLeft.point = null;}
             //bottom left
             try {
-                sideCollision.botLeft.ray = new Ray(origin, new Vector3(1, 0, 0), 1);
+                sideCollision.botLeft.ray = new Ray(sideOrigin, new Vector3(1.5, 0, 0), 2.5);
                 sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botLeft.point = null }
             //top right
             try {
-                sideCollision.topRight.ray = new Ray(origin, new Vector3(-1, 0, 0), 1);
+                sideCollision.topRight.ray = new Ray(sideOrigin, new Vector3(-1.5, 0, 0), 2.5);
                 sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botRight.point = null }
 
-            if (lemon.position.y - groundCollision.point > 5){
-                groundCollision.point = lemon.position.y -5.5
+            if (lemon.position.y - groundCollision.point > 3){
+                groundCollision.point = lemon.position.y -3.5
             }
         
-            lemon.position.y = groundCollision.point + 1;
+            lemon.position.y = groundCollision.point + 3;
                         
             // mouvements 
             let vectors_array = [];
@@ -287,12 +315,12 @@ createScene().then((scene) => {
             if (keypress["KeyT"]) {
                 spawnCitron(lemon, position, rotation);
             } //reset position
-            if(keypress["KeyU"]){
+            if (keypress["KeyU"]){
                 spawnCitron(lemon, new Vector3(0, 0, 0), rotation);
             }
             //gestion du saut et du déplacement aérien
             if (jumping){
-                if (jumpPad.position.y - jumpY <= 2.5){
+                if (jumpPad.position.y - jumpY <= 5){
                     jumpPad.position.y += 0.2;
                 }
                 else {
@@ -357,8 +385,8 @@ createScene().then((scene) => {
                 lemon.rotation.y += angleDiff * rotationSpeed;
             }
 
-            if (vectors_array.length === 2) { vector.scale(0.5);}
-            lemon.moveWithCollisions(vector.scale(0.1));
+            if (vectors_array.length >= 2) {vector = vector.scale(0.5);}
+            lemon.moveWithCollisions(vector);
 
             scene.render();
             vectors_array = [];
