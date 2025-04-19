@@ -1,16 +1,21 @@
-import { Ray,SceneLoader,SpotLight, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight, Vector4 } from "@babylonjs/core";
+import { Ray,SceneLoader,SpotLight, Sound, Engine, Scene, ShadowGenerator, ArcRotateCamera, HemisphericLight, MeshBuilder, Color3, Vector3, PhysicsShapeType, PhysicsAggregate, HavokPlugin, StandardMaterial, Texture, DirectionalLight, Vector4 } from "@babylonjs/core";
 //import HavokPhysics from "@babylonjs/havok";
 //import Map from "./../assets/heightMap2.png";
 //import {Inspector} from "@babylonjs/inspector";
 import 'babylonjs-inspector';
 import "@babylonjs/loaders/glTF";
 
+
 import { CitronModel } from "./Citron.js"
 import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
+import { Pnj } from "./Pnj.js";
+import { Music } from "./Music.js";
+import BubbleGum from "../assets/sounds/music/BubbleGum.mp3";
+import HowSweet from "../assets/sounds/music/HowSweet.mp3";
 
-import Map from "./../assets/mapfinalV0.2.glb"
-
+import Map from "./../assets/Sol.glb"
+import text from "./../assets/texture.png"
 
 let canvas = document.getElementById("maCanvas");
 canvas.width = window.innerWidth;
@@ -22,9 +27,14 @@ let spotLight;
 let forceDirection;
 let keypress = {};
 
+let clickSound;
+let walkSound;
+let backgroundMusicMenu;
+let backgroundMusicGame;
+
 let sphere;
 let lemon;
-let ground;
+
 
 let jumpPad;
 let jumping = false;
@@ -56,23 +66,40 @@ const createScene = async function () {
     light.intensity = 0.7;
     scene.light = light;
     
+    clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, { 
+        loop: false, 
+        autoplay: false,
+        volume: 0.5,});
+    
+    walkSound = new Sound("walk", "../assets/sounds/effect/FootGrass.mp3", scene, null, {
+        loop: false, 
+        autoplay: false,
+        volume: 0.5,});
+
+    
+    backgroundMusicGame = new Sound("backgroundMusicGame", "./../assets/sounds/music/HowSweet.mp3", scene, null,
+        { 
+            loop: true, 
+            autoplay: false,
+            volume: 0.5,});
+
+    backgroundMusicMenu = new Music(BubbleGum);
+    backgroundMusicMenu.setVolume(0.8);
+    backgroundMusicMenu.playMusic();
+
+    backgroundMusicGame = new Music(HowSweet);
+    backgroundMusicGame.setVolume(0.5);
 
     ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
-            mesh.scaling = new Vector3(7, 7, 7)
+            mesh.scaling = new Vector3(7, 7, 7);
             mesh.name = "ground";
-            mesh.checkCollisions = true; 
-            const groundMat = new StandardMaterial("groundMat", scene);
-            groundMat.diffuseColor = new Color3(1, 1, 1); // Blanc, réagit bien à la lumière
-            groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
-            groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
-            mesh.material = groundMat;
-
+            mesh.checkCollisions = true;
+            
         });
         ground.scaling = new Vector3(15, 15, 15);
         ground.position = new Vector3(0, 0, 0);
-        
     });
     
     //creating a spotlight
@@ -96,6 +123,11 @@ const createScene = async function () {
 
 
     new MapLoader(scene).load(); // Load the map
+
+    const pnj1 = new Pnj(scene);
+    await pnj1.loadPnj(scene);
+    pnj1.model.position = new Vector3(10, 50, 0);
+    
     new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
     // Add a skybox
 
@@ -170,9 +202,17 @@ let pause = false;
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     playing = !playing;
-    document.getElementById("buttons").style.display =  playing? 'none' : 'flex'
+    document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
-})
+    if (playing) {
+        backgroundMusicMenu.stopMusic();
+        backgroundMusicGame.playMusic();
+    } else {
+        backgroundMusicGame.stopMusic();
+        backgroundMusicMenu.playMusic();
+    }
+});
+
 
 window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'

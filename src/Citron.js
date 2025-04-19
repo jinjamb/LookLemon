@@ -88,10 +88,7 @@ export class CitronModel {
             this.model.scaling = new Vector3(5, 5, 5);
             this.model.position = new Vector3(0, 0, 3);
             this.model.rotation = new Vector3(0, -4, 0);
-            
-    
-                    
-            
+
             // this.model.getChildMeshes().forEach((mesh) => {
             //     if (mesh.material) {
                     
