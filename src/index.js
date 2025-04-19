@@ -149,7 +149,7 @@ const createScene = async function () {
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
         if (playing){
-            console.log(event.code)
+            //console.log(event.code)
             switch (event.code) {
                 case "KeyI":
                     if (scene.debugLayer.isVisible()) {
@@ -239,7 +239,7 @@ createScene().then((scene) => {
     engine.runRenderLoop(function () {
         if (!playing) {}
         else if (scene && !pause) {
-            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);

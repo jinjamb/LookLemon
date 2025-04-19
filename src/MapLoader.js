@@ -19,8 +19,8 @@ export class MapLoader {
         new LabyrintheModel(this.scene).loadModel();
         this.loadModel(Nuage,new Vector3(200, 200, 200), new Vector3(-350, 15, -200), new Vector3(0, 5/6*Math.PI, 0));
         this.loadModel(Nuage,new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4/6*Math.PI, 0));
-        this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(60,67,-540), new Vector3(0, Math.PI, 0));
-        new JeuTuyaux(this.scene).createFromMatrice(new Vector3(0,68,-503)); // load le jeu des tuyaux
+        this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55,67,-530), new Vector3(0, Math.PI, 0));
+        new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5,68,-480)); // load le jeu des tuyaux
 
     }
 
