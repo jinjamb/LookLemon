@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3,HemisphericLight } from "@babylonjs/core";
-//import Nuage from "./../assets/Nuage.glb";
+import Nuage from "./../assets/Nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
 import Map from "./../assets/Sol.glb"
 import {LabyrintheModel} from "./Labyrinthe.js"
@@ -15,6 +15,9 @@ export class MapLoader {
         //this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0));
         //this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0));
         new LabyrintheModel(this.scene).loadModel();
+        this.loadModel(Nuage,new Vector3(200, 200, 200), new Vector3(-350, 15, -200), new Vector3(0, 5/6*Math.PI, 0));
+        this.loadModel(Nuage,new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4/6*Math.PI, 0));
+    
     }
 
     async loadModel(model, scale, position, rotation) {
