@@ -62,9 +62,7 @@ function spawnCitron(lemon, position, rotation) {
 const createScene = async function () {
 
     const scene = new Scene(engine);
-    const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
-    scene.light = light;
+
     
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, { 
         loop: false, 
@@ -127,8 +125,7 @@ const createScene = async function () {
 
     window.gameCitron = citron;
     scene.player = lemon;
-    sphere = MeshBuilder.CreateSphere("sphere", { diameter: 3 }, scene);
-    
+
     //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
     jumpPad.position.y = -100

@@ -39,7 +39,7 @@ export class MapLoader {
     }
     async loadGround() {
         const light = new HemisphericLight("light", new Vector3(0, 1, 0), this.scene);
-        light.intensity = 0.7;
+        light.intensity = 1;
         this.scene.light = light;
             
         
