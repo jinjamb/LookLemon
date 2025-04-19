@@ -21,6 +21,10 @@ export class Music {
         });
     }
 
+    pauseMusic(){
+        this.audioElement.pause();
+    }
+
     stopMusic() {
         this.audioElement.pause();
         this.audioElement.currentTime = 0;

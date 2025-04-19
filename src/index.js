@@ -158,7 +158,7 @@ const createScene = async function () {
                         scene.debugLayer.show();
                     }
                     break;
-                case "KeyP":
+                case "Escape":
                     pauseResume()
                     break;
                 case "Semicolon":
@@ -190,20 +190,15 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
     canvas.style.display =  playing? 'block' : 'none'
-    if (playing) {
-        backgroundMusicMenu.stopMusic();
-        backgroundMusicGame.playMusic();
-        console.log('jouer')
-    } else {
-        backgroundMusicGame.stopMusic();
-        backgroundMusicMenu.playMusic();
-    }
+    backgroundMusicMenu.stopMusic();
+    backgroundMusicGame.playMusic();
 });
 
 
 window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
+    backgroundMusicMenu.playMusic();
 
 });
 
@@ -212,15 +207,19 @@ const pauseMenu = document.getElementById("pauseMenu")
 
 function pauseResume() {
     pause = !pause;
+    if (pause) backgroundMusicGame.pauseMusic();
+    else backgroundMusicGame.playMusic()
     pauseButton.style.display = pause ? 'none' : 'block'
     pauseMenu.style.display = pause ? 'flex' : 'none'
 }
 
-pauseButton.addEventListener("click", (event) => {pauseResume()})
+pauseButton.addEventListener("click", () => {pauseResume()})
 document.getElementById("resumeButton").addEventListener("click", () => {pauseResume()})
 document.getElementById("resetButton").addEventListener("click", () => {
-    pauseResume();
-    spawnCitron(lemon, position, rotation);
+    if (pause) {
+        pauseResume();
+        spawnCitron(lemon, position, rotation);
+    }
 })
 createScene().then((scene) => {
 
