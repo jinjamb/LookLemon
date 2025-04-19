@@ -10,8 +10,8 @@ import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import { Pnj } from "./Pnj.js";
 
-import Map from "./../assets/mapfinalV0.2.glb"
-
+import Map from "./../assets/Sol.glb"
+import text from "./../assets/texture.png"
 
 let canvas = document.getElementById("maCanvas");
 canvas.width = window.innerWidth;
@@ -61,19 +61,13 @@ const createScene = async function () {
     ground = await SceneLoader.ImportMeshAsync("", Map, "", scene).then((result) => {
         var ground = result.meshes[0];
         result.meshes.forEach((mesh) => {
-            mesh.scaling = new Vector3(7, 7, 7)
+            mesh.scaling = new Vector3(7, 7, 7);
             mesh.name = "ground";
-            mesh.checkCollisions = true; 
-            const groundMat = new StandardMaterial("groundMat", scene);
-            groundMat.diffuseColor = new Color3(1, 1, 1); // Blanc, réagit bien à la lumière
-            groundMat.specularColor = new Color3(0.5, 0.5, 0.5); // Ajoute un peu de réflexion
-            groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
-            mesh.material = groundMat;
-
+            mesh.checkCollisions = true;
+            
         });
         ground.scaling = new Vector3(15, 15, 15);
         ground.position = new Vector3(0, 0, 0);
-        
     });
     
     //creating a spotlight
