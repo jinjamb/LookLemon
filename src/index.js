@@ -34,7 +34,7 @@ let backgroundMusicGame;
 
 let sphere;
 let lemon;
-let ground;
+
 
 let jumpPad;
 let jumping = false;
@@ -134,7 +134,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(0, 40, 0);
+    let position = new Vector3(0, 55, 0);
     let rotation = new Vector3(0, -10, 0);
     spawnCitron(lemon, position, rotation);
 
