@@ -102,7 +102,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(0, 40, 0);
+    let position = new Vector3(100, 90, 0);
     let rotation = new Vector3(0, -10, 0);
     spawnCitron(lemon, position, rotation);
 
@@ -144,6 +144,9 @@ const createScene = async function () {
                 case "KeyP":
                     pauseResume()
                     break;
+                case "Semicolon":
+                    spawnCitron(lemon, position, rotation);
+                    pauseResume()
             }
         }
     });
@@ -186,17 +189,20 @@ function pauseResume() {
 }
 
 pauseButton.addEventListener("click", (event) => {pauseResume()})
-document.getElementById("resumeButton").addEventListener("click", (event) => {pauseResume()})
-
+document.getElementById("resumeButton").addEventListener("click", () => {pauseResume()})
+document.getElementById("resetButton").addEventListener("click", () => {
+    pauseResume();
+    spawnCitron(lemon, position, rotation);
+})
 createScene().then((scene) => {
 
     let jumpY=0;
     let groundCollision = {ray:null, point:0, lastY:lemon.position.y};
     let sideCollision = {
-        topLeft:{ray:null, dist:new Vector3(0,0,0)} ,
+        topLeft: {ray:null, dist:new Vector3(0,0,0)},
         topRight:{ray:null, dist:new Vector3(0,0,0)},
         botRight:{ray:null, dist:new Vector3(0,0,0)},
-        botLeft:{ray:null, dist:new Vector3(0,0,0)}
+        botLeft: {ray:null, dist:new Vector3(0,0,0)}
     };
     let delay = 0;
 
@@ -205,52 +211,52 @@ createScene().then((scene) => {
 
     engine.runRenderLoop(function () {
         if (!playing ) {}
-        else if (pause) {document.getElementById("pauseMenu").style.display='flex'}
-        else if (scene) {
+        else if (scene && !pause) {
             camera.target = lemon.position
-            let origin = new Vector3(lemon.position.x, lemon.position.y, lemon.position.z); 
+            let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
+            let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
             spotLight.position = new Vector3(lemon.position.x,lemon.position.y +100, lemon.position.z);
             try {
                 groundCollision.ray = new Ray(origin, new Vector3(0, -1, 0), 100);
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint.y
-            } catch(e) { groundCollision.point = lemon.position.y -7; }
+            } catch(e) { groundCollision.point = lemon.position.y -10;}
 
             //bottom right collisions
             try {
-                sideCollision.botRight.ray = new Ray(origin, new Vector3(0, 0, 1), 1);
+                sideCollision.botRight.ray = new Ray(sideOrigin, new Vector3(0, 0, 1.5), 2.5);
                 sideCollision.botRight.dist = scene.pickWithRay(sideCollision.botRight.ray, (mesh) => { 
-                    return(mesh.name === "ground"); 
+                    return(mesh.name === "ground");
                 }).pickedPoint
-            }  catch(e){ sideCollision.botRight.point = null }
+            }  catch(e){ sideCollision.botRight.point = null; }
             //top left 
             try {
-                sideCollision.topLeft.ray = new Ray(origin, new Vector3(0, 0, -1), 1);
+                sideCollision.topLeft.ray = new Ray(sideOrigin, new Vector3(0, 0, -1.5), 2.5);
                 sideCollision.topLeft.dist = scene.pickWithRay(sideCollision.topLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
-            } catch(e){ sideCollision.topLeft.point = null }
+            } catch(e){ sideCollision.topLeft.point = null;}
             //bottom left
             try {
-                sideCollision.botLeft.ray = new Ray(origin, new Vector3(1, 0, 0), 1);
+                sideCollision.botLeft.ray = new Ray(sideOrigin, new Vector3(1.5, 0, 0), 2.5);
                 sideCollision.botLeft.dist = scene.pickWithRay(sideCollision.botLeft.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botLeft.point = null }
             //top right
             try {
-                sideCollision.topRight.ray = new Ray(origin, new Vector3(-1, 0, 0), 1);
+                sideCollision.topRight.ray = new Ray(sideOrigin, new Vector3(-1.5, 0, 0), 2.5);
                 sideCollision.topRight.dist = scene.pickWithRay(sideCollision.topRight.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint
             } catch(e){ sideCollision.botRight.point = null }
 
-            if (lemon.position.y - groundCollision.point > 5){
-                groundCollision.point = lemon.position.y -5.5
+            if (lemon.position.y - groundCollision.point > 3){
+                groundCollision.point = lemon.position.y -3.5
             }
         
-            lemon.position.y = groundCollision.point + 1;
+            lemon.position.y = groundCollision.point + 3;
                         
             // mouvements 
             let vectors_array = [];
@@ -277,12 +283,12 @@ createScene().then((scene) => {
             if (keypress["KeyT"]) {
                 spawnCitron(lemon, position, rotation);
             } //reset position
-            if(keypress["KeyU"]){
+            if (keypress["KeyU"]){
                 spawnCitron(lemon, new Vector3(0, 0, 0), rotation);
             }
             //gestion du saut et du déplacement aérien
             if (jumping){
-                if (jumpPad.position.y - jumpY <= 2.5){
+                if (jumpPad.position.y - jumpY <= 5){
                     jumpPad.position.y += 0.2;
                 }
                 else {
@@ -347,7 +353,8 @@ createScene().then((scene) => {
                 lemon.rotation.y += angleDiff * rotationSpeed;
             }
 
-            if (vectors_array.length === 2) { vector.scale(0.5);}
+            if (vectors_array.length >= 2) {vector = vector.scale(0.5);}
+            lemon.moveWithCollisions(vector);
 
             scene.render();
             vectors_array = [];

@@ -99,6 +99,6 @@ a {
   align-items: center;
 }
 
-#resumeButton {
+#resumeButton, #resetButton {
   background-color: black;
 }
