@@ -30,7 +30,8 @@ export class JeuTuyaux {
                         [1,1,1,1,0,0,0,0]];
         //si 1-4 c'est un coin si 5 c'est un droit impaire et si 6 c'est un droit pair
         //5 gauche droite|6haut bas|1gauche haut|2droite haut|3bas droite|4bas gauche 
-        this.res=[[3,5,5,5,4,0,0,0],
+        this.res=
+                [[3,5,5,5,4,0,0,0],
                 [2,5,4,0,2,4,0,0],
                 [0,0,6,0,0,6,0,0],
                 [4,0,2,4,0,6,0,0],
@@ -39,7 +40,10 @@ export class JeuTuyaux {
                 [3,1,0,6,2,5,5,1],
                 [2,5,5,1,0,0,0,0]];
 
-        this.chemin = [[4,1],[4,2],[4,3],[4,4],[4,5],[3,5],[2,5],[1,5],[1,4],[1,3],[2,3],[2,2],[2,1],[1,1],[0,1],[0,0]];
+        this.chemin = [[3,0],[4,0],[4,1],[5,1],[6,1],[6,0],[7,0],[7,1],[7,2],
+                [7,3],[6,3],[5,3],[4,3],[3,3],[3,2],[2,2],[1,2],[1,1],[1,0],
+                [0,0],[0,1],[0,2],[0,3],[0,4],[1,4],[1,5],[2,5],[3,5],[4,5],
+                [4,4],[5,4],[6,4],[6,5],[6,6],[6,7],[5,7],[4,7]];
         this.KeyControles();
         this.log=console.log("JeuTuyaux");
     }
@@ -48,8 +52,8 @@ export class JeuTuyaux {
         this.scene.onKeyboardObservable.add((kbInfo) => {
             if (kbInfo.type === KeyboardEventTypes.KEYDOWN) { // KEYDOWN event
                 if (kbInfo.event.key.toLowerCase() === 'o') {
-                    console.log("O pressed");
-                    console.log(this.scene.activeCamera.position);
+                    //console.log("O pressed");
+                    //console.log(this.scene.activeCamera.position);
                     //le joeur a changer apres c'est juste pour test
                     const playerPosition = this.scene.player.position;
                     this.rotateClosestTuyau(playerPosition);
@@ -64,21 +68,22 @@ export class JeuTuyaux {
     async createFromMatrice(positionInit){
         let vec = new Vector3(20, 20, 20);
         let coef = 20;
+        this.loadModel(TuyauDP, vec, new Vector3(positionInit.x+3*coef, positionInit.y, positionInit.z-coef), new Vector3(0, Math.PI, 0),positionInit,true,false);
         for(let i = 0; i < this.matrice.length; i++) {
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
-                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), "TexTuyau.png",positionInit,true);
-                    this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j]-1)* (Math.PI/2), 0), "TexTuyau.png",positionInit,false);
+                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0),positionInit,true,true);
+                    this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j]-1)* (Math.PI/2), 0),positionInit,false,true);
                 }else if (this.matrice[i][j] == 2) {
-                    this.loadModel(TuyauAV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), "TexTuyau.png",positionInit,true);
-                    this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j]*(Math.PI / 2), 0), "TexTuyau.png",positionInit,false);
+                    this.loadModel(TuyauAV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit,true,true);
+                    this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j]*(Math.PI / 2), 0),positionInit,false,true);
                 }
             }
         }
     }
 
 
-    async loadModel(model, scale, position, rotation, texturePath,posInit,visibility) {
+    async loadModel(model, scale, position, rotation,posInit,visibility,flip) {
         try {
             const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
             this.model = result.meshes[0];
@@ -96,9 +101,9 @@ export class JeuTuyaux {
                     z:Math.floor((position.z-posInit.z)/20)
                 }//on soutrais pour avoir des valeur quon peut utilisr dans la matrice
             };
-            if(visibility){
+            if(visibility && flip){
                 this.models.push(this.model);
-            }else{
+            }else if(!visibility && flip){
                 this.modelsP.push(this.model);
             }
             //this.applyTexture(texturePath);
@@ -120,19 +125,20 @@ export class JeuTuyaux {
     }
     rotateClosestTuyau(position){
         const closest = this.Closest(position);
-        console.log("gridpos=",closest.metadata.gridPosition);
+        console.log("closest=",closest.metadata.gridPosition);
+        //console.log("gridpos=",closest.metadata.gridPosition);
         if(closest){
 
             closest.rotation.y += Math.PI / 2;
-            console.log("rota=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
+            //console.log("rota=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
             if(this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] == 4){
                 this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] = 1;
             }else{
                 this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] += 1 ;
-                console.log("matrice=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
+                //console.log("matrice=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
             }
         }
-        console.log("matrice=",this.rotations);
+        //console.log("matrice=",this.rotations);
         //this.waterPropa(1,1);
     }
 
@@ -165,15 +171,15 @@ export class JeuTuyaux {
         for(let i = 0; i < this.chemin.length; i++){
             let tuple = this.chemin[i];
             if(this.rotations[tuple[0]][tuple[1]] == this.res[tuple[0]][tuple[1]] || (this.res[tuple[0]][tuple[1]] > 4 && this.res[tuple[0]][tuple[1]]%2 == this.rotations[tuple[0]][tuple[1]]%2)){
-                console.log("flow");
+                //console.log("flow");
                 valides.push(tuple);
             }else{
-                console.log("no flow");
-                console.log("valides=",valides);
+                //console.log("no flow");
+                //console.log("valides=",valides);
                 return valides;
             }
         }
-        console.log("valides=",valides);
+        //console.log("valides=",valides);
         return valides;
     }
 
@@ -181,12 +187,12 @@ export class JeuTuyaux {
     changeVisibility(){
         let valides = this.tuplesCorrecte();
         for(let i = 0; i < this.modelsP.length; i++) {
-            console.log("tuple=",this.modelsP[i].metadata.gridPosition,"onValide?=",this.modelsP[i].metadata.gridPosition in valides);
+            //console.log("tuple=",this.modelsP[i].metadata.gridPosition,"onValide?=",this.modelsP[i].metadata.gridPosition in valides);
             let tuple = this.modelsP[i].metadata.gridPosition;
             let presence = false;
             for(let possi of valides){
                 if(tuple.x == possi[0] && tuple.z == possi[1]){
-                    console.log("on rend visible ",tuple);
+                    //console.log("on rend visible ",tuple);
                     presence = true;
                     for(let mesh of this.modelsP[i].getChildMeshes()) {
                         mesh.isVisible = true;
@@ -194,7 +200,7 @@ export class JeuTuyaux {
                 }
             }
             if(!presence){
-                console.log("on rend invisible ",tuple);
+                //console.log("on rend invisible ",tuple);
                 for(let mesh of this.modelsP[i].getChildMeshes()) {
                     mesh.isVisible = false;
                 }
@@ -206,7 +212,7 @@ export class JeuTuyaux {
             let presence = false;
             for(let possi of valides){
                 if(tuple.x == possi[0] && tuple.z == possi[1]){
-                    console.log("on rend invisible ",tuple);
+                    //console.log("on rend invisible ",tuple);
                     presence = true;
                     for(let mesh of this.models[i].getChildMeshes()) {
                         mesh.isVisible = false;
@@ -214,7 +220,7 @@ export class JeuTuyaux {
                 }
             }
             if(!presence){
-                console.log("on rend visible ",tuple);
+                //console.log("on rend visible ",tuple);
                 for(let mesh of this.models[i].getChildMeshes()) {
                     mesh.isVisible = true;
                 }
