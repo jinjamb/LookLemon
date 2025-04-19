@@ -8,6 +8,7 @@ import "@babylonjs/loaders/glTF";
 import { CitronModel } from "./Citron.js"
 import { MapLoader } from "./MapLoader.js"
 import { JeuTuyaux } from "./JeuTuyaux.js"
+import { Pnj } from "./Pnj.js";
 
 import Map from "./../assets/mapfinalV0.2.glb"
 
@@ -96,6 +97,11 @@ const createScene = async function () {
 
 
     new MapLoader(scene).load(); // Load the map
+
+    const pnj1 = new Pnj(scene);
+    await pnj1.loadPnj(scene);
+    pnj1.model.position = new Vector3(10, 50, 0);
+    
     new JeuTuyaux(scene).createFromMatrice(new Vector3(10,0,0)); // load le jeu des tuyaux
     // Add a skybox
 
