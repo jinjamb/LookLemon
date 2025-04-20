@@ -62,7 +62,8 @@ function spawnCitron(lemon, position, rotation) {
 const createScene = async function () {
 
     const scene = new Scene(engine);
-
+    scene.missionFeuille = false;
+    scene.missionTronc = false;
     
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, { 
         loop: false, 

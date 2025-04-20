@@ -194,6 +194,8 @@ export class JeuTuyaux {
         //apparition de leau 
         if(valides.length == this.chemin.length && !this.eauvisi){
             this.rempliLac();
+            this.scene.missionTronc=true;
+            
         }else if(this.eauvisi){
             this.videLac();
         }
