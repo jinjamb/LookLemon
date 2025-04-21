@@ -22,6 +22,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
+let pageLoaded = false
 let camera;
 let spotLight;
 let forceDirection;
@@ -114,14 +115,12 @@ const createScene = async function () {
     const pnj1 = new Pnj(scene);
     await pnj1.loadPnj(scene);
     pnj1.model.position = new Vector3(10, 50, 0);
-    
-
-
+    pnj1.state=1
 
     // Create lemon with physics
     lemon = citron.getMesh();
     let position = new Vector3(100, 90, 0);
-    let rotation = new Vector3(0, -10, 0);
+    let rotation = new Vector3(0, Math.PI, 0);
     spawnCitron(lemon, position, rotation);
 
     window.gameCitron = citron;
@@ -157,8 +156,18 @@ const createScene = async function () {
                     pauseResume()
                     break;
                 case "Semicolon":
-                    spawnCitron(lemon, position, rotation);
-                    pauseResume()
+                    if (pause) {
+                        spawnCitron(lemon, position, rotation);
+                        pauseResume()
+                    }
+                    break;
+                case "KeyE":
+                    if (!pnj1.speaking && !pause){
+                        pnj1.handleDialog()
+                    }
+                    else {
+                        pnj1.endDialog()
+                    }
             }
         }
     });
@@ -184,7 +193,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
-    canvas.style.display =  playing? 'block' : 'none'
+    canvas.style.display = 'block'
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
 });
@@ -194,7 +203,6 @@ window.addEventListener('load', () => {
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
     backgroundMusicMenu.playMusic();
-
 });
 
 const pauseButton = document.getElementById("pauseButton")
@@ -233,6 +241,10 @@ createScene().then((scene) => {
 
     engine.runRenderLoop(function () {
         if (!playing) {}
+        else if (document.getElementById("dialogue").style.display == 'block'){
+            gameCitron.stand();
+            scene.render();
+        }
         else if (scene && !pause) {
             console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             
@@ -380,7 +392,6 @@ createScene().then((scene) => {
             if (vectors_array.length >= 2) {vector = vector.scale(0.5);}
             lemon.moveWithCollisions(vector);
 
-            scene.render();
             vectors_array = [];
             delay = (delay + 1) % 10
 
@@ -388,7 +399,8 @@ createScene().then((scene) => {
             if (delay === 0){
                 groundCollision.lastY = lemon.position.y
             }
-        }
+            scene.render();
+        }  
     });
 });
 
