@@ -13,8 +13,8 @@ import { Pnj } from "./Pnj.js";
 import { Music } from "./Music.js";
 import BubbleGum from "../assets/sounds/music/BubbleGum.mp3";
 import HowSweet from "../assets/sounds/music/HowSweet.mp3";
-
-import Map from "./../assets/Sol.glb"
+import TexVide from "./../assets/vide.png"
+//import Map from "./../assets/Sol.glb"
 import text from "./../assets/texture.png"
 
 let canvas = document.getElementById("maCanvas");
@@ -129,14 +129,8 @@ const createScene = async function () {
 
     //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
-    jumpPad.position.y = -100
-    
-    const jumpPadMaterial = new StandardMaterial("jumpPadMaterial", scene);
-
-    jumpPadMaterial.diffuseTexture = new Texture("textures/transparentTexture.png", scene);
-    jumpPadMaterial.diffuseTexture.hasAlpha = true;
-    jumpPadMaterial.alpha = 0.5; // Ajustez la transparence (0 = complètement transparent, 1 = opaque)
-    jumpPad.material = jumpPadMaterial;
+    jumpPad.position.y = -100;
+    jumpPad.visibility = false;
 
     //create a camera
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, lemon.position, scene);
@@ -240,7 +234,8 @@ createScene().then((scene) => {
     engine.runRenderLoop(function () {
         if (!playing) {}
         else if (scene && !pause) {
-            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);

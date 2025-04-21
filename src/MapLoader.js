@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3,HemisphericLight } from "@babylonjs/core";
+import { SceneLoader, Vector3,HemisphericLight, MeshBuilder } from "@babylonjs/core";
 import Nuage from "./../assets/Nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
 import Map from "./../assets/Sol.glb"
@@ -18,6 +18,7 @@ export class MapLoader {
 
     async load(){
         this.loadGround();
+        this.murs();
         //this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0));
         //this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0));
         new LabyrintheModel(this.scene).loadModel();
@@ -43,7 +44,22 @@ export class MapLoader {
             }
         });
     }
-
+    async murs() {
+        this.murInvisible(new Vector3(-350,50, -190),-Math.PI/4,1100);
+        this.murInvisible(new Vector3(90,50,-555),Math.PI/2,200);
+        this.murInvisible(new Vector3(350,50,-210),Math.PI/6,900);
+        this.murInvisible(new Vector3(-210,50,173),-4*Math.PI/6,800);
+        this.murInvisible(new Vector3(86,50, 252),Math.PI/2,400);
+        this.murInvisible(new Vector3(250,50, 160),-Math.PI/4,400);
+        this.murInvisible(new Vector3(390,50, -55),0,400);
+    }
+    async murInvisible(pos, rot,lar) {
+        let m1 = MeshBuilder.CreateBox("murInvisible", {height: 180, width: 5, depth: lar}, this.scene);
+        m1.position = pos
+        m1.rotation = new Vector3(0, rot, 0);
+        m1.name = "ground";
+        m1.visibility=false;
+    }
     async loadRandomDeco(rockCount = 10, grassMixCount = 40, grassPatchCount = 50) {
         const bounds = {minX: -200, maxX: 200, minZ: -200, maxZ: 200};
 
