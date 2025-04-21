@@ -3,6 +3,9 @@ import Nuage from "./../assets/Nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
 import Map from "./../assets/Sol.glb"
 import Citerne from "./../assets/Citerne.glb"
+import Rocks from "./../assets/deco/Rocks.glb";
+import GrassMix from "./../assets/deco/GrassMix.glb";
+import GrassPatch from "./../assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import {LabyrintheModel} from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
@@ -25,7 +28,9 @@ export class MapLoader {
         this.arbreModel = new ArbreModel(this.scene);
         this.arbreModel.load();
         this.setupMissionTroncObserver();
+        //this.loadRandomDeco(10, 10, 10);
     }
+
     setupMissionTroncObserver() {
         this.scene.onBeforeRenderObservable.add(() => {
             if (this.scene.missionTronc === true && this.arbreModel) {
@@ -37,6 +42,47 @@ export class MapLoader {
                 this.scene.missionFeuille = false;
             }
         });
+    }
+
+    async loadRandomDeco(rockCount = 10, grassMixCount = 40, grassPatchCount = 50) {
+        const bounds = {minX: -200, maxX: 200, minZ: -200, maxZ: 200};
+
+        for (let i = 0; i < rockCount; i++) {
+            const position = this.getRandomPosition(bounds);
+            const scale = this.getRandomScale(2.5, 5);
+            const rotation = this.getRandomRotation();
+            
+            await this.loadModel(Rocks, scale, position, rotation);
+        }
+        for (let i = 0; i < grassMixCount; i++) {
+            const position = this.getRandomPosition(bounds);
+            const scale = this.getRandomScale(2.5, 5);
+            const rotation = this.getRandomRotation();
+            
+            await this.loadModel(GrassMix, scale, position, rotation);
+        }
+        for (let i = 0; i < grassPatchCount; i++) {
+            const position = this.getRandomPosition(bounds);
+            const scale = this.getRandomScale(2.5, 5);
+            const rotation = this.getRandomRotation();
+            
+            await this.loadModel(GrassPatch, scale, position, rotation);
+        }
+    }
+
+    getRandomPosition(bounds) {
+        const x = Math.random() * (bounds.maxX - bounds.minX) + bounds.minX;
+        const z = Math.random() * (bounds.maxZ - bounds.minZ) + bounds.minZ;
+        return new Vector3(x, 27, z);
+    }
+    
+    getRandomScale(min, max) {
+        const scale = Math.random() * (max - min) + min;
+        return new Vector3(scale, scale, scale);
+    }
+    
+    getRandomRotation() {
+        return new Vector3(0, Math.random() * Math.PI * 2, 0);
     }
 
     async loadModel(model, scale, position, rotation) {
