@@ -119,7 +119,7 @@ const createScene = async function () {
     // Create lemon with physics
     lemon = citron.getMesh();
     let position = new Vector3(100, 90, 0);
-    let rotation = new Vector3(0, -10, 0);
+    let rotation = new Vector3(0, Math.PI, 0);
     spawnCitron(lemon, position, rotation);
 
     window.gameCitron = citron;
@@ -387,7 +387,7 @@ createScene().then((scene) => {
                 // Calculate the shortest path to the target angle
                 let angleDiff = targetAngle - currentRotation;
                 if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-                if (angleDiff <= -Math.PI) angleDiff += Math.PI * 2;
+                if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
                 
                 // Apply smooth rotation
                 lemon.rotation.y += angleDiff * rotationSpeed;
