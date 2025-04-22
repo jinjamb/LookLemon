@@ -3,6 +3,7 @@ import Citron from "./../assets/animations/CitronPLAYER.glb";
 
 export class CitronModel {
     constructor(scene) {
+        this.ready = false
         this.scene = scene;
         this.model = null;
         this.citronphy = null;
@@ -118,6 +119,7 @@ export class CitronModel {
             }
 
             console.log("Citron model loaded successfully");
+            this.ready = true;
         } catch (error) {
             console.error("Error loading citron model:", error);
         }

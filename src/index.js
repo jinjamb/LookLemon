@@ -114,12 +114,12 @@ const createScene = async function () {
 
     const pnj1 = new Pnj(scene);
     await pnj1.loadPnj(scene);
-    pnj1.model.position = new Vector3(10, 50, 0);
+    pnj1.model.position = new Vector3(-120, 27.25, -70);
     pnj1.state=1
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(100, 90, 0);
+    let position = new Vector3(100, 42.375, 0);
     let rotation = new Vector3(0, Math.PI, 0);
     spawnCitron(lemon, position, rotation);
 
@@ -143,6 +143,9 @@ const createScene = async function () {
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
         if (playing){
+            let distance = Math.sqrt(Math.pow(lemon.position.x - pnj1.model.position.x, 2) + Math.pow(lemon.position.z - pnj1.model.position.z, 2));
+            if (distance < 30) pnj1.changeclickercolor(new Color3(1, 0, 1), true);
+            else pnj1.changeclickercolor(new Color3(0, 0, 0), false);
             //console.log(event.code)
             switch (event.code) {
                 case "KeyI":
@@ -162,18 +165,19 @@ const createScene = async function () {
                     }
                     break;
                 case "KeyE":
-                    if (!pnj1.speaking && !pause){
-                        pnj1.handleDialog()
-                    }
-                    else {
-                        pnj1.endDialog()
-                    }
+                    if (!pnj1.speaking && !pause && distance < 30) pnj1.handleDialog() // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
+                    else pnj1.endDialog()
             }
         }
     });
     window.addEventListener("keyup", (event) => {
         keypress[event.code] = false;
     });
+    //waiting for everything to be ready before letting the player start the game
+    while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
+    document.getElementById("buttons").style.display = 'flex'
+    document.getElementById("loading").style.display = 'none'
+    backgroundMusicMenu.playMusic();
     return scene;
 };
 
@@ -199,11 +203,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
 });
 
 
-window.addEventListener('load', () => {
-    document.getElementById("buttons").style.display = 'flex'
-    document.getElementById("loading").style.display = 'none'
-    backgroundMusicMenu.playMusic();
-});
+window.addEventListener('load', () => { pageLoaded = true; });
 
 const pauseButton = document.getElementById("pauseButton")
 const pauseMenu = document.getElementById("pauseMenu")
@@ -246,8 +246,7 @@ createScene().then((scene) => {
             scene.render();
         }
         else if (scene && !pause) {
-            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
-            
+            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
@@ -336,6 +335,7 @@ createScene().then((scene) => {
             else {
                 if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001 ) { // if the lemon is on the ground
                     if (keypress["Space"]) {
+                        console.log(lemon.position) //pour chopper dees coordonnées facilement
                         jumping = true; // we can jump
                         jumpY = groundCollision.point;
                         jumpPad.position.y = jumpY;
@@ -401,6 +401,7 @@ createScene().then((scene) => {
             }
             scene.render();
         }  
+        //console.log(lemon.position)
     });
 });
 

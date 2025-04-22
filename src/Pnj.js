@@ -5,7 +5,8 @@ export class Pnj {
     ready = false
     speaking = false
     available_dialogues = ['debut']
-    dialogues = {
+    name="PNJ"
+    dialogues = { 
         debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté (vu) le brear (l'arbre) derrière oit (toi) mais il l'air vlà guétifa (fatigué).",
         eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre, tu d'vrais guetter (aller voir) la citerne!",
         soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!"
@@ -73,6 +74,7 @@ export class Pnj {
         );
         
         this.model = this.collider;
+        this.ready = true;
         return this.collider;
     }
 
@@ -100,11 +102,17 @@ export class Pnj {
         return this.playAnimation(name);
     }
 
+    changeclickercolor(color, proxy){
+        this.clickZone.material.diffuseColor = color;
+        if (!proxy) this.clickZone.material.alpha = 0.3;
+        else this.clickZone.material.alpha = 0.8;
+    }
+
     //Handle dialog with the pnj
     handleDialog() {
         this.speaking = true
         let random_text = Math.floor(Math.random() * (this.available_dialogues.length))
-        document.getElementById("dialogue").innerHTML = this.dialogues[this.available_dialogues[random_text]]
+        document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
         document.getElementById("dialogue").style.display = 'block'
 
         if (this.available_dialogues[random_text] === 'debut'){
@@ -112,6 +120,10 @@ export class Pnj {
             this.addDialog('eau');
             this.addDialog('soleil')
         }
+    }
+
+    name(newName){
+        this.name = newName;
     }
 
     endDialog(){
