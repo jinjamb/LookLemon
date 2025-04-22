@@ -40,7 +40,7 @@ export class LabyrintheModel {
             diameter: 20,
             segments: 16
         }, this.scene);
-        sphere.position = new Vector3(0, -80, 0); // Position initiale de la sphère
+        sphere.position = new Vector3(10, -80, 0); // Position initiale de la sphère
         const sphereMat = new StandardMaterial("sphereMat", this.scene);
         sphereMat.diffuseColor = new Color3(1, 1, 1);
         sphereMat.emissiveColor = new Color3(1, 1, 1); 

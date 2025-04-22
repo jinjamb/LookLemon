@@ -83,7 +83,8 @@ const createScene = async function () {
         { 
             loop: true, 
             autoplay: false,
-            volume: 0.3,});
+            volume: 0.3,
+        });
 
     backgroundMusicMenu = new Music(BubbleGum);
     backgroundMusicMenu.setVolume(0.8);
@@ -145,6 +146,7 @@ const createScene = async function () {
     camera = new ArcRotateCamera("camera1", Math.PI / 4, Math.PI / 3, 40, lemon.position, scene);
     camera.attachControl(canvas, true);
     camera.radius = 120 //distance from the lemon;
+    camera.lockedTarget = lemon.position;
 
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
@@ -265,7 +267,7 @@ createScene().then((scene) => {
             scene.render();
         }
         else if (scene && !pause) {
-            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
@@ -422,6 +424,23 @@ createScene().then((scene) => {
             // on check l'altitude du le citron pour pas qu'il vole indéfiniment            
             if (delay === 0){
                 groundCollision.lastY = lemon.position.y
+            }
+
+            //Partie de la tp dans le labyrinthe
+            //console.log("Test tp:", lemon.position.x, lemon.position.z ,lemon.position.x < -257 , lemon.position.x > -270 , lemon.position.z > -28 , lemon.position.z < 23 );
+            if (lemon.position.y>0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23){
+                //console.log("teleportation");
+                lemon.position.x = 290;
+                lemon.position.y = -85;
+                lemon.position.z = 285;
+            }
+            if (lemon.position.x<15 && lemon.position.x > 0 && lemon.position.z > -7 && lemon.position.z < 13 && lemon.position.y <0){
+                //console.log("teleportation2");
+                lemon.position.x = 100;
+                lemon.position.y = 42;
+                lemon.position.z = 0;
+                scene.missionFeuille = true ;
+                
             }
             scene.render();
         }  
