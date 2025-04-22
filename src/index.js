@@ -83,18 +83,18 @@ const createScene = async function () {
         { 
             loop: true, 
             autoplay: false,
-            volume: 0.5,});
+            volume: 0.3,});
 
     backgroundMusicMenu = new Music(BubbleGum);
     backgroundMusicMenu.setVolume(0.8);
     backgroundMusicMenu.playMusic();
 
     backgroundMusicGame = new Music(HowSweet);
-    backgroundMusicGame.setVolume(0.5);
+    backgroundMusicGame.setVolume(0.3);
 
     clickSound = new Music(Interact);
     clickSound.audioElement.loop = false;
-    clickSound.setVolume(0.3);
+    clickSound.setVolume(0.5);
 
     walkSound = new Music(FootGrass);
     walkSound.setVolume(0.5);
@@ -156,7 +156,7 @@ const createScene = async function () {
             let distance = Math.sqrt(Math.pow(lemon.position.x - pnj1.model.position.x, 2) + Math.pow(lemon.position.z - pnj1.model.position.z, 2));
             if (distance < 70){
                 if (distance < 40) pnj1.changeclickercolor(new Color3(1, 0, 1), true);
-                pnj1.model.lookAt(lemon.position)
+                pnj1.model.lookAt(new Vector3(lemon.position.x, pnj1.model.position.y, lemon.position.z));
             }
             else pnj1.changeclickercolor(new Color3(0, 0, 0), false);
             //console.log(event.code)
@@ -275,7 +275,7 @@ createScene().then((scene) => {
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => { 
                     return(mesh.name === "ground"); 
                 }).pickedPoint.y
-            } catch(e) { groundCollision.point = lemon.position.y -10;}
+            } catch(e) { groundCollision.point = lemon.position.y -20;}
 
             //bottom right collisions
             try {

@@ -60,18 +60,6 @@ export class Pnj {
             errorMesh.material = errorMat;
         }
         
-        this.clickZone.actionManager = new ActionManager(this.scene);
-        this.clickZone.actionManager.registerAction(
-            new ExecuteCodeAction(
-                {
-                    trigger: ActionManager.OnPickTrigger,
-                },
-                () => {
-                        this.handleDialog();
-                    }
-            )
-        );
-        
         this.model = this.collider;
         this.ready = true;
         return this.collider;
@@ -116,9 +104,17 @@ export class Pnj {
 
         if (this.available_dialogues[random_text] === 'debut'){
             this.removeDialog(this.available_dialogues[random_text])
-            this.addDialog('eau');
             this.addDialog('soleil')
         }
+        else if (this.available_dialogues[random_text] === 'soleil'){
+            this.removeDialog(this.available_dialogues[random_text])
+            this.addDialog('eau')
+        }
+        else if (this.available_dialogues[random_text] === 'eau'){
+            this.removeDialog(this.available_dialogues[random_text])
+            this.addDialog('soleil')
+        }
+
     }
 
     name(newName){
