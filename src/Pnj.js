@@ -7,9 +7,10 @@ export class Pnj {
     available_dialogues = ['debut']
     name="PNJ"
     dialogues = { 
-        debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté (vu) le brear (l'arbre) derrière oit (toi) mais il l'air vlà guétifa (fatigué).",
+        debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté l'arbre juste ici mais il l'air vlà fatigué.",
         eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre, tu d'vrais guetter (aller voir) la citerne!",
-        soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!"
+        soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!",
+        fin: "Look Lemon, QUEL CITRON! Tu as sauvé le Grand Arbre le sang!",
     }
 
     constructor(scene) {
@@ -26,12 +27,10 @@ export class Pnj {
         
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
-        this.clickZone.isPickable = true;
         this.clickZone.position = this.startPosition.clone();
         this.clickZone.position.y = this.clickZone.position.y + 20;
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
-        this.clickZone.checkCollisions = true;
         
         const clickMat = new StandardMaterial("clickZoneMat", this.scene);
         clickMat.diffuseColor = new Color3(0, 0, 0);

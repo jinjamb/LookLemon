@@ -20,7 +20,7 @@ import text from "./../assets/texture.png"
 let canvas = document.getElementById("maCanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
+const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 //globalThis.HK = await HavokPhysics();
 let pageLoaded = false
 let camera;
@@ -115,6 +115,7 @@ const createScene = async function () {
     const pnj1 = new Pnj(scene);
     await pnj1.loadPnj(scene);
     pnj1.model.position = new Vector3(-120, 27.25, -70);
+    pnj1.model.rotation.y = Math.PI/4
     pnj1.state=1
 
     // Create lemon with physics
@@ -144,7 +145,10 @@ const createScene = async function () {
         keypress[event.code] = true;
         if (playing){
             let distance = Math.sqrt(Math.pow(lemon.position.x - pnj1.model.position.x, 2) + Math.pow(lemon.position.z - pnj1.model.position.z, 2));
-            if (distance < 30) pnj1.changeclickercolor(new Color3(1, 0, 1), true);
+            if (distance < 70){
+                if (distance < 40) pnj1.changeclickercolor(new Color3(1, 0, 1), true);
+                pnj1.model.lookAt(lemon.position)
+            }
             else pnj1.changeclickercolor(new Color3(0, 0, 0), false);
             //console.log(event.code)
             switch (event.code) {
@@ -165,8 +169,9 @@ const createScene = async function () {
                     }
                     break;
                 case "KeyE":
-                    if (!pnj1.speaking && !pause && distance < 30) pnj1.handleDialog() // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
+                    if (!pnj1.speaking && !pause && distance < 50) pnj1.handleDialog() // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
                     else pnj1.endDialog()
+                    break;
             }
         }
     });
@@ -390,7 +395,7 @@ createScene().then((scene) => {
             }
 
             if (vectors_array.length >= 2) {vector = vector.scale(0.5);}
-            lemon.moveWithCollisions(vector);
+            lemon.moveWithCollisions(vector.scale(scene.getAnimationRatio()));
 
             vectors_array = [];
             delay = (delay + 1) % 10
