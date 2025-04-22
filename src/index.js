@@ -13,6 +13,8 @@ import { Pnj } from "./Pnj.js";
 import { Music } from "./Music.js";
 import BubbleGum from "../assets/sounds/music/BubbleGum.mp3";
 import HowSweet from "../assets/sounds/music/HowSweet.mp3";
+import Interact from "../assets/sounds/effects/Interact.mp3";
+import FootGrass from "../assets/sounds/effects/FootGrass.mp3";
 import TexVide from "./../assets/vide.png"
 //import Map from "./../assets/Sol.glb"
 import text from "./../assets/texture.png"
@@ -89,6 +91,13 @@ const createScene = async function () {
 
     backgroundMusicGame = new Music(HowSweet);
     backgroundMusicGame.setVolume(0.5);
+
+    clickSound = new Music(Interact);
+    clickSound.audioElement.loop = false;
+    clickSound.setVolume(0.3);
+
+    walkSound = new Music(FootGrass);
+    walkSound.setVolume(0.5);
     
     //creating a spotlight
     spotLight = new SpotLight(
@@ -165,8 +174,13 @@ const createScene = async function () {
                     }
                     break;
                 case "KeyE":
-                    if (!pnj1.speaking && !pause && distance < 30) pnj1.handleDialog() // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
-                    else pnj1.endDialog()
+                    if (!pnj1.speaking && !pause && distance < 30) {
+                        pnj1.handleDialog()
+                        clickSound.playMusic();
+                     } // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
+                    else {
+                        pnj1.endDialog()
+                    }
             }
         }
     });
@@ -296,23 +310,28 @@ createScene().then((scene) => {
             // mouvements 
             let vectors_array = [];
             if (keypress["KeyW"] && !keypress["KeyS"]) {
+                walkSound.playMusic();
                 vectors_array.push(new Vector3(-1,0,-1));
                 gameCitron.runForward();
             } 
             if (keypress["KeyS"] && !keypress["KeyW"]) {
+                walkSound.playMusic();
                 gameCitron.changeCitronRotation(rotation);
                 vectors_array.push(new Vector3(1, 0, 1));
                 gameCitron.runForward();
             }
-            if (keypress["KeyA"] && !keypress["KeyD"]) { 
+            if (keypress["KeyA"] && !keypress["KeyD"]) {
+                walkSound.playMusic(); 
                 vectors_array.push(new Vector3(1, 0,-1));
                 gameCitron.runForward();
             } 
-            if (keypress["KeyD"] && !keypress["KeyA"]) { 
+            if (keypress["KeyD"] && !keypress["KeyA"]) {
+                walkSound.playMusic(); 
                 vectors_array.push(new Vector3(-1,0, 1));
                 gameCitron.runForward();
             } 
             if (vectors_array.length === 0) {
+                walkSound.stopMusic();
                 gameCitron.stand();
             }
             if (keypress["KeyT"]) {
