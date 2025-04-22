@@ -267,7 +267,9 @@ createScene().then((scene) => {
             scene.render();
         }
         else if (scene && !pause) {
-            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            
+            //log pour voir la possition du joueur a tt moment
+            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);

@@ -9,6 +9,7 @@ import GrassPatch from "./../assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import {LabyrintheModel} from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
+import { SkyboxModel } from "./Skybox.js";
 
 export class MapLoader {
     constructor(scene) {
@@ -26,6 +27,7 @@ export class MapLoader {
         this.loadModel(Nuage,new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4/6*Math.PI, 0));
         this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55,67,-530), new Vector3(0, Math.PI, 0));
         new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5,68,-480)); // load le jeu des tuyaux
+        new SkyboxModel(this.scene).load(); // load le skybox
         this.arbreModel = new ArbreModel(this.scene);
         this.arbreModel.load();
         this.setupMissionTroncObserver();
