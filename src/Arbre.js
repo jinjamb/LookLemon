@@ -1,8 +1,8 @@
 import { SceneLoader, Vector3 } from "@babylonjs/core";
-import TroncG from "./../assets/arbre/TroncGris.glb";
-import TroncM from "./../assets/arbre/TroncMarron.glb";
-import FeuilleG from "./../assets/arbre/FeuilleGrise.glb";
-import FeuilleV from "./../assets/arbre/FeuilleVerte.glb";
+import TroncG from "././assets/arbre/TroncGris.glb";
+import TroncM from "././assets/arbre/TroncMarron.glb";
+import FeuilleG from "././assets/arbre/FeuilleGrise.glb";
+import FeuilleV from "././assets/arbre/FeuilleVerte.glb";
 
 export class ArbreModel {
     constructor(scene) {

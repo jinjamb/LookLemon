@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3,StandardMaterial,Color3,Texture, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
-import Citron from "./../assets/animations/CitronPLAYER.glb";
+import Citron from "././assets/animations/CitronPLAYER.glb";
 
 export class CitronModel {
     constructor(scene) {

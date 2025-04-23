@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3,Color3,PointLight,StandardMaterial,MeshBuilder, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
-import Labyrinthe from "./../assets/maze.glb";
+import Labyrinthe from "./assets/maze.glb";
 import { Sphere } from "cannon";
 
 export class LabyrintheModel {

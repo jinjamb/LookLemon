@@ -1,5 +1,5 @@
 import { SceneLoader, MeshBuilder, Color3, StandardMaterial, ActionManager, Vector3, ExecuteCodeAction, GUID, TextBlock } from "@babylonjs/core";
-import Potato from "./../assets/animations/PotatoPNJ.glb";
+import Potato from "./assets/animations/PotatoPNJ.glb";
 
 export class Pnj {
     ready = false
