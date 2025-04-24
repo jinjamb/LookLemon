@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3, KeyboardEventTypes } from "@babylonjs/core";
+const { SceneLoader, Vector3, KeyboardEventTypes } = BABYLON;
 
 import TuyauDV from "./assets/TuyauDroitVide.glb";
 import TuyauDP from "./assets/TuyauDroitPlein.glb";
