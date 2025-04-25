@@ -69,7 +69,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject: true,
             favicon: './public/favicon.ico',
-            template: path.resolve(appDirectory, './public/index.html'),
+            template: path.resolve(appDirectory, './src/index.html'),
         }),
          new CopyWebpackPlugin({
             patterns: [
