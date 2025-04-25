@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { plugin } = require('typescript-eslint');
 
 const appDirectory = fs.realpathSync(process.cwd());
@@ -57,6 +58,10 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.css$/i,
+                use: ["style-loader", "css-loader"],
+            },
         ],
     },
     plugins: [
@@ -65,6 +70,11 @@ module.exports = {
             inject: true,
             favicon: './public/favicon.ico',
             template: path.resolve(appDirectory, './public/index.html'),
+        }),
+         new CopyWebpackPlugin({
+            patterns: [
+                { from: path.resolve(appDirectory, 'public'), to: path.resolve(appDirectory, 'dist') },
+            ],
         }),
     ],
 };
