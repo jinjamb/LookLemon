@@ -22,6 +22,7 @@
     "@eslint/js": "^9.19.0",
     "@types/cannon": "^0.1.13",
     "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^6.3.1",
     "eslint": "^9.19.0",
     "file-loader": "^6.2.0",
     "globals": "^15.14.0",
