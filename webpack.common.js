@@ -10,7 +10,7 @@ module.exports = {
     entry: './src/index.js',
     output: {
         filename: 'js/babylonebundle.js',
-        path: path.resolve(appDirectory, "./dist/*"),
+        path: path.resolve(appDirectory, "./dist"),
     },
     resolve: {
         extensions: ['.js', '.ts'],
