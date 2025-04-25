@@ -7,7 +7,7 @@
     "start": "npx webpack serve --config webpack.dev.js",
     "start:prod": "webpack serve --config webpack.prod.js",
     "build:dev": "npx webpack --config webpack.dev.js",
-    "build": "npw webpack --config webpack.prod.js",
+    "build": "npx webpack --config webpack.prod.js",
     "lint": "npx eslint . --ext .ts",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
