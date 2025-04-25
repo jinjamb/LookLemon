@@ -1,4 +1,4 @@
-Look Lemon - 3D Game
+Look Lemon - 3D Game - https://jinjamb.github.io/LookLemon/
 A 3D platformer game built with BabylonJS where you play as a lemon character exploring a world with puzzles and characters to interact with.
 
 Installation and Setup
