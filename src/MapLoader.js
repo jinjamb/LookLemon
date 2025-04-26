@@ -1,11 +1,11 @@
 import { SceneLoader, Vector3,HemisphericLight, MeshBuilder } from "@babylonjs/core";
-import Nuage from "./../assets/nuage.glb";
+import Nuage from "./../assets/Nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
-import Map from "./../assets/Sol.glb"
-import Citerne from "./../assets/citerne.glb"
-import Rocks from "./../assets/deco/Rocks.glb";
-import GrassMix from "./../assets/deco/GrassMix.glb";
-import GrassPatch from "./../assets/deco/GrassPatch.glb";
+import Map from "././assets/Sol.glb"
+import Citerne from "././assets/Citerne.glb"
+import Rocks from "././assets/deco/Rocks.glb";
+import GrassMix from "././assets/deco/GrassMix.glb";
+import GrassPatch from "././assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import {LabyrintheModel} from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
@@ -15,6 +15,8 @@ export class MapLoader {
     constructor(scene) {
         this.scene = scene;
         this.models = [];
+        this.TroncEnCours = true;
+        this.FeuilleEnCours = true;
     }
 
     async load(){
@@ -36,13 +38,13 @@ export class MapLoader {
 
     setupMissionTroncObserver() {
         this.scene.onBeforeRenderObservable.add(() => {
-            if (this.scene.missionTronc === true && this.arbreModel) {
+            if (this.scene.missionTronc === true && this.arbreModel && this.TroncEnCours) {
                 this.arbreModel.troncMarron();
-                this.scene.missionTronc = false;
+                this.TroncEnCours = false;
             }
-            if (this.scene.missionFeuille === true && this.arbreModel) {
+            if (this.scene.missionFeuille === true && this.arbreModel && this.FeuilleEnCours) {
                 this.arbreModel.feuilleVerte();
-                this.scene.missionFeuille = false;
+                this.FeuilleEnCours = false;
             }
         });
     }
