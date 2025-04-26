@@ -1,11 +1,11 @@
 import { SceneLoader, Vector3,HemisphericLight, MeshBuilder } from "@babylonjs/core";
-import Nuage from "./../assets/Nuage.glb";
+import Nuage from "./../assets/nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
-import Map from "././assets/Sol.glb"
-import Citerne from "././assets/Citerne.glb"
-import Rocks from "././assets/deco/Rocks.glb";
-import GrassMix from "././assets/deco/GrassMix.glb";
-import GrassPatch from "././assets/deco/GrassPatch.glb";
+import Map from "./../assets/Sol.glb"
+import Citerne from "./../assets/citerne.glb"
+import Rocks from "./../assets/deco/Rocks.glb";
+import GrassMix from "./../assets/deco/GrassMix.glb";
+import GrassPatch from "./../assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import {LabyrintheModel} from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";

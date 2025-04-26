@@ -119,7 +119,6 @@ const createScene = async function () {
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
 
-
     new MapLoader(scene).load(); // Load the map
 
     pnj1 = new Pnj(scene);
@@ -443,7 +442,7 @@ createScene().then((scene) => {
                 scene.missionFeuille = true ; 
             }
             
-            console.log("Mission feuille:", scene.missionFeuille, "Mission tronc:", scene.missionTronc)
+            pnj1.setState([scene.missionTronc? 1:0, scene.missionFeuille? 1:0, 0]);
             scene.render();
         }  
         //console.log(lemon.position)
