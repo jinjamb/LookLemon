@@ -6,11 +6,17 @@ export class Pnj {
     speaking = false
     available_dialogues = ['debut']
     name="PNJ"
+    state=[0,0,0]
+    // 0: eau, 1: soleil, 2: engrais
+
     dialogues = { 
         debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté l'arbre juste ici mais il l'air vlà fatigué.",
+        mid:"L'arbre a déja meilleure mine, mais il a encore besoin d'un petit coup de pouce.",
         eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre, tu d'vrais guetter (aller voir) la citerne!",
         soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!",
-        fin: "Look Lemon, QUEL CITRON! Tu as sauvé le Grand Arbre le sang!",
+        fin: "Wow Look Lemon, t'as sauvé le Grand Arbre mon pote!",
+        fin1: "Look Lemon, QUEL CITRON! T'es le plus cool, t'es le plus beau, t'es le plus fort!",
+        fin2: "Look Lemon, QUEL CITRON! Mais dis moi quel citron!\nLook Lemon, QUEL CITRON! Mais dis moi quel citron!",
     }
 
     constructor(scene) {
@@ -95,26 +101,54 @@ export class Pnj {
         else this.clickZone.material.alpha = 0.8;
     }
 
-    //Handle dialog with the pnj
-    handleDialog() {
-        this.speaking = true
-        let random_text = Math.floor(Math.random() * (this.available_dialogues.length))
-        document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
-        document.getElementById("dialogue").style.display = 'block'
-
-        if (this.available_dialogues[random_text] === 'debut'){
-            this.removeDialog(this.available_dialogues[random_text])
-            this.addDialog('soleil')
-        }
-        else if (this.available_dialogues[random_text] === 'soleil'){
-            this.removeDialog(this.available_dialogues[random_text])
+    setState(state) { // y aura jamais 0 0 0 a part au debut donc le 'x <= 2' marche tjrs
+        if (state[0]===0){
             this.addDialog('eau')
         }
-        else if (this.available_dialogues[random_text] === 'eau'){
-            this.removeDialog(this.available_dialogues[random_text])
+        else {
+            this.removeDialog('eau')
+        }
+        if (state[1]===0){
             this.addDialog('soleil')
         }
+        else {
+            this.removeDialog('soleil')
+        }/*
+        if (state[2]===0){
+            this.addDialog('engrais')
+        }
+        else {
+            this.removeDialog('engrais')
+        }
+        this.state = state*/
+        let somme = state.reduce((x, y) => x + y, 0)
+        if (somme !== 0){
+            this.removeDialog('debut')
+        }
 
+        if ( somme == 1){ // a passer a 2 pour le vrai jeu
+            this.playAnimation("Mid")
+            this.addDialog('mid')
+            console.log("Pnj partiellement heureux")
+        }
+        else if (somme == 2){ // a passer a 3 pour le vrai jeu
+            this.removeDialog('mid')
+            this.playAnimation("Happy")
+            this.addDialog('fin')
+            this.addDialog('fin1')
+            this.addDialog('fin2')
+        }
+    }
+
+    //Handle dialog with the pnj
+    handleDialog() {
+        console.log(this.available_dialogues)
+        this.speaking = true
+        let random_text = Math.floor(Math.random() * (this.available_dialogues.length))
+        
+        console.log("random_text", random_text)
+        document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
+        document.getElementById("dialogue").style.display = 'block'
     }
 
     name(newName){
@@ -128,7 +162,7 @@ export class Pnj {
     }
 
     removeDialog(dialog){
-        this.available_dialogues.pop(dialog)
+        this.available_dialogues = this.available_dialogues.filter(item => item !== dialog);
     }
 
     addDialog(dialog){
