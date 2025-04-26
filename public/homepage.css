@@ -18,7 +18,7 @@ html,body {
 }
 
 body {
-  background-image: url('background_homepage.png');
+  background-image: url('Background.png');
   background-size: cover; /* Makes sure it covers the whole screen */
   background-position: center;
   background-repeat: no-repeat;
