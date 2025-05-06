@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3,HemisphericLight, MeshBuilder } from "@babylonjs/core";
-import Nuage from "./../assets/Nuage.glb";
+import Nuage from "./../assets/nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
 import Map from "./../assets/MapFV0.4.glb"
 import Citerne from "./../assets/citerne.glb"

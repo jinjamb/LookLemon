@@ -37,7 +37,7 @@ let backgroundMusicGame;
 
 let sphere;
 let lemon;
-
+let pnj1
 
 let jumpPad;
 let jumping = false;
@@ -119,14 +119,12 @@ const createScene = async function () {
     const citron = new CitronModel();
     const citronMesh = await citron.loadModel(scene);
 
-
     new MapLoader(scene).load(); // Load the map
 
-    const pnj1 = new Pnj(scene);
+    pnj1 = new Pnj(scene);
     await pnj1.loadPnj(scene);
     pnj1.model.position = new Vector3(-120, 27.25, -70);
     pnj1.model.rotation.y = Math.PI/4
-    pnj1.state=1
 
     // Create lemon with physics
     lemon = citron.getMesh();
@@ -363,7 +361,7 @@ createScene().then((scene) => {
             else {
                 if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001 ) { // if the lemon is on the ground
                     if (keypress["Space"]) {
-                        console.log(lemon.position) //pour chopper dees coordonnées facilement
+                        console.log(lemon.position) //pour chopper des coordonnées facilement
                         jumping = true; // we can jump
                         jumpY = groundCollision.point;
                         jumpPad.position.y = jumpY;
@@ -441,9 +439,10 @@ createScene().then((scene) => {
                 lemon.position.x = 100;
                 lemon.position.y = 42;
                 lemon.position.z = 0;
-                scene.missionFeuille = true ;
-                
+                scene.missionFeuille = true ; 
             }
+            
+            pnj1.setState([scene.missionTronc? 1:0, scene.missionFeuille? 1:0, 0]);
             scene.render();
         }  
         //console.log(lemon.position)
