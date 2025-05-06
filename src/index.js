@@ -195,7 +195,7 @@ const createScene = async function () {
         keypress[event.code] = false;
     });
     //waiting for everything to be ready before letting the player start the game
-    while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
+    //while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
     backgroundMusicMenu.playMusic();
