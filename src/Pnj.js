@@ -52,7 +52,6 @@ export class Pnj {
             this.potatoMesh = root;
 
             this.animations = result.animationGroups;
-            console.log(this.animations)
             if (this.animations && this.animations.length > 0) {
                 this.playAnimation("Sad");
                 this.ready = true
@@ -131,7 +130,6 @@ export class Pnj {
         if ( somme == 1){ // a passer a 2 pour le vrai jeu
             this.playAnimation("Mid")
             this.addDialog('mid')
-            console.log("Pnj partiellement heureux")
         }
         else if (somme == 2){ // a passer a 3 pour le vrai jeu
             this.playAnimation("Happy")
@@ -144,12 +142,9 @@ export class Pnj {
 
     //Handle dialog with the pnj
     handleDialog() {
-        console.log(this.available_dialogues)
         this.speaking = true
         let random_text = Math.floor(Math.random() * (this.available_dialogues.length))
-        
-        console.log("random_text", random_text)
-        document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
+                document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
         document.getElementById("dialogue").style.display = 'block'
     }
 

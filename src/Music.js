@@ -15,7 +15,7 @@ export class Music {
 
     playMusic() {
         this.audioElement.play().then(() => {
-            console.log("Musique de fond en lecture !");
+            //console.log("Musique de fond en lecture !");
         }).catch((error) => {
             console.error("Erreur lors de la lecture de la musique", error);
         });

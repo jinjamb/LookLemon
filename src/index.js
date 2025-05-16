@@ -35,7 +35,6 @@ let walkSound;
 let backgroundMusicMenu;
 let backgroundMusicGame;
 
-let sphere;
 let lemon;
 let pnj1
 
@@ -361,7 +360,7 @@ createScene().then((scene) => {
             else {
                 if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001 ) { // if the lemon is on the ground
                     if (keypress["Space"]) {
-                        console.log(lemon.position) //pour chopper des coordonnées facilement
+                        console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z) //pour chopper des coordonnées facilement
                         jumping = true; // we can jump
                         jumpY = groundCollision.point;
                         jumpPad.position.y = jumpY;
