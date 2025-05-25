@@ -52,7 +52,7 @@ export class Pnj {
             this.potatoMesh = root;
 
             this.animations = result.animationGroups;
-            console.log(this.animations)
+            //console.log(this.animations)
             if (this.animations && this.animations.length > 0) {
                 this.playAnimation("Sad");
                 this.ready = true
@@ -131,7 +131,7 @@ export class Pnj {
         if ( somme == 1){ // a passer a 2 pour le vrai jeu
             this.playAnimation("Mid")
             this.addDialog('mid')
-            console.log("Pnj partiellement heureux")
+            //console.log("Pnj partiellement heureux")
         }
         else if (somme == 2){ // a passer a 3 pour le vrai jeu
             this.playAnimation("Happy")

@@ -13,9 +13,10 @@ export class JeuTuyaux {
         this.tt = null;
         this.models = [];
         this.modelsP = [];
-        this.eau=this.loadLac();
+        this.eau=null;
         this.eauvisi = false;
-        this.matrice = [[2, 1, 1, 1, 2, 0, 0, 0],
+        this.matrice = 
+        [[2, 1, 1, 1, 2, 0, 0, 0],
         [2, 1, 2, 0, 2, 2, 0, 0],
         [0, 0, 1, 0, 0, 1, 0, 0],
         [2, 0, 2, 2, 0, 1, 0, 0],
@@ -88,7 +89,7 @@ export class JeuTuyaux {
                     let tuyau = new Tuyau(this.scene);
                     await tuyau.loadModel(tuyauA, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit);
                     this.models.push(tuyau);
-                    tuyau.plein();
+                    tuyau.vide();
                     //this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j] * (Math.PI / 2), 0), positionInit, false, true);
                 }
             }
@@ -98,7 +99,7 @@ export class JeuTuyaux {
 
     async loadModel(model, scale, position, rotation, posInit, visibility, flip) {
         try {
-            this.eau = await this.loadLac();
+            await this.loadLac();
             let tuyau = new Tuyau(this.scene);
             const result = await tuyau.loadModel(model, scale, position, rotation,posInit);
             this.model = result.meshes[0];
@@ -224,29 +225,11 @@ export class JeuTuyaux {
             }
         }
 
-        // for (let i = 0; i < this.models.length; i++) {
-        //     let tuple = this.models[i].metadata.gridPosition;
-        //     let presence = false;
-        //     for (let possi of valides) {
-        //         if (tuple.x == possi[0] && tuple.z == possi[1]) {
-        //             //console.log("on rend invisible ",tuple);
-        //             presence = true;
-        //             for (let mesh of this.models[i].getChildMeshes()) {
-        //                 mesh.isVisible = false;
-        //             }
-        //         }
-        //     }
-        //     if (!presence) {
-        //         //console.log("on rend visible ",tuple);
-        //         for (let mesh of this.models[i].getChildMeshes()) {
-        //             mesh.isVisible = true;
-        //         }
-        //     }
-        // }
     }
     async loadLac(){
         try {
             const result = await SceneLoader.ImportMeshAsync("", EauMap, "", this.scene);
+            this.eau = result;
             const ground = result.meshes[0];
             result.meshes.forEach((mesh) => {
                 mesh.scaling = new Vector3(7, 7, 7);
@@ -262,12 +245,17 @@ export class JeuTuyaux {
         }
     }
     async rempliLac() {
+        console.log("pleinLac");
+        console.log(this.eau);
         this.eauvisi = true;
+        
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = true;
         });
     }
     async videLac() {
+        console.log("videLac");
+        console.log(this.eau);
         this.eauvisi = false;
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = false;

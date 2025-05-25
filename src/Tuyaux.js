@@ -21,7 +21,7 @@ export class Tuyau {
             animation.play(true);
             this.currentAnimation = animation;
             this.state = name;
-            console.log("Animation:", name);
+            //console.log("Animation:", name);
         } else {
             console.log("Animation not found:", name);
             console.log("Available animations:", this.animationGroups ? this.animationGroups.map(ag => ag.name) : "None");
