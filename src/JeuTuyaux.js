@@ -1,11 +1,11 @@
 import { SceneLoader, Vector3, KeyboardEventTypes } from "@babylonjs/core";
 
-import TuyauDV from "./../assets/tuyauDroitVide.glb";
-import TuyauDP from "./../assets/tuyauDroitPlein.glb";
-import TuyauAV from "./../assets/tuyauAngleVide.glb";
-import TuyauAP from "./../assets/tuyauAnglePlein.glb";
+import tuyauD from "./../assets/tuyauDroit.glb";
+import tuyauA from "./../assets/tuyauAngle.glb";
 import EauMap from "./../assets/SolEau.glb";
-import tuyaux from "./../assets/tuyauAngle.glb";
+
+import { Tuyau } from "./Tuyaux.js";
+
 
 export class JeuTuyaux {
     constructor(scene) {
@@ -15,7 +15,8 @@ export class JeuTuyaux {
         this.modelsP = [];
         this.eau=null;
         this.eauvisi = false;
-        this.matrice = [[2, 1, 1, 1, 2, 0, 0, 0],
+        this.matrice = 
+        [[2, 1, 1, 1, 2, 0, 0, 0],
         [2, 1, 2, 0, 2, 2, 0, 0],
         [0, 0, 1, 0, 0, 1, 0, 0],
         [2, 0, 2, 2, 0, 1, 0, 0],
@@ -73,33 +74,36 @@ export class JeuTuyaux {
         let vec = new Vector3(20, 20, 20);
         let coef = 20;
         this.loadLac();
-        this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, Math.PI, 0), positionInit, true, false);
+        //let t = this.loadModel(TuyauD, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, Math.PI, 0), positionInit, true, false);
+        let t = new Tuyau(this.scene)
+        await t.loadModel(tuyauD, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, 0, 0), positionInit);
+        t.plein();
         for (let i = 0; i < this.matrice.length; i++) {
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
-                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
-                    this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j] - 1) * (Math.PI / 2), 0), positionInit, false, true);
-                } else if (this.matrice[i][j] == 2) {
-                    this.loadModel(TuyauAV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit, true, true);
-                    this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j] * (Math.PI / 2), 0), positionInit, false, true);
+                    let tuyau = new Tuyau(this.scene);
+                    tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0,0, 0),positionInit );
+                    this.models.push(tuyau);
+                    //this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j] - 1) * (Math.PI / 2), 0), positionInit, false, true);
+                } else if (this.matrice[i][j] == 2) {   
+                    let tuyau = new Tuyau(this.scene);
+                    await tuyau.loadModel(tuyauA, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit);
+                    this.models.push(tuyau);
+                    tuyau.vide();
+                    //this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j] * (Math.PI / 2), 0), positionInit, false, true);
                 }
             }
         }
-
     }
 
 
     async loadModel(model, scale, position, rotation, posInit, visibility, flip) {
         try {
-            this.eau = await this.loadLac();
-            const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
+            await this.loadLac();
+            let tuyau = new Tuyau(this.scene);
+            const result = await tuyau.loadModel(model, scale, position, rotation,posInit);
             this.model = result.meshes[0];
-            this.model.scaling = new Vector3(scale.x, scale.y, scale.z);
-            this.model.position = new Vector3(position.x, position.y, position.z);
-            this.model.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
-            for (let mesh of result.meshes) {
-                mesh.isVisible = visibility;
-            }
+
             //permet de gerer avec les matrice leur pos et rota
             this.model.metadata = {
                 modelType: model,
@@ -110,10 +114,10 @@ export class JeuTuyaux {
             };
             if (visibility && flip) {
                 this.models.push(this.model);
-            } else if (!visibility && flip) {
-                this.modelsP.push(this.model);
             }
             //this.applyTexture(texturePath);
+            
+            return result;
         } catch (error) {
             console.error("Error loading model:", error);
         }
@@ -122,6 +126,7 @@ export class JeuTuyaux {
         let closest = null;
         let min = Infinity;
         for (const tuyau of this.models) {
+            console.log("tuyau pos=", tuyau.position);
             const distance = Vector3.Distance(tuyau.position, position);
             if (distance < min) {
                 min = distance;
@@ -132,7 +137,7 @@ export class JeuTuyaux {
     }
     rotateClosestTuyau(position) {
         const closest = this.Closest(position);
-        console.log("closest=", closest.metadata.gridPosition);
+        console.log("closest=", closest);
         //console.log("gridpos=",closest.metadata.gridPosition);
         if (closest) {
 
@@ -182,11 +187,11 @@ export class JeuTuyaux {
                 valides.push(tuple);
             } else {
                 //console.log("no flow");
-                //console.log("valides=",valides);
+                console.log("valides=",valides);
                 return valides;
             }
         }
-        //console.log("valides=",valides);
+        console.log("valides=",valides);
         return valides;
     }
 
@@ -203,50 +208,28 @@ export class JeuTuyaux {
             this.videLac();
         }
 
-        for (let i = 0; i < this.modelsP.length; i++) {
+        for (let i = 0; i < this.models.length; i++) {
             //console.log("tuple=",this.modelsP[i].metadata.gridPosition,"onValide?=",this.modelsP[i].metadata.gridPosition in valides);
-            let tuple = this.modelsP[i].metadata.gridPosition;
+            let tuple = this.models[i].metadata.gridPosition;
             let presence = false;
             for (let possi of valides) {
                 if (tuple.x == possi[0] && tuple.z == possi[1]) {
                     //console.log("on rend visible ",tuple);
                     presence = true;
-                    for (let mesh of this.modelsP[i].getChildMeshes()) {
-                        mesh.isVisible = true;
-                    }
+                    this.models[i].plein();
                 }
             }
             if (!presence) {
                 //console.log("on rend invisible ",tuple);
-                for (let mesh of this.modelsP[i].getChildMeshes()) {
-                    mesh.isVisible = false;
-                }
+                this.models[i].vide();
             }
         }
 
-        for (let i = 0; i < this.models.length; i++) {
-            let tuple = this.models[i].metadata.gridPosition;
-            let presence = false;
-            for (let possi of valides) {
-                if (tuple.x == possi[0] && tuple.z == possi[1]) {
-                    //console.log("on rend invisible ",tuple);
-                    presence = true;
-                    for (let mesh of this.models[i].getChildMeshes()) {
-                        mesh.isVisible = false;
-                    }
-                }
-            }
-            if (!presence) {
-                //console.log("on rend visible ",tuple);
-                for (let mesh of this.models[i].getChildMeshes()) {
-                    mesh.isVisible = true;
-                }
-            }
-        }
     }
     async loadLac(){
         try {
             const result = await SceneLoader.ImportMeshAsync("", EauMap, "", this.scene);
+            this.eau = result;
             const ground = result.meshes[0];
             result.meshes.forEach((mesh) => {
                 mesh.scaling = new Vector3(7, 7, 7);
@@ -262,12 +245,17 @@ export class JeuTuyaux {
         }
     }
     async rempliLac() {
+        console.log("pleinLac");
+        console.log(this.eau);
         this.eauvisi = true;
+        
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = true;
         });
     }
     async videLac() {
+        console.log("videLac");
+        console.log(this.eau);
         this.eauvisi = false;
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = false;
