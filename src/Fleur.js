@@ -1,10 +1,7 @@
 import { SceneLoader, KeyboardEventTypes, Vector3, SoundTrack } from "@babylonjs/core";
 
-import FleureC from "./../assets/Fleureclair.glb";
-import FleureF from "./../assets/Fleurefonce.glb";
 
-
-export class Fleure {
+export class Fleur {
     constructor(scene) {
         this.scene = scene;
         this.model = null;
@@ -43,7 +40,7 @@ export class Fleure {
         return partialMatch || null;
     }
 
-    async loadModel(model, scale, position, rotation,posInit,isclair){
+    async loadModel(model, scale, position, rotation,posInit){
         this.position = position;
         this.rotation = rotation;
         this.metadata = {
@@ -54,24 +51,18 @@ export class Fleure {
             }//on soutrais pour avoir des valeur quon peut utilisr dans la matrice
         };
         try {
-            if (isclair) {
-                model = FleureC;
-            }
-            else {
-                model = FleureF;
-            }
             const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
-            
-            const t = result.meshes[0];
+            this.model = result.meshes[0];
+            const f = result.meshes[0];
             for (let mesh of result.meshes) {
                 mesh.isVisible = true;
             }
-            t.scaling = scale
-            t.position = position;
-            t.rotation = rotation;
+            f.scaling = scale
+            f.position = position;
+            f.rotation = rotation;
 
             this.animationGroups = result.animationGroups;
-
+            this.chill();
             return result;
         } catch (error) {
             console.error("Erreur lors du chargement de :", model, "err: ", error);
@@ -81,7 +72,10 @@ export class Fleure {
     async pousse() {
         this.playAnimation("pousse");
     }
-    async meur() {
+    async meurt() {
         this.playAnimation("meur");
+    }
+    async chill() {
+        this.playAnimation("chill");
     }
 }
