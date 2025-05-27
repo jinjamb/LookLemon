@@ -16,12 +16,12 @@ export class JeuFleurs {
         this.matriceModels = [];
         //matrice des fleures: 1 si ya fleur 2 si elle est heruuse 3 si dead 0 pion.
         this.matrice = [
-            [1, 1, 1, 1, 1, 0],
-            [1, 0, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 0, 1],
+            [0, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 0],
         ];
         this.currentPosition = [0, 0];
         this.keyControles();
@@ -89,8 +89,15 @@ export class JeuFleurs {
                     ligne.push([fleur, 1]); // etat
 
                 } else if (this.matrice[i][j] == 0) {
+                    let fleur = new Fleur(this.scene);
                     ligne.push([null, 0]); // pas de fleur
-                    if (this.damier) { this.damier = false; } else { this.damier = true; }
+                    if (this.damier) {
+                        fleur.loadModel(FleurF, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                         this.damier = false; 
+                    } else {
+                        fleur.loadModel(FleurC, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                        this.damier = true; 
+                    }
                     // 0 pion
                 }
             }
@@ -162,7 +169,7 @@ export class JeuFleurs {
                         console.log("fleur=", fleur[0]);
                         const distance = Vector3.Distance(this.scene.player.position, fleur[0].position);
                         //console.log("distance=", distance, "position=", fleur[0].position);
-                        if (distance < closestDistance && distance<20) { // 20 is the max distance to consider
+                        if (distance < closestDistance && distance<15) { // 20 is the max distance to consider
                             //console.log("distance=", distance);
                             closestDistance = distance;
                             closestFleure = fleur[0];

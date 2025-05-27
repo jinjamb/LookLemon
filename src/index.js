@@ -162,13 +162,13 @@ const createScene = async function () {
             else pnj1.changeclickercolor(new Color3(0, 0, 0), false);
             //console.log(event.code)
             switch (event.code) {
-                case "KeyI":
-                    if (scene.debugLayer.isVisible()) {
-                        scene.debugLayer.hide();
-                    } else {
-                        scene.debugLayer.show();
-                    }
-                    break;
+                // case "KeyI":
+                //     if (scene.debugLayer.isVisible()) {
+                //         scene.debugLayer.hide();
+                //     } else {
+                //         scene.debugLayer.show();
+                //     }
+                //     break;
                 case "Escape":
                     pauseResume()
                     break;
