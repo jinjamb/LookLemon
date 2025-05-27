@@ -10,6 +10,7 @@ import cristalJaune from "./../assets/cristalJaune.png";
 import cristalVert from "./../assets/cristalVert.png";
 
 
+
 export class LabyrintheModel {
     constructor(scene) {
         this.scene = scene;
