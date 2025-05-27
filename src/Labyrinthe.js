@@ -1,6 +1,6 @@
 import { SceneLoader, Vector3, Color3, PointLight, GlowLayer, StandardMaterial, MeshBuilder, Texture } from "@babylonjs/core";
 import Labyrinthe from "./../assets/Labyrinthe.glb";
-import soleil from "./../assets/soleil.glb";
+import soleil from "./../assets/Soleil.glb";
 import soleilText from "./../assets/soleil.png";
 import cristalModelViolet from "./../assets/CristauxViolet.glb";
 import cristalModelJaune from "./../assets/CristauxJaune.glb";
