@@ -57,7 +57,7 @@ export class JeuTuyaux {
                     //console.log("O pressed");
                     //console.log(this.scene.activeCamera.position);
                     //le joeur a changer apres c'est juste pour test
-                    const playerPosition = this.scene.lemon.position;
+                    const playerPosition = this.scene.player.position;
                     this.rotateClosestTuyau(playerPosition);
                     this.changeVisibility();
                 }

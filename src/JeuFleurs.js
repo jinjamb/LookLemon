@@ -133,7 +133,7 @@ export class JeuFleurs {
                     //mettre fleurs plantées
                     const model = this.models.find(m => m.metadata.gridPosition.x === i && m.metadata.gridPosition.z === j);
                     if (model) {
-                        // jouer anim grandir
+                        // jouer anim de départ
                         model.position.y -= 2;
                     }
                 }
