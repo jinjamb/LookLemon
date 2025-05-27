@@ -24,45 +24,10 @@ export class JeuFleurs {
             [1, 1, 1, 1, 1, 0],
         ];
         this.currentPosition = [0, 0];
-        this.keyControles();
         this.scene.onBeforeRenderObservable.add(() => this.update()); 
     }
 
 
-    keyControles() {
-        this.scene.onKeyboardObservable.add((kbInfo) => {
-            if (kbInfo.type === KeyboardEventTypes.KEYDOWN) { // KEYDOWN event
-                if (kbInfo.event.key.toLowerCase() === 'n') {
-                    console.log("n pressed meurt");
-                    this.matriceModels.forEach(lignes => {
-                        lignes.forEach(fleur => {
-                            console.log("fleur=", fleur);
-                            fleur[0].meurt();
-                        }
-                        );
-                    });
-                }
-                if (kbInfo.event.key.toLowerCase() === 'm') {
-                    console.log("m pressed chill");
-                    this.matriceModels.forEach(lignes => {
-                        lignes.forEach(fleur => {
-                            fleur[0].chill();
-                        });
-                    });
-                }
-                if (kbInfo.event.key.toLowerCase() === 'b') {
-                    console.log("b pressed pousse");
-                    this.matriceModels.forEach(lignes => {
-                        lignes.forEach(fleur => {
-                            fleur[0].pousse();
-                        });
-                    });
-                }
-            }
-
-        });
-
-    }
 
     async createFromMatrice(positionInit) {
         let vec = new Vector3(40, 40, 40);
@@ -104,7 +69,7 @@ export class JeuFleurs {
             this.matriceModels.push(ligne);
             if (this.damier) { this.damier = false; } else { this.damier = true; }
         }
-        console.log("matriceModels=", this.matriceModels);
+        //console.log("matriceModels=", this.matriceModels);
     }
 
 
@@ -128,7 +93,7 @@ export class JeuFleurs {
 
             return result;
         } catch (error) {
-            console.error("Error loading model:", error);
+            //console.error("Error loading model:", error);
         }
     }
 
@@ -136,13 +101,13 @@ export class JeuFleurs {
     update() {
         let fleur = this.getClosestFleure();
         if(!fleur) {
-            console.log("No flower found close enough.");
+            //console.log("No flower found close enough.");
             return;
         }
         let x = fleur.metadata.gridPosition.x;
         let y = fleur.metadata.gridPosition.z;
-        console.log("closest fleur=", fleur, "x=", x, "y=", y);
-        console.log("currentPosition=", this.matriceModels);
+        //console.log("closest fleur=", fleur, "x=", x, "y=", y);
+        //console.log("currentPosition=", this.matriceModels);
         if (this.matriceModels[x][y][1] == 1) {
             this.matriceModels[x][y][1] = 2; // on met a jour l'etat de la fleur
             this.currentPosition = [x, y];
@@ -153,20 +118,21 @@ export class JeuFleurs {
         }else if (this.matriceModels[x][y][1] == 2) {
             this.matriceModels[x][y][1] = 3; // on met a jour l'etat de la fleur
             this.currentPosition = [x, y];
+            this.showTemporaryMessage("Fleur Ecrasée !!!! retourne voir la fleur", 5000);
             fleur.meurt();
         }
 
     }
 
     getClosestFleure() {
-        console.log("currentPosition=", this.currentPosition);
+        //console.log("currentPosition=", this.currentPosition);
         let closestFleure = null;
         let closestDistance = Infinity; // Initialiser à l'infini pour trouver la plus proche
 
         this.matriceModels.forEach(lignes => {
             lignes.forEach(fleur => {
                 if (fleur[0]){
-                        console.log("fleur=", fleur[0]);
+                        //console.log("fleur=", fleur[0]);
                         const distance = Vector3.Distance(this.scene.player.position, fleur[0].position);
                         //console.log("distance=", distance, "position=", fleur[0].position);
                         if (distance < closestDistance && distance<15) { // 20 is the max distance to consider
@@ -180,5 +146,19 @@ export class JeuFleurs {
             }
         );
         return closestFleure;
+    }
+    showTemporaryMessage(message, duration = 100) {
+        const dialogueElement = document.getElementById("notif");
+        dialogueElement.innerHTML = message;
+        dialogueElement.style.display = 'block';
+        dialogueElement.style.opacity = '1';
+        
+        // Faire disparaître le message après la durée spécifiée
+        setTimeout(() => {
+            dialogueElement.style.opacity = '0';
+            setTimeout(() => {
+                dialogueElement.style.display = 'none';
+            }, 500); // Attendre que la transition d'opacité soit terminée
+        }, duration);
     }
 }
