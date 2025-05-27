@@ -269,7 +269,7 @@ createScene().then((scene) => {
         else if (scene && !pause) {
             
             //log pour voir la possition du joueur a tt moment
-            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
@@ -432,9 +432,9 @@ createScene().then((scene) => {
             //console.log("Test tp:", lemon.position.x, lemon.position.z ,lemon.position.x < -257 , lemon.position.x > -270 , lemon.position.z > -28 , lemon.position.z < 23 );
             if (lemon.position.y>0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23){
                 //console.log("teleportation");
-                lemon.position.x = 290;
-                lemon.position.y = -85;
-                lemon.position.z = 285;
+                lemon.position.x = 400;
+                lemon.position.y = -180;
+                lemon.position.z = 400;
             }
             if (lemon.position.x<15 && lemon.position.x > 0 && lemon.position.z > -7 && lemon.position.z < 13 && lemon.position.y <0){
                 //console.log("teleportation2");

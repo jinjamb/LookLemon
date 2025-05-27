@@ -5,6 +5,7 @@ import MapColi from "./../assets/SolColi.glb"
 import MapVisu from "./../assets/SolVisu.glb";
 import Citerne from "./../assets/citerne.glb"
 import grass from "./../assets/grass.jpg";
+import cristal from "./../assets/cristal.glb";
 
 import tuyauD from "./../assets/tuyauDroit.glb";
 
@@ -30,12 +31,10 @@ export class MapLoader {
     async load() {
         this.loadGround();
         this.loadvisualGround();
-        this.murs();
+        //this.murs();
         //this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0));
         //this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0));
         new LabyrintheModel(this.scene).loadModel();
-        this.loadModel(Nuage, new Vector3(200, 200, 200), new Vector3(-350, 15, -200), new Vector3(0, 5 / 6 * Math.PI, 0));
-        this.loadModel(Nuage, new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4 / 6 * Math.PI, 0));
         this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55, 67, -530), new Vector3(0, Math.PI, 0));
         await new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5, 68, -480)); // load le jeu des tuyaux
         new SkyboxModel(this.scene).load(); // load le skybox
@@ -43,6 +42,8 @@ export class MapLoader {
         this.arbreModel.load();
         this.setupMissionTroncObserver();
         //new TextureTest(this.scene).load();
+
+        //this.loadModel(cristal, new Vector3(100, 100, 100), new Vector3(280, -80, 280), new Vector3(0, 0, 0));
 
         //new Tuyau(this.scene).loadModel(tuyauD, new Vector3(100, 100, 100),new Vector3(0, 60, 0), new Vector3(0, Math.PI / 2, 0));
 
@@ -62,6 +63,7 @@ export class MapLoader {
             }
         });
     }
+    //plus necessaire car la map collision les geres
     async murs() {
         this.murInvisible(new Vector3(-350, 50, -190), -Math.PI / 4, 1100);
         this.murInvisible(new Vector3(90, 50, -555), Math.PI / 2, 200);
@@ -127,7 +129,7 @@ export class MapLoader {
                 //mesh.material = material;
             });
             ground.scaling = new Vector3(15, 15, 15);
-            ground.position = new Vector3(0, 0, 0);
+            ground.position = new Vector3(0, -3, 0);
             ground.rotation = new Vector3(0, Math.PI / 2, 0);
         });
 
