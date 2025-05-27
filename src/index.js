@@ -134,6 +134,7 @@ const createScene = async function () {
     window.gameCitron = citron;
     scene.player = lemon;
 
+
     //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
     jumpPad.position.y = -100;
@@ -192,10 +193,11 @@ const createScene = async function () {
         keypress[event.code] = false;
     });
     //waiting for everything to be ready before letting the player start the game
-    while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
+    //while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
     backgroundMusicMenu.playMusic();
+
     return scene;
 };
 
