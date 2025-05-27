@@ -1,19 +1,26 @@
 import { SceneLoader, Vector3, HemisphericLight, MeshBuilder,StandardMaterial, Texture } from "@babylonjs/core";
 import Nuage from "./../assets/nuage.glb";
 //import Grotte from "./../assets/Grotte.glb";
-import Map from "./../assets/Sol.glb"
+import MapColi from "./../assets/SolColi.glb"
+import MapVisu from "./../assets/SolVisu.glb";
 import Citerne from "./../assets/citerne.glb"
 import { JeuFleurs } from "./JeuFleurs.js";
 import { JeuTuyaux } from "./JeuTuyaux.js";
 import {LabyrintheModel} from "./Labyrinthe.js"
 import grass from "./../assets/grass.jpg";
+import cristal from "./../assets/cristal.glb";
+
+import tuyauD from "./../assets/tuyauDroit.glb";
 
 //import Rocks from "././assets/deco/Rocks.glb";
 //import GrassMix from "././assets/deco/GrassMix.glb";
 //import GrassPatch from "././assets/deco/GrassPatch.glb";
+import { JeuTuyaux } from "./JeuTuyauxv2.js"
+import { LabyrintheModel } from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
 import { SkyboxModel } from "./Skybox.js";
 import { TextureTest } from "./TextureTest.js";
+import { Tuyau } from "./Tuyaux.js";
 
 
 export class MapLoader {
@@ -26,20 +33,24 @@ export class MapLoader {
 
     async load() {
         this.loadGround();
-        this.murs();
+        this.loadvisualGround();
+        //this.murs();
         //this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0));
         //this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0));
         new LabyrintheModel(this.scene).loadModel();
-        this.loadModel(Nuage,new Vector3(200, 200, 200), new Vector3(-350, 15, -200), new Vector3(0, 5/6*Math.PI, 0));
-        this.loadModel(Nuage,new Vector3(180, 200, 180), new Vector3(-190, 25, -350), new Vector3(0, 4/6*Math.PI, 0));
-        this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55,67,-530), new Vector3(0, Math.PI, 0));
-        new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5,68,-480)); // load le jeu des tuyaux
+        this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55, 67, -530), new Vector3(0, Math.PI, 0));
+        await new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5, 68, -480)); // load le jeu des tuyaux
         new JeuFleurs(this.scene).createFromMatrice(new Vector3(212,29.25,-45)); // load le jeu des tuyaux
         new SkyboxModel(this.scene).load(); // load le skybox
         this.arbreModel = new ArbreModel(this.scene);
         this.arbreModel.load();
         this.setupMissionTroncObserver();
-        new TextureTest(this.scene).load();
+        //new TextureTest(this.scene).load();
+
+        //this.loadModel(cristal, new Vector3(100, 100, 100), new Vector3(280, -80, 280), new Vector3(0, 0, 0));
+
+        //new Tuyau(this.scene).loadModel(tuyauD, new Vector3(100, 100, 100),new Vector3(0, 60, 0), new Vector3(0, Math.PI / 2, 0));
+
         //this.loadRandomDeco(10, 10, 10);
 
     }
@@ -56,6 +67,7 @@ export class MapLoader {
             }
         });
     }
+    //plus necessaire car la map collision les geres
     async murs() {
         this.murInvisible(new Vector3(-350, 50, -190), -Math.PI / 4, 1100);
         this.murInvisible(new Vector3(90, 50, -555), Math.PI / 2, 200);
@@ -73,46 +85,7 @@ export class MapLoader {
         m1.visibility = false;
     }
 
-    async loadRandomDeco(rockCount = 10, grassMixCount = 40, grassPatchCount = 50) {
-        const bounds = { minX: -200, maxX: 200, minZ: -200, maxZ: 200 };
 
-        for (let i = 0; i < rockCount; i++) {
-            const position = this.getRandomPosition(bounds);
-            const scale = this.getRandomScale(2.5, 5);
-            const rotation = this.getRandomRotation();
-
-            await this.loadModel(Rocks, scale, position, rotation);
-        }
-        for (let i = 0; i < grassMixCount; i++) {
-            const position = this.getRandomPosition(bounds);
-            const scale = this.getRandomScale(2.5, 5);
-            const rotation = this.getRandomRotation();
-
-            await this.loadModel(GrassMix, scale, position, rotation);
-        }
-        for (let i = 0; i < grassPatchCount; i++) {
-            const position = this.getRandomPosition(bounds);
-            const scale = this.getRandomScale(2.5, 5);
-            const rotation = this.getRandomRotation();
-
-            await this.loadModel(GrassPatch, scale, position, rotation);
-        }
-    }
-
-    getRandomPosition(bounds) {
-        const x = Math.random() * (bounds.maxX - bounds.minX) + bounds.minX;
-        const z = Math.random() * (bounds.maxZ - bounds.minZ) + bounds.minZ;
-        return new Vector3(x, 27, z);
-    }
-
-    getRandomScale(min, max) {
-        const scale = Math.random() * (max - min) + min;
-        return new Vector3(scale, scale, scale);
-    }
-
-    getRandomRotation() {
-        return new Vector3(0, Math.random() * Math.PI * 2, 0);
-    }
 
     async loadModel(model, scale, position, rotation) {
         try {
@@ -127,6 +100,19 @@ export class MapLoader {
             console.error("Error loading model:", error);
         }
     }
+    async loadvisualGround() {
+        await SceneLoader.ImportMeshAsync("", MapVisu, "", this.scene).then((result) => {
+            var ground = result.meshes[0];
+            result.meshes.forEach((mesh) => {
+                mesh.scaling = new Vector3(7, 7, 7);
+                mesh.name = "deco";
+            });
+            ground.scaling = new Vector3(15, 15, 15);
+            ground.position = new Vector3(0, 0, 0);
+            ground.rotation = new Vector3(0, Math.PI / 2, 0);
+        });
+    }
+
     async loadGround() {
         const light = new HemisphericLight("light", new Vector3(0, 1, 0), this.scene);
         light.intensity = 1;
@@ -137,17 +123,17 @@ export class MapLoader {
 
         material.diffuseTexture.uScale = 10;
         material.diffuseTexture.vScale = 10;
-        await SceneLoader.ImportMeshAsync("", Map, "", this.scene).then((result) => {
+        await SceneLoader.ImportMeshAsync("", MapColi, "", this.scene).then((result) => {
             var ground = result.meshes[0];
             result.meshes.forEach((mesh) => {
                 mesh.scaling = new Vector3(7, 7, 7);
                 mesh.name = "ground";
                 mesh.checkCollisions = true;
+                mesh.visibility = 0;
                 //mesh.material = material;
- 
             });
             ground.scaling = new Vector3(15, 15, 15);
-            ground.position = new Vector3(0, 0, 0);
+            ground.position = new Vector3(0, -3, 0);
             ground.rotation = new Vector3(0, Math.PI / 2, 0);
         });
 

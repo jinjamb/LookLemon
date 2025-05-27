@@ -1,6 +1,14 @@
-import { SceneLoader, Vector3,Color3,PointLight,StandardMaterial,MeshBuilder, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
-import Labyrinthe from "./../assets/maze.glb";
-import { Sphere } from "cannon";
+import { SceneLoader, Vector3, Color3, PointLight, GlowLayer, StandardMaterial, MeshBuilder, Texture } from "@babylonjs/core";
+import Labyrinthe from "./../assets/Labyrinthe.glb";
+import soleil from "./../assets/soleil.glb";
+import soleilText from "./../assets/soleil.png";
+import cristalModelViolet from "./../assets/CristauxViolet.glb";
+import cristalModelJaune from "./../assets/CristauxJaune.glb";
+import cristalModelVert from "./../assets/CristauxVert.glb";
+import cristalViolet from "./../assets/cristalViolet.png";
+import cristalJaune from "./../assets/cristalJaune.png";
+import cristalVert from "./../assets/cristalVert.png";
+
 
 export class LabyrintheModel {
     constructor(scene) {
@@ -9,7 +17,39 @@ export class LabyrintheModel {
         this.Labyrinthephy = null;
     }
 
+    async loadCristaux(position, model, texture) {
+        try {
+            const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
+            this.model = result.meshes[0];
+            this.model.scaling = new Vector3(160, 160, 160);
+            this.model.position = position;
+            this.model.rotation = new Vector3(0, Math.PI, 0);
+
+
+            const shiny = new StandardMaterial("shiny", this.scene);
+            shiny.diffuseColor = new Color3(1, 1, 1);
+            shiny.emissiveColor = new Color3(1, 1, 1);
+            shiny.specularColor = new Color3(1, 1, 1);
+            shiny.specularPower = 64; // Augmente la brillance
+
+            shiny.diffuseTexture = new Texture(texture, this.scene);
+            shiny.diffuseTexture.uScale = 5;
+            shiny.diffuseTexture.vScale = 5;
+            shiny.diffuseTexture.hasAlpha = true; // Si le texture a un canal alpha
+
+            const glowLayer = new GlowLayer("glow", this.scene);
+            glowLayer.intensity = 0.3; // Ajuste l'intensité de la lueur
+
+            result.meshes.forEach(mesh => {
+                mesh.material = shiny;
+                glowLayer.addIncludedOnlyMesh(mesh);
+            });
+        } catch (error) {
+            console.error("Error loading model:", error);
+        }
+    }
     async loadModel(scene) {
+        let position = new Vector3(500, -200, 500);
         try {
             const result = await SceneLoader.ImportMeshAsync("", Labyrinthe, "", scene);
             this.model = result.meshes[0];
@@ -24,35 +64,54 @@ export class LabyrintheModel {
                 groundMat.emissiveColor = new Color3(0, 0, 0); // Ne brille pas tout seul
                 mesh.material = groundMat;
             });
-            this.model.scaling = new Vector3(160, 80, 160);
-            this.model.position = new Vector3(0, -90, 0);
-            this.model.rotation = new Vector3(0, 0,0);
+            this.model.scaling = new Vector3(160, 160, 160);
+            this.model.position = position;
+            this.model.rotation = new Vector3(0, Math.PI, 0);
 
-            this.createLightSphere();
+            this.createLightSphere(position.add(new Vector3(-10, 10, 10)));
+            //this.createLightSphere( new Vector3(390,-190,410)); // Position de la sphère de lumière
+            this.loadCristaux(position, cristalModelViolet, cristalViolet);
+            this.loadCristaux(position, cristalModelJaune, cristalJaune);
+            this.loadCristaux(position, cristalModelVert, cristalVert);
+
             console.log("Labyrinthe model loaded successfully");
         } catch (error) {
             console.error("Error loading Labyrinthe model:", error);
         }
     }
-    createLightSphere() {
+    async createLightSphere(positionSoleil) {
         // Créer une sphère
-        const sphere = MeshBuilder.CreateSphere("lightSphere", {
-            diameter: 20,
-            segments: 16
-        }, this.scene);
-        sphere.position = new Vector3(10, -80, 0); // Position initiale de la sphère
-        const sphereMat = new StandardMaterial("sphereMat", this.scene);
-        sphereMat.diffuseColor = new Color3(1, 1, 1);
-        sphereMat.emissiveColor = new Color3(1, 1, 1); 
-        sphereMat.specularColor = new Color3(1, 1, 1);
-        sphere.material = sphereMat;
+        const result = await SceneLoader.ImportMeshAsync("", soleil, "", this.scene);
+        this.model = result.meshes[0];
+        this.model.scaling = new Vector3(20, 20, 20);
+        this.model.rotation = new Vector3(0, Math.PI/2, 0);
+        this.model.position = positionSoleil;
 
-        const pointLight = new PointLight("sphereLight", sphere.position, this.scene);
+        const shiny = new StandardMaterial("sol", this.scene);
+        shiny.diffuseColor = new Color3(1, 1, 1);
+        shiny.emissiveColor = new Color3(1, 1, 1);
+        shiny.specularColor = new Color3(1, 1, 1);
+        shiny.specularPower = 64; // Augmente la brillance
+
+        shiny.diffuseTexture = new Texture(soleilText, this.scene);
+        shiny.diffuseTexture.uScale = 5;
+        shiny.diffuseTexture.vScale = 5;
+        shiny.diffuseTexture.hasAlpha = true; // Si le texture a un canal alpha
+
+        const glowLayer = new GlowLayer("glow", this.scene);
+        glowLayer.intensity = 0.5; // Ajuste l'intensité de la lueur
+
+        result.meshes.forEach(mesh => {
+            mesh.material = shiny;
+            glowLayer.addIncludedOnlyMesh(mesh);
+        });
+
+        const pointLight = new PointLight("sphereLight", this.model.position, this.scene);
         pointLight.diffuse = new Color3(1, 1, 1); 
         pointLight.specular = new Color3(1, 1, 1);
         pointLight.intensity = 1; 
         pointLight.range = 50; 
         pointLight.radius = 50;
-        sphere.pointLight = pointLight;
+        this.model.pointLight = pointLight;
     }
 }

@@ -31,7 +31,7 @@ export class ArbreModel {
                 mesh.name = "ground";
             });
             ground.scaling = new Vector3(100, 100, 100);
-            ground.position = new Vector3(11, 52.5, 24);
+            ground.position = new Vector3(11, 30, 24);
             ground.rotation = new Vector3(0, Math.PI / 2, 0);
             return result;
         } catch (error) {

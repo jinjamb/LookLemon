@@ -12,43 +12,33 @@ export class JeuTuyaux {
         this.scene = scene;
         this.tt = null;
         this.models = [];
-        this.modelsP = [];
+        //matrice des tuyaux
+        this.matriceModels = [];
         this.eau=null;
         this.eauvisi = false;
+        //2 coin 1 droit
         this.matrice = 
-        [[2, 1, 1, 1, 2, 0, 0, 0],
-        [2, 1, 2, 0, 2, 2, 0, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0],
-        [2, 0, 2, 2, 0, 1, 0, 0],
-        [2, 2, 0, 1, 2, 2, 0, 2],
-        [0, 1, 0, 1, 1, 0, 0, 1],
-        [2, 2, 0, 1, 2, 1, 1, 2],
-        [2, 1, 1, 2, 0, 0, 0, 0]];
+        [[2, 1, 1, 1, 2, 1, 2, 2],
+        [2, 1, 2, 2, 2, 2, 1, 2],
+        [2, 1, 1, 1, 1, 1, 2, 1],
+        [2, 1, 2, 2, 1, 1, 1, 1],
+        [2, 2, 1, 1, 2, 2, 2, 2],
+        [1, 1, 2, 1, 1, 1, 1, 1],
+        [2, 2, 2, 1, 2, 1, 1, 2],
+        [2, 1, 1, 2, 2, 2, 1, 1]];
 
-        this.rotations = [[1, 1, 1, 1, 1, 0, 0, 0],
-        [1, 1, 1, 0, 1, 1, 0, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0],
-        [1, 0, 1, 1, 0, 1, 0, 0],
-        [1, 1, 0, 1, 1, 1, 0, 1],
-        [0, 1, 0, 1, 1, 0, 0, 1],
-        [1, 1, 0, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 0, 0, 0, 0]];
+        this.rotations = 
+        [[1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1]];
         //si 1-4 c'est un coin si 5 c'est un droit impaire et si 6 c'est un droit pair
         //5 gauche droite|6haut bas|1gauche haut|2droite haut|3bas droite|4bas gauche 
-        this.res =
-            [[3, 5, 5, 5, 4, 0, 0, 0],
-            [2, 5, 4, 0, 2, 4, 0, 0],
-            [0, 0, 6, 0, 0, 6, 0, 0],
-            [4, 0, 2, 4, 0, 6, 0, 0],
-            [2, 4, 0, 6, 3, 1, 0, 3],
-            [0, 6, 0, 6, 6, 0, 0, 6],
-            [3, 1, 0, 6, 2, 5, 5, 1],
-            [2, 5, 5, 1, 0, 0, 0, 0]];
 
-        this.chemin = [[3, 0], [4, 0], [4, 1], [5, 1], [6, 1], [6, 0], [7, 0], [7, 1], [7, 2],
-        [7, 3], [6, 3], [5, 3], [4, 3], [3, 3], [3, 2], [2, 2], [1, 2], [1, 1], [1, 0],
-        [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 4], [1, 5], [2, 5], [3, 5], [4, 5],
-        [4, 4], [5, 4], [6, 4], [6, 5], [6, 6], [6, 7], [5, 7], [4, 7]];
         this.KeyControles();
 
     }
@@ -79,21 +69,26 @@ export class JeuTuyaux {
         await t.loadModel(tuyauD, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, 0, 0), positionInit);
         t.plein();
         for (let i = 0; i < this.matrice.length; i++) {
+            let ligne = [];
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
                     let tuyau = new Tuyau(this.scene);
-                    tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0,0, 0),positionInit );
+                    tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit );
                     this.models.push(tuyau);
+                    ligne.push([tuyau,1,1]);
                     //this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j] - 1) * (Math.PI / 2), 0), positionInit, false, true);
                 } else if (this.matrice[i][j] == 2) {   
                     let tuyau = new Tuyau(this.scene);
                     await tuyau.loadModel(tuyauA, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit);
                     this.models.push(tuyau);
                     tuyau.vide();
+                    ligne.push([tuyau,1,2]);
                     //this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j] * (Math.PI / 2), 0), positionInit, false, true);
                 }
             }
+            this.matriceModels.push(ligne);
         }
+        console.log("matriceModels=", this.matriceModels);
     }
 
 
@@ -126,7 +121,7 @@ export class JeuTuyaux {
         let closest = null;
         let min = Infinity;
         for (const tuyau of this.models) {
-            console.log("tuyau pos=", tuyau.position);
+            //console.log("tuyau pos=", tuyau.position);
             const distance = Vector3.Distance(tuyau.position, position);
             if (distance < min) {
                 min = distance;
@@ -140,15 +135,18 @@ export class JeuTuyaux {
         console.log("closest=", closest);
         //console.log("gridpos=",closest.metadata.gridPosition);
         if (closest) {
-
-            closest.rotation.y += Math.PI / 2;
             //console.log("rota=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
             if (this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] == 4) {
+                //console.log("rota:", this.matriceModels[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z][1]);
+                //console.log("tuyau=", this.matriceModels[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
                 this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] = 1;
+                this.matriceModels[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z][1] = 1;
             } else {
                 this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] += 1;
+                this.matriceModels[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z][1] += 1;
                 //console.log("matrice=",this.rotations[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z]);
             }
+            closest.rotation.y = this.matriceModels[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z][1] * (Math.PI / 2);
         }
         //console.log("matrice=",this.rotations);
         //this.waterPropa(1,1);
@@ -176,7 +174,105 @@ export class JeuTuyaux {
             }
         }
     }
+    //prend une coo d'arrive et une direction 1 nord 2 est 3 sud 4 ouest
+    propagation(x, y,dir,res) {
+        if (x < 0 || x >= this.matriceModels.length || y < 0 || y >= this.matriceModels[0].length) {return null;}
+        let tuyauInfos = this.matriceModels[x][y];
+        console.log("propagation= ", x, y);
+        console.log("infos X=",x,"y= ",y,"type=", tuyauInfos[2], "rotation=", tuyauInfos[1], "dir=", dir);
+        
 
+        //si c'est droit
+        if (tuyauInfos[2] == 1) {
+            //soit n-s soit e-w
+            if(tuyauInfos[1] == 1 || tuyauInfos[1] == 3){
+                if (dir == 1) {
+                    this.propagation(x+1, y,1,res);
+                    res.push([x,y]);
+                    return res;
+                } else if (dir == 2 || dir == 4) {
+                    return;
+                }else if (dir == 3) {
+                    this.propagation(x - 1, y,3,res);
+                    res.push([x,y]);
+                    return res;
+                }
+            }else if(tuyauInfos[1] == 2 || tuyauInfos[1] == 4){
+                if (dir == 2) {
+                    this.propagation(x, y - 1,2,res);
+                    res.push([x,y]);
+                    return res;
+                } else if (dir == 1 || dir == 3) {
+                    return;
+                }else if (dir == 4) {
+                    this.propagation(x, y + 1,4,res);
+                    res.push([x,y]);
+                    return res;
+                }
+            }
+        }//si c'est un coin
+        else if (tuyauInfos[2] == 2) {
+            if (tuyauInfos[1] == 1) {
+                //nord-west
+                if (dir == 2 || dir == 3) {
+                    return res;
+                } else if (dir == 1) {
+                    this.propagation(x ,y - 1,2,res);
+                    res.push([x,y]);
+                    return res;
+                }else if (dir == 4) {
+                    console.log("propagation nord-west");
+                    this.propagation(x - 1, y, 3,res);
+                    
+                    res.push([x,y]);
+                    console.log("res=",res);
+                    return res;
+                }
+            }else if (tuyauInfos[1] == 2) {
+                //nord-est
+                if (dir == 3 || dir == 4) {
+                    return res;
+                } else if (dir == 1) {
+                    this.propagation(x ,y + 1,4,res);
+                    res.push([x,y]);
+                    return res;
+                }else if (dir == 2) {
+                    this.propagation(x - 1, y,3,res);
+                    res.push([x,y]);
+                    return res;
+                }
+            }else if (tuyauInfos[1] == 3) {
+                //sud-est
+                if (dir == 1 || dir == 4) {
+                    return res;
+                } else if (dir == 2) {
+                    this.propagation(x + 1, y,1,res);
+                    res.push([x,y]);
+                    return res;
+                }else if (dir == 3) {
+                    this.propagation(x ,y + 1,4,res);
+                    res.push([x,y]);
+                    return res;
+                }
+            }else if (tuyauInfos[1] == 4) {
+                //sud-west
+                if (dir == 1 || dir == 2) {
+                    return res;
+                } else if (dir == 3) {
+                    this.propagation(x, y - 1,2,res);
+                    res.push([x,y]);
+                    return res;
+                }else if (dir == 4) {
+                    this.propagation(x + 1, y,1,res);
+                    res.push([x,y]);
+                    return res;
+                }
+            }
+        }    
+        return res;
+    }
+
+    
     //retourne les coo des tuyaux bien placés
     tuplesCorrecte() {
         var valides = [];
@@ -187,7 +283,7 @@ export class JeuTuyaux {
                 valides.push(tuple);
             } else {
                 //console.log("no flow");
-                console.log("valides=",valides);
+                console.log("valides=",valides,"len",valides.length);
                 return valides;
             }
         }
@@ -197,34 +293,42 @@ export class JeuTuyaux {
 
     //change la visibilite des tuyaux bien et mal places
     changeVisibility() {
-        let valides = this.tuplesCorrecte();
-
-        //apparition de leau 
-        if(valides.length == this.chemin.length && !this.eauvisi){
-            this.rempliLac();
-            this.scene.missionTronc=true;
-            
-        }else if(this.eauvisi){
-            this.videLac();
+    
+        let valides = this.propagation(3,0,4,[]);
+        if(!valides){
+            console.log("aucun tuyau valide");
+            return;
         }
+        //console.log("valides=", valides);
+        //console.log("valides=",valides,"len",valides);
 
-        for (let i = 0; i < this.models.length; i++) {
-            //console.log("tuple=",this.modelsP[i].metadata.gridPosition,"onValide?=",this.modelsP[i].metadata.gridPosition in valides);
-            let tuple = this.models[i].metadata.gridPosition;
-            let presence = false;
-            for (let possi of valides) {
-                if (tuple.x == possi[0] && tuple.z == possi[1]) {
-                    //console.log("on rend visible ",tuple);
-                    presence = true;
-                    this.models[i].plein();
+        for (let i = 0; i < this.matriceModels.length; i++) {
+            for (let j = 0; j < this.matriceModels[i].length; j++) {
+                //console.log("matrice=",this.matriceModels[i][j]);
+                if (this.matriceModels[i][j][0]) {
+                    this.matriceModels[i][j][0].vide();
                 }
             }
-            if (!presence) {
-                //console.log("on rend invisible ",tuple);
-                this.models[i].vide();
-            }
         }
+        let endaccess = false;
+        valides.forEach((tuple) => {
+            this.matriceModels[tuple[0]][tuple[1]][0].plein();
+            if (tuple[0] == 4 && tuple[1] == 7) {
+                console.log("fin de la mission");
+                endaccess = true;
+            }
+        });
 
+        if (endaccess) {
+            console.log("rempli lac");
+            this.scene.missionTronc=true;
+            this.rempliLac();
+        }
+        else {
+            console.log("vide lac");
+            this.videLac();
+        }
+        
     }
     async loadLac(){
         try {
