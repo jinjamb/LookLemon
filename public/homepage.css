@@ -108,10 +108,11 @@ a {
 }
 
 #dialogue {
-  padding: 3%;
+  padding:5%;
   width: auto;
   height: auto;
   max-height: 100%;
+  max-width: 90%;
   box-sizing: border-box;
   border: 10px solid  rgb(255, 243, 106);
   background-color: rgb(255, 255, 213);
@@ -130,7 +131,7 @@ a {
 #nomPnj {
   position: absolute;
   left: 20rem;
-  top: 1rem;
+  top: 5px;
   z-index: 1000;
   box-sizing: border-box;
   border: 5px solid rgb(255, 243, 106);
@@ -192,8 +193,8 @@ a {
 }
 #missions {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: 20px;
+    left: 20px;
     display: flex;
     flex-direction: row;
     gap: -4px;
