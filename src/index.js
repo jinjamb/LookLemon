@@ -64,15 +64,15 @@ function spawnCitron(lemon, position, rotation) {
 }
 
 function openFullscreen() {
-  const elem = document.documentElement; // or any specific element
+    const elem = document.documentElement; // or any specific element
 
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
-  }
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+    }
 }
 
 const createScene = async function () {
@@ -81,24 +81,25 @@ const createScene = async function () {
     scene.missionFeuille = false;
     scene.missionTronc = false;
     scene.missionFleur = false
-    
-    clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, { 
-        loop: false, 
-        autoplay: false,
-        volume: 0.5,});
-    
-    walkSound = new Sound("walk", "../assets/sounds/effect/FootGrass.mp3", scene, null, {
-        loop: false, 
+
+    clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, {
+        loop: false,
         autoplay: false,
         volume: 0.5,
     });
 
-    
-    backgroundMusicGame = new Sound("backgroundMusicGame", "./../assets/sounds/music/HowSweet.mp3", scene, null, { 
-            loop: true, 
-            autoplay: false,
-            volume: 0.3,
-        });
+    walkSound = new Sound("walk", "../assets/sounds/effect/FootGrass.mp3", scene, null, {
+        loop: false,
+        autoplay: false,
+        volume: 0.5,
+    });
+
+
+    backgroundMusicGame = new Sound("backgroundMusicGame", "./../assets/sounds/music/HowSweet.mp3", scene, null, {
+        loop: true,
+        autoplay: false,
+        volume: 0.3,
+    });
 
     backgroundMusicMenu = new Music(BubbleGum);
     backgroundMusicMenu.setVolume(0.8);
@@ -138,7 +139,7 @@ const createScene = async function () {
     pnj_Potato = new Pnj(scene);
     await pnj_Potato.loadPnj(scene);
     pnj_Potato.model.position = new Vector3(-120, 27.25, -70);
-    pnj_Potato.model.rotation.y = Math.PI/4
+    pnj_Potato.model.rotation.y = Math.PI / 4
 
     PNJs.push(pnj_Potato);
 
@@ -168,14 +169,14 @@ const createScene = async function () {
     // Add keyboard controls
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
-        if (playing){
+        if (playing) {
             let mindistance = Infinity
             PNJs.forEach((pnj) => {
                 let distance = Math.sqrt(Math.pow(lemon.position.x - pnj.model.position.x, 2) + Math.pow(lemon.position.z - pnj.model.position.z, 2));
                 if (distance < mindistance) {
                     mindistance = distance;
                 }
-                if (distance < 70){
+                if (distance < 70) {
                     if (distance < 40) pnj.changeclickercolor(new Color3(1, 0, 1), true);
                     pnj.model.lookAt(new Vector3(lemon.position.x, pnj.model.position.y, lemon.position.z));
                 }
@@ -207,7 +208,20 @@ const createScene = async function () {
                             clickSound.playMusic();
                         }
                         else { pnj.endDialog(); }
-                })
+                    })
+                    //devant la grotte
+                    if (lemon.position.y > 0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23) {
+                        lemon.position.x = 830;
+                        lemon.position.y = -180;
+                        lemon.position.z = 820;
+                        document.getElementById("notif").innerHTML = "none";
+                    }
+                    if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626) {
+                        //tp au debut
+                        lemon.position.x = 0;
+                        lemon.position.y = 60;
+                        lemon.position.z = 0;
+                    }
             }
         }
     });
@@ -241,7 +255,7 @@ function showTemporaryMessage(message, duration = 100) {
     dialogueElement.innerHTML = message;
     dialogueElement.style.display = 'block';
     dialogueElement.style.opacity = '1';
-    
+
     // Faire disparaître le message après la durée spécifiée
     setTimeout(() => {
         dialogueElement.style.opacity = '0';
@@ -252,7 +266,7 @@ function showTemporaryMessage(message, duration = 100) {
 }
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
-    openFullscreen();
+    //openFullscreen();
     setTimeout(() => {
         playing = !playing;
         document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
@@ -304,13 +318,13 @@ createScene().then((scene) => {
     let rotation = new Vector3(0, Math.PI / 2, 0);
 
     engine.runRenderLoop(function () {
-        if (!playing) {}
-        else if (document.getElementById("dialogue").style.display !== 'none'){
+        if (!playing) { }
+        else if (document.getElementById("dialogue").style.display !== 'none') {
             console.log(document.getElementById("dialogue").style.display)
             gameCitron.stand();
             scene.render();
         }
-        else if (scene && !pause) {            
+        else if (scene && !pause) {
             //log pour voir la possition du joueur a tt moment
             //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
@@ -486,10 +500,10 @@ createScene().then((scene) => {
                 showTemporaryMessage("Appuillez sur E pour récupérer le Soleil.", 500);
                 scene.missionFeuille = true;
             }
-            
-            pnj_Potato.setState([scene.missionTronc? 1:0, scene.missionFeuille? 1:0, scene.missionFleur? 1:0]);
+
+            pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
             scene.render();
-        }  
+        }
     });
 });
 
