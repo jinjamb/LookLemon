@@ -1,4 +1,4 @@
-import { Vector3, KeyboardEventTypes } from "@babylonjs/core";
+import { Vector3 } from "@babylonjs/core";
 import FleurC from "./../assets/fleurs/FleurClaire.glb";
 import FleurF from "./../assets/fleurs/FleurFonce.glb";
 
@@ -72,7 +72,7 @@ export class JeuFleurs {
 
         }
         //console.log("matriceModels=", this.matriceModels);
-        console.log("ON LOAD");
+
         this.mereFleur = new MereFleur(this.scene);
         this.mereFleur.loadModel();
         this.scene.PNJs.push(this.mereFleur);
@@ -94,7 +94,7 @@ export class JeuFleurs {
         this.matriceModels.forEach(lignes => {
             lignes.forEach(fleur => {
                 //console.log("fleur=", fleur);
-                console.log("fleur[1]=", fleur[1]);
+                //console.log("fleur[1]=", fleur[1]);
 
                 if (fleur[1] == 1 || fleur[1] == 3) {
                     //console.log("SORTIR");
@@ -105,7 +105,9 @@ export class JeuFleurs {
         });
         if (test) {
             this.scene.missionFleur = true;
+            this.scene.missionBranche = true;
             document.getElementById("engrais").src = "./engraisP.png";
+
             this.lockFleurs();
         }
         return test;

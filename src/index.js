@@ -36,10 +36,12 @@ let backgroundMusicMenu;
 let backgroundMusicGame;
 
 let lemon;
-let pnj_Potato
+let pnj_Potato;
+let pnj_CitronVert;
 let pnj_Fleur;
 let PNJs = [];
 
+let jeufini=false;
 let jumpPad;
 let jumping = false;
 
@@ -81,6 +83,7 @@ const createScene = async function () {
     scene.missionFeuille = false;
     scene.missionTronc = false;
     scene.missionFleur = false;
+    
     scene.PNJs = PNJs;
 
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, {
@@ -137,12 +140,13 @@ const createScene = async function () {
 
     new MapLoader(scene).load(); // Load the map
 
-    pnj_Potato = new Pnj(scene);
-    await pnj_Potato.loadPnj(scene);
-    pnj_Potato.model.position = new Vector3(-120, 27.25, -70);
-    pnj_Potato.model.rotation.y = Math.PI / 4
+    pnj_CitronVert = new Pnj(scene);
+    await pnj_CitronVert.loadPnj(scene);
+    pnj_CitronVert.model.position = new Vector3(-120, 27.25, -70);
 
-    PNJs.push(pnj_Potato);
+    pnj_CitronVert.model.rotation.y = Math.PI / 4
+
+    PNJs.push(pnj_CitronVert);
 
     // Create lemon with physics
     lemon = citron.getMesh();
@@ -506,8 +510,16 @@ createScene().then((scene) => {
                 document.getElementById("soleil").src = "./soleilP.png";
                 scene.missionFeuille = true;
             }
-            pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
-
+            pnj_CitronVert.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
+            if (scene.missionFleur && scene.missionTronc && scene.missionFeuille) {
+                console.log("Mission terminée!");
+                if(!jeufini){
+                    pnj_CitronVert.playAnimation("HowSweet");
+                    jeufini = true;
+                    showTemporaryMessage("Bravo, tu as fini toutes les missions !", 5000);
+                }
+                
+            }
             scene.render();
         }
 

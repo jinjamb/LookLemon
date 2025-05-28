@@ -1,5 +1,5 @@
 import { SceneLoader, MeshBuilder, Color3, StandardMaterial, ActionManager, Vector3, ExecuteCodeAction, GUID, TextBlock } from "@babylonjs/core";
-import Potato from "./../assets/animations/PotatoPNJ.glb";
+import CitronVert from "./../assets/animations/CitronVert.glb";
 
 export class Pnj {
     ready = false
@@ -52,16 +52,16 @@ export class Pnj {
         this.clickZone.material = clickMat;
         
         try {
-            const result = await SceneLoader.ImportMeshAsync("", "", Potato, this.scene);
+            const result = await SceneLoader.ImportMeshAsync("", "", CitronVert, this.scene);
             const root = result.meshes[0];
             root.parent = this.collider;
-            root.scaling.scaleInPlace(5);
+            root.scaling.scaleInPlace(40);
             root.isPickable = false;
             this.potatoMesh = root;
 
             this.animations = result.animationGroups;
             if (this.animations && this.animations.length > 0) {
-                this.playAnimation("Sad");
+                this.playAnimation("stand");
                 this.ready = true
             }
 
@@ -129,11 +129,11 @@ export class Pnj {
         }
 
         if ( somme == 1){ // a passer a 2 pour le vrai jeu
-            this.setDefaultAnimation('Mid')
+            //this.setDefaultAnimation('Mid')
             this.addDialog('mid')
         }
         else if (somme == 2){ // a passer a 3 pour le vrai jeu
-            this.setDefaultAnimation('Happy')
+            //this.setDefaultAnimation('Happy')
             this.removeDialog('mid')
             this.addDialog('fin')
             this.addDialog('fin1')
@@ -156,6 +156,7 @@ export class Pnj {
         document.getElementById("nomPnj").innerHTML = this.name
 
         let string = ""
+
         const type = () => {
             if (i < this.currentText.length) {
                 string += this.currentText.charAt(i);
@@ -174,9 +175,6 @@ export class Pnj {
             this.istyping = false;
     }
 
-    name(newName){
-        this.name = newName;
-    }
 
     endDialog(){
         if (!this.istyping || this.currentText === document.getElementById("dialogue").innerHTML) {

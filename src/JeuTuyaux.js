@@ -51,8 +51,10 @@ export class JeuTuyaux {
                     //console.log(this.scene.activeCamera.position);
                     //le joeur a changer apres c'est juste pour test
                     const playerPosition = this.scene.player.position;
-                    this.rotateClosestTuyau(playerPosition);
-                    this.changeVisibility();
+                    if(this.rotateClosestTuyau(playerPosition) !== null){
+                        this.changeVisibility();
+                    }
+                    
                 }
                 // }if (kbInfo.event.key.toLowerCase() === 'o') {
                 //     document.getElementById("eau").src = "./eauP.png";
@@ -122,7 +124,7 @@ export class JeuTuyaux {
     }
     Closest(position) {
         let closest = null;
-        let min = Infinity;
+        let min = 50;
         for (const tuyau of this.models) {
             //console.log("tuyau pos=", tuyau.position);
             const distance = Vector3.Distance(tuyau.position, position);
@@ -135,6 +137,9 @@ export class JeuTuyaux {
     }
     rotateClosestTuyau(position) {
         const closest = this.Closest(position);
+        if(closest == null){
+            return null;
+        }
         console.log("closest=", closest);
         //console.log("gridpos=",closest.metadata.gridPosition);
         if (closest) {
