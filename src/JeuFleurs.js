@@ -1,8 +1,8 @@
-import { Vector3 } from "@babylonjs/core";
+import { Vector3,KeyboardEventTypes } from "@babylonjs/core";
 import FleurC from "./../assets/fleurs/FleurClaire.glb";
 import FleurF from "./../assets/fleurs/FleurFonce.glb";
 
-
+import { MereFleur } from "./MereFleur.js";
 import { Fleur } from "./Fleur.js";
 
 
@@ -12,6 +12,7 @@ export class JeuFleurs {
         this.damier = false;
         this.tt = null;
         this.models = [];
+        this.mereFleur = null;
         //matrice des tuyaux
         this.matriceModels = [];
         //matrice des fleures: 1 si ya fleur 2 si elle est heruuse 3 si dead 0 pion.
@@ -28,7 +29,7 @@ export class JeuFleurs {
     }
 
 
-
+    
     async createFromMatrice(positionInit) {
         let vec = new Vector3(40, 40, 40);
         let coef = 20;
@@ -197,4 +198,20 @@ export class JeuFleurs {
             }, 500); // Attendre que la transition d'opacité soit terminée
         }, duration);
     }
+
+    resetFleurs() {
+        this.matriceModels.forEach(lignes => {
+            lignes.forEach(fleur => {
+                if (fleur[1]== 2 || fleur[1] == 3) {
+                    fleur[1] = 1; // on remet a jour l'etat de la fleur
+                    fleur[0].playAnimation("chill");
+                }
+            });
+        });
+        this.mereFleur.playAnimation("standhappy");
+    }
+    
+                    
+
+                    
 }
