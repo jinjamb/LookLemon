@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Comic Mono';
-  src: url('ComicMono-Bold.ttf') format('truetype');
+  src: url('/assets/fonts/ComicMono.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -118,7 +118,6 @@ a {
   display: none;
   margin: 2%;
   border-radius: 50px;
-  align-items: center;
 }
 
 #photo {
@@ -141,6 +140,7 @@ a {
   height: 50px;
   display: none;
   align-items: center;
+
 }
 
 #dialogContainer {

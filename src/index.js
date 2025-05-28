@@ -231,6 +231,7 @@ const createScene = async function () {
             }
         }
     });
+
     window.addEventListener("keyup", (event) => {
         keypress[event.code] = false;
     });
@@ -275,7 +276,6 @@ function showTemporaryMessage(message, duration = 100) {
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     //openFullscreen();
-
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display = playing ? 'block' : 'none'
@@ -283,7 +283,6 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
     document.getElementById("missions").style.display = 'flex';
-
 });
 
 window.addEventListener('load', () => {
@@ -311,7 +310,8 @@ document.getElementById("resetButton").addEventListener("click", () => {
     }
 })
 createScene().then((scene) => {
-    console.log(pnj_Potato.getAnimationNames())
+    //console.log(pnj_Potato.getAnimationNames())
+    //['Happy', 'Mid', 'Sad']
 
     let jumpY = 0;
     let groundCollision = { ray: null, point: 0, lastY: lemon.position.y };
@@ -325,7 +325,6 @@ createScene().then((scene) => {
 
     let position = new Vector3(0, 60, 0);
     let rotation = new Vector3(0, Math.PI / 2, 0);
-
     engine.runRenderLoop(function () {
         //console.log("test: ",document.getElementById("dialogue").style.display);
         if (!playing) { }
