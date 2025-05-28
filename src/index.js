@@ -150,8 +150,8 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(100, 42.375, 0);
-    let rotation = new Vector3(0, Math.PI, 0);
+    let position = new Vector3(100, 39.375, 0);
+    let rotation = new Vector3(0, -3 * Math.PI/4, 0);
     spawnCitron(lemon, position, rotation);
 
     window.gameCitron = citron;
@@ -178,6 +178,7 @@ const createScene = async function () {
         if (playing) {
             let mindistance = Infinity
             PNJs.forEach((pnj) => {
+                
                 let distance = Math.sqrt(Math.pow(lemon.position.x - pnj.model.position.x, 2) + Math.pow(lemon.position.z - pnj.model.position.z, 2));
                 if (distance < mindistance) {
                     mindistance = distance;
@@ -332,7 +333,7 @@ createScene().then((scene) => {
     engine.runRenderLoop(function () {
         //console.log("test: ",document.getElementById("dialogue").style.display);
         if (!playing) { }
-        else if (document.getElementById("dialogue").style.display !== 'none') {
+        else if (document.getElementById("dialogContainer").style.display !== 'none') {
             //console.log("dispaly: ",document.getElementById("dialogue").style.display);
             gameCitron.stand();
             scene.render();
@@ -350,7 +351,7 @@ createScene().then((scene) => {
                 groundCollision.point = scene.pickWithRay(groundCollision.ray, (mesh) => {
                     return (mesh.name === "ground");
                 }).pickedPoint.y
-            } catch (e) { groundCollision.point = lemon.position.y - 20; }
+            } catch (e) { groundCollision.point = lemon.position.y - 20 * scene.getAnimationRatio(); }
 
             //bottom right collisions
             try {
@@ -423,7 +424,7 @@ createScene().then((scene) => {
             //gestion du saut et du déplacement aérien
             if (jumping) {
                 if (jumpPad.position.y - jumpY <= 5) {
-                    jumpPad.position.y += 0.2;
+                    jumpPad.position.y += 0.2 * scene.getAnimationRatio();
                 }
                 else {
                     jumping = false;
@@ -446,7 +447,7 @@ createScene().then((scene) => {
                     }
                 }
                 else { // if we are still up
-                    jumpPad.position.y += -0.2
+                    jumpPad.position.y += -0.2 * scene.getAnimationRatio(); // we fall down
                 }
             }
 
@@ -506,7 +507,7 @@ createScene().then((scene) => {
                 showTemporaryMessage("Appuie sur E pour te rendre dans la grotte!", 100);
             }
             if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626 && lemon.position.y < 0) {
-                showTemporaryMessage("Appuillez sur E pour récupérer le Soleil.", 500);
+                showTemporaryMessage("Appuie sur E pour récupérer le Soleil.", 500);
                 document.getElementById("soleil").src = "./soleilP.png";
                 scene.missionFeuille = true;
             }
@@ -516,7 +517,7 @@ createScene().then((scene) => {
                 if(!jeufini){
                     pnj_CitronVert.playAnimation("HowSweet");
                     jeufini = true;
-                    showTemporaryMessage("Bravo, tu as fini toutes les missions !", 5000);
+                    showTemporaryMessage("Bravo, tu as fini toutes les missions!", 5000);
                 }
                 
             }

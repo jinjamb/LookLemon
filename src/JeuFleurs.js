@@ -167,7 +167,7 @@ export class JeuFleurs {
         } else if (this.matriceModels[x][y][1] == 2) {
             this.matriceModels[x][y][1] = 3; // on met a jour l'etat de la fleur
             this.currentPosition = [x, y];
-            this.showTemporaryMessage("Fleur Ecrasée !!!! retourne voir la fleur", 5000);
+            this.showTemporaryMessage("Oh non! Tu as écrasé une des fleurs! Retourne voir Maëlle, vite!", 5000);
             this.mereFleur.notHappy();
             this.mereFleur.changeNumdialogue(1);
             fleur.meurt();
