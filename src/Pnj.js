@@ -6,7 +6,7 @@ export class Pnj {
     speaking = false
     isTyping = false
     available_dialogues = ['debut']
-    name="Bro Tato"
+    name="François-Louis-Gustave"
     state=[0,0,0]
     typingInterval = null;
     currentText = "";
@@ -159,13 +159,14 @@ export class Pnj {
 
         const type = () => {
             if (i < this.currentText.length) {
-                string += this.currentText.charAt(i);
-                document.getElementById("dialogue").innerHTML = `${string}${'\u00A0'.repeat(this.currentText.length - i - 1)}`; // Add spaces to fill the rest of the line
+                string += this.currentText.charAt(i) + this.currentText.charAt(i + 1);
+                document.getElementById("dialogue").innerHTML = `${string}${'\u00A0 '.repeat((this.currentText.length - string.length)/2)}`; // Add spaces to fill the rest of the line
                 //console.log(`${this.currentText.length} - ${document.getElementById("dialogue").innerHTML.length}`);
-                i++
+                i+=2
                 this.typingInterval = setTimeout(type, 5);
             }
         }
+        console.log('')
         type();
     }
 
