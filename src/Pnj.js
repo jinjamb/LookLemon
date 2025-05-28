@@ -89,8 +89,8 @@ export class Pnj {
             this.currentAnimation = anim;
             return true;
         } else {
-            console.warn(`Animation '${name}' non trouvée`);
-            console.log("Available animations:", this.animations ? this.animations.map(ag => ag.name) : "None");
+            //console.warn(`Animation '${name}' non trouvée`);
+            //console.log("Available animations:", this.animations ? this.animations.map(ag => ag.name) : "None");
             return false;
         }
     }
@@ -119,7 +119,7 @@ export class Pnj {
 
         if (state[2]===0) this.addDialog('engrais')
         else {
-            console.log("engrais non dispo")
+            //console.log("engrais non dispo")
             this.removeDialog('engrais')
         }
         this.state = state

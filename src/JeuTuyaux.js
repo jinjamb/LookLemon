@@ -75,7 +75,7 @@ export class JeuTuyaux {
                     let tuyau = new Tuyau(this.scene);
                     tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit );
                     this.models.push(tuyau);
-                    ligne.push([tuyau,1,1]);
+                    ligne.push([tuyau,1,1]);//tuyaux,rotation,type
                     //this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j] - 1) * (Math.PI / 2), 0), positionInit, false, true);
                 } else if (this.matrice[i][j] == 2) {   
                     let tuyau = new Tuyau(this.scene);
@@ -313,7 +313,8 @@ export class JeuTuyaux {
         let endaccess = false;
         valides.forEach((tuple) => {
             this.matriceModels[tuple[0]][tuple[1]][0].plein();
-            if (tuple[0] == 4 && tuple[1] == 7) {
+            if (tuple[0] == 4 && tuple[1] == 7 && this.matriceModels[tuple[0]][tuple[1]][1]== 3) {
+                this.showTemporaryMessage("Mission des tuyaux terminée !", 5000);
                 console.log("fin de la mission");
                 endaccess = true;
             }
@@ -364,5 +365,19 @@ export class JeuTuyaux {
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = false;
         });
+    }
+    showTemporaryMessage(message, duration = 100) {
+        const dialogueElement = document.getElementById("notif");
+        dialogueElement.innerHTML = message;
+        dialogueElement.style.display = 'block';
+        dialogueElement.style.opacity = '1';
+
+        // Faire disparaître le message après la durée spécifiée
+        setTimeout(() => {
+            dialogueElement.style.opacity = '0';
+            setTimeout(() => {
+                dialogueElement.style.display = 'none';
+            }, 500); // Attendre que la transition d'opacité soit terminée
+        }, duration);
     }
 }

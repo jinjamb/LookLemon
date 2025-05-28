@@ -80,7 +80,7 @@ const createScene = async function () {
     const scene = new Scene(engine);
     scene.missionFeuille = false;
     scene.missionTronc = false;
-    scene.missionFleur = false
+    scene.missionFleur = false;
 
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, {
         loop: false,
@@ -491,19 +491,14 @@ createScene().then((scene) => {
                 console.log("tu peux tp apuie sur E dailleur faut faire un ptit dialogue pour mettre loption ce serais cool voilavoila");
                 showTemporaryMessage("Appuie sur E pour te rendre dans la grotte!", 100);
             }
-            //     //console.log("teleportation");
-            //     lemon.position.x = 400;
-            //     lemon.position.y = -180;
-            //     lemon.position.z = 400;
-            // }
             if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626 && lemon.position.y < 0) {
                 showTemporaryMessage("Appuillez sur E pour récupérer le Soleil.", 500);
                 scene.missionFeuille = true;
             }
-
             pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
             scene.render();
         }
+        
     });
 });
 
