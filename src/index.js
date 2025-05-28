@@ -235,10 +235,6 @@ function addVector(vectors_array) {
 let playing = false;
 let pause = false;
 
-document.getElementById("playbutton").addEventListener("click", function () {
-    openFullscreen();
-    setTimeout(() => {}, 5000);
-})
 
 function showTemporaryMessage(message, duration = 100) {
     const dialogueElement = document.getElementById("notif");
@@ -256,12 +252,15 @@ function showTemporaryMessage(message, duration = 100) {
 }
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
-    playing = !playing;
-    document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
-    document.getElementById("pauseButton").style.display = playing ? 'block' : 'none'
-    canvas.style.display = 'block'
-    backgroundMusicMenu.stopMusic();
-    backgroundMusicGame.playMusic();
+    openFullscreen();
+    setTimeout(() => {
+        playing = !playing;
+        document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
+        document.getElementById("pauseButton").style.display = playing ? 'block' : 'none'
+        canvas.style.display = 'block'
+        backgroundMusicMenu.stopMusic();
+        backgroundMusicGame.playMusic();
+    }, 2000);
 });
 
 window.addEventListener('load', () => {

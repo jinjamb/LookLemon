@@ -15,8 +15,6 @@ import tuyauD from "./../assets/tuyauDroit.glb";
 //import GrassMix from "././assets/deco/GrassMix.glb";
 //import GrassPatch from "././assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
-import { JeuFleurs } from "./JeuFleurs.js";
-import { LabyrintheModel } from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
 import { SkyboxModel } from "./Skybox.js";
 import { TextureTest } from "./TextureTest.js";
