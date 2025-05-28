@@ -1,4 +1,12 @@
+@font-face {
+  font-family: 'Comic Mono';
+  src: url('ComicMono-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html,body {
+  font-family:'Comic Mono';
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -100,22 +108,39 @@ a {
 }
 
 #dialogue {
-  padding:3%;
-  width: 80%;
-  height: auto;      /* Variable height based on content */
+  padding: 3%;
+  width: auto;
+  height: auto;
   max-height: 100%;
   box-sizing: border-box;
-  border: 5px solid  rgb(0, 0, 0);
-  background-color: rgb(255, 255, 243);
-  font-family:'Comic Sans MS', 'Comic Sans, cursive';
+  border: 10px solid  rgb(255, 243, 106);
+  background-color: rgb(255, 255, 213);
   display: none;
   margin: 2%;
+  border-radius: 50px;
+  align-items: center;
 }
 
 #photo {
   position: relative;
   width: 16rem;
   height: 16rem;
+}
+
+#nomPnj {
+  position: absolute;
+  left: 20rem;
+  top: 1rem;
+  z-index: 1000;
+  box-sizing: border-box;
+  border: 5px solid rgb(255, 243, 106);
+  background-color: rgb(255, 255, 213);
+  border-radius: 50px;
+  font-family:'Comic Sans MS', 'Comic Sans, cursive';
+  padding: 20px;
+  height: 50px;
+  display: none;
+  align-items: center;
 }
 
 #dialogContainer {
