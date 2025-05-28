@@ -81,6 +81,7 @@ const createScene = async function () {
     scene.missionFeuille = false;
     scene.missionTronc = false;
     scene.missionFleur = false;
+    scene.PNJs = PNJs;
 
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, {
         loop: false,
@@ -162,7 +163,8 @@ const createScene = async function () {
     camera.attachControl(canvas, true);
     camera.radius = 120 //distance from the lemon;
     camera.lockedTarget = lemon.position;
-
+    camera.inputs.attached.pointers.buttons = []; // Aucun bouton de souris ne fera bouger la caméra
+    camera.inputs.attached.mousewheel.detachControl();
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
@@ -204,7 +206,7 @@ const createScene = async function () {
                 case "KeyE":
                     PNJs.forEach((pnj) => {
                         if (!pnj.speaking && !pause && mindistance < 50) {
-                            pnj.handleDialog()
+                            pnj.handleDialog();
                             clickSound.playMusic();
                         }
                         else { pnj.endDialog(); }
@@ -222,6 +224,9 @@ const createScene = async function () {
                         lemon.position.y = 40;
                         lemon.position.z = 80;
                     }
+                    break;
+                case "KeyC":
+                    console.log("Position du citron:", lemon.position);
             }
         }
     });
@@ -233,7 +238,7 @@ const createScene = async function () {
     //while (!pageLoaded || !citron.ready || !pnj_Potato.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
-    
+
     backgroundMusicMenu.playMusic();
 
     return scene;
@@ -269,6 +274,7 @@ function showTemporaryMessage(message, duration = 100) {
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     //openFullscreen();
+
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display = playing ? 'block' : 'none'
@@ -276,6 +282,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
     document.getElementById("missions").style.display = 'flex';
+
 });
 
 window.addEventListener('load', () => {
@@ -319,9 +326,10 @@ createScene().then((scene) => {
     let position = new Vector3(0, 60, 0);
     let rotation = new Vector3(0, Math.PI / 2, 0);
     engine.runRenderLoop(function () {
+        //console.log("test: ",document.getElementById("dialogue").style.display);
         if (!playing) { }
         else if (document.getElementById("dialogue").style.display !== 'none') {
-            console.log(document.getElementById("dialogue").style.display)
+            //console.log("dispaly: ",document.getElementById("dialogue").style.display);
             gameCitron.stand();
             scene.render();
         }
@@ -500,7 +508,7 @@ createScene().then((scene) => {
             pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
             scene.render();
         }
-        
+
     });
 });
 
