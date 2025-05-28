@@ -41,7 +41,6 @@ export class MapLoader {
         this.arbreModel.load();
         this.setupMissionTroncObserver();
 
-
     }
 
     setupMissionTroncObserver() {
@@ -74,6 +73,7 @@ export class MapLoader {
             //this.applyTexture(texturePath);
         } catch (error) {
             console.error("Error loading model:", error);
+            
         }
     }
     async loadvisualGround() {

@@ -3,14 +3,19 @@ import { SceneLoader, Vector3, MeshBuilder, StandardMaterial, Color3 } from "@ba
 import mamafleur from "./../assets/fleurs/merefleur.glb";
 
 export class MereFleur {
-    dialogues = ["hihi"];
+    dialogue = 
+    ["Essayer de passer une fois par case",
+    "tu peux reessayer mais fait plus attention cette fois !\n Passe une seule fois par case",
+    "Bien joué, maintenant j'ai 32 enfants a m'occuper..."];
+    numDialogue = 0;
     scene = null;
     heureux = true;
     model = null;
     animationGroups = null;
     currentAnimation = null;
     track = false;
-    position= new Vector3(266, 26, 78);
+    position = new Vector3(266, 26, 78);
+    reset= false;
     constructor(scene) {
         this.scene = scene;
     }
@@ -23,7 +28,7 @@ export class MereFleur {
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
         this.clickZone.position = new Vector3(266, 26, 78);
-        this.clickZone.position.y = this.clickZone.position.y + 20;
+        this.clickZone.position.y = this.clickZone.position.y + 40;
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
 
@@ -96,8 +101,10 @@ export class MereFleur {
     handleDialog() {
         this.speaking = true
         this.istyping = true
-        
-        let text = "hihi";
+        //TEXT A CHANGER 
+        let text = this.dialogue[this.numDialogue];
+        this.reset = true;
+        this.playAnimation("standhappy");
         let displayText = "";
 
         document.getElementById("dialogue").style.display = 'flex';
@@ -123,6 +130,9 @@ export class MereFleur {
         }else {
             this.istyping = false;
         }
+    }
+    changeNumdialogue(num) {
+        this.numDialogue = num;
     }
 
 }

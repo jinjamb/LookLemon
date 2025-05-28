@@ -205,11 +205,12 @@ const createScene = async function () {
                     break;
                 case "KeyE":
                     PNJs.forEach((pnj) => {
+                        mindistance = Vector3.Distance(lemon.position, pnj.model.position);
                         if (!pnj.speaking && !pause && mindistance < 50) {
+
                             pnj.handleDialog();
                             clickSound.playMusic();
-                        }
-                        else { pnj.endDialog(); }
+                        } else if (mindistance < 50) { pnj.endDialog(); }
                     })
                     //devant la grotte
                     if (lemon.position.y > 0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23) {
@@ -233,6 +234,7 @@ const createScene = async function () {
     window.addEventListener("keyup", (event) => {
         keypress[event.code] = false;
     });
+    
     //waiting for everything to be ready before letting the player start the game
     //while (!pageLoaded || !citron.ready || !pnj_Potato.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
@@ -336,6 +338,7 @@ createScene().then((scene) => {
             //log pour voir la possition du joueur a tt moment
             //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
+
             let origin = new Vector3(lemon.position.x, lemon.position.y + 10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y + 2, lemon.position.z);
             spotLight.position = new Vector3(lemon.position.x, lemon.position.y + 100, lemon.position.z);
@@ -505,6 +508,7 @@ createScene().then((scene) => {
                 scene.missionFeuille = true;
             }
             pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
+
             scene.render();
         }
 
