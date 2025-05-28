@@ -1,4 +1,4 @@
-import { Vector3,KeyboardEventTypes } from "@babylonjs/core";
+import { Vector3, KeyboardEventTypes } from "@babylonjs/core";
 import FleurC from "./../assets/fleurs/FleurClaire.glb";
 import FleurF from "./../assets/fleurs/FleurFonce.glb";
 
@@ -29,7 +29,7 @@ export class JeuFleurs {
     }
 
 
-    
+
     async createFromMatrice(positionInit) {
         let vec = new Vector3(40, 40, 40);
         let coef = 20;
@@ -69,10 +69,16 @@ export class JeuFleurs {
             }
             this.matriceModels.push(ligne);
             if (this.damier) { this.damier = false; } else { this.damier = true; }
+
         }
         //console.log("matriceModels=", this.matriceModels);
+        console.log("ON LOAD");
+        this.mereFleur = new MereFleur(this.scene);
+        this.mereFleur.loadModel();
+        this.scene.PNJs.push(this.mereFleur);
     }
     lockFleurs() {
+        this.mereFleur.changeNumdialogue(2);
         this.showTemporaryMessage("Mission des fleurs terminée !", 5000);
         this.matriceModels.forEach(lignes => {
             lignes.forEach(fleur => {
@@ -91,7 +97,7 @@ export class JeuFleurs {
                 console.log("fleur[1]=", fleur[1]);
 
                 if (fleur[1] == 1 || fleur[1] == 3) {
-                    console.log("SORTIR");
+                    //console.log("SORTIR");
                     test = false;
                 }
 
@@ -124,9 +130,9 @@ export class JeuFleurs {
             //this.applyTexture(texturePath);
 
             return result;
-            
-        
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             //console.error("Error loading model:", error);
         }
@@ -135,6 +141,11 @@ export class JeuFleurs {
 
 
     update() {
+        if (this.mereFleur.reset){
+            this.resetFleurs();
+            this.mereFleur.reset = false;
+            return;
+        }
         let fleur = this.getClosestFleure();
         if (!fleur) {
             //console.log("No flower found close enough.");
@@ -155,6 +166,8 @@ export class JeuFleurs {
             this.matriceModels[x][y][1] = 3; // on met a jour l'etat de la fleur
             this.currentPosition = [x, y];
             this.showTemporaryMessage("Fleur Ecrasée !!!! retourne voir la fleur", 5000);
+            this.mereFleur.notHappy();
+            this.mereFleur.changeNumdialogue(1);
             fleur.meurt();
         }
         this.testfinish();
@@ -202,7 +215,7 @@ export class JeuFleurs {
     resetFleurs() {
         this.matriceModels.forEach(lignes => {
             lignes.forEach(fleur => {
-                if (fleur[1]== 2 || fleur[1] == 3) {
+                if (fleur[1] == 2 || fleur[1] == 3) {
                     fleur[1] = 1; // on remet a jour l'etat de la fleur
                     fleur[0].playAnimation("chill");
                 }
@@ -210,8 +223,8 @@ export class JeuFleurs {
         });
         this.mereFleur.playAnimation("standhappy");
     }
-    
-                    
 
-                    
+
+
+
 }
