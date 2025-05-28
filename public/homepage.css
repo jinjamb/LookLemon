@@ -100,11 +100,31 @@ a {
 }
 
 #dialogue {
-  display: none;
-  position: absolute;
-  bottom: 10%;
   padding:3%;
+  width: 80%;
+  height: auto;      /* Variable height based on content */
+  max-height: 100%;
+  box-sizing: border-box;
   border: 5px solid  rgb(0, 0, 0);
   background-color: rgb(255, 255, 243);
   font-family:'Comic Sans MS', 'Comic Sans, cursive';
+  display: none;
+  margin: 2%;
+}
+
+#photo {
+  position: relative;
+  width: 16rem;
+  height: 16rem;
+}
+
+#dialogContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  top: 70%;
+  left: 5%;
+  width: 94.5%;
+  height:fit-content;
+  max-height: 25%;
 }

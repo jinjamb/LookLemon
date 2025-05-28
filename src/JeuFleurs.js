@@ -2,16 +2,13 @@ import { SceneLoader, Vector3, KeyboardEventTypes } from "@babylonjs/core";
 
 import TuyauDV from "./../assets/tuyauDroitVide.glb";
 import TuyauDP from "./../assets/tuyauDroitPlein.glb";
-import EauMap from "./../assets/SolEau.glb";
 
 export class JeuFleurs {
     constructor(scene) {
         this.scene = scene;
         this.models = [];
         this.modelsP = [];
-        this.eau=null;
-        this.currentCase = null;
-        this.eauvisi = false;
+        this.previousFlower = null;
         this.matrice = [
             [1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 1, 1, 1, 0, 1, 1],
@@ -24,13 +21,13 @@ export class JeuFleurs {
         ];
         this.alreadyGrown = [
             [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 2, 0, 0, 0, 2, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 2, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 2, 0],
+            [0, 0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 0, 0, 0, 0, 0],
         ]
 
         this.KeyControles();
@@ -38,10 +35,12 @@ export class JeuFleurs {
     }
 
     KeyControles() {
+        console.log(this.scene.missionBranche)
+        
         window.addEventListener("keydown", (event) => {
             if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].indexOf(event.code) != -1) { // KEYDOWN event
                 const playerPosition = this.scene.player.position;
-                this.growFlower(playerPosition);
+                if (!this.scene.missionBranche) this.checkGround(playerPosition);
             }
         });
     }
@@ -49,21 +48,20 @@ export class JeuFleurs {
     async createFromMatrice(positionInit) {
         let vec = new Vector3(20, 20, 20);
         let coef = 20;
-        this.loadLac();
-        this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, Math.PI, 0), positionInit, true, false);
         for (let i = 0; i < this.matrice.length; i++) {
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
-                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
                     this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
                 } // a remplacer par la terre et la fleur
+                else {
+                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
+                }
             }
-        }
+        }   
     }
 
     async loadModel(model, scale, position, rotation, posInit, visibility, flip) {
         try {
-            this.eau = await this.loadLac();
             const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
             this.model = result.meshes[0];
             this.model.scaling = new Vector3(scale.x, scale.y, scale.z);
@@ -101,29 +99,25 @@ export class JeuFleurs {
                 closest = tuyau;
             }
         }
-        if (closest) {
-            // console.log("Distance",min);
-        }
+        this.checkFinish()
         return closest;
     }
 
-    growFlower(position) {
-        const closest = this.Closest(position);
-        if (closest != this.currentCase && closest != null ) {
-            if (this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] !=1 ){
-                console.log("closest=", closest.metadata.gridPosition);
-                closest.position.y += 1;
-                this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] = 1;
+    checkGround(position) {
+        let closest = this.Closest(position);
+        if (closest != this.previousFlower && closest != null ) {
+            if (this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] < 1 ){
+                closest.position.y += 2;
+                // animation fleur()
+                console.log(`fleur [${closest.metadata.gridPosition.x}, ${closest.metadata.gridPosition.z}] plantée`);
+                this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] = 1; //a virer du coup
             }
             else {
-                this.resetGrid()
+                // on ecrase la fleur
+                console.log(`fleur [${closest.metadata.gridPosition.x}, ${closest.metadata.gridPosition.z}] déja plantée`);
             }
         }
-        if (this.currentCase != null) {
-            //verif de l'update de la case
-            console.log("no");
-        }
-        this.currentCase = closest;
+        this.previousFlower = closest;
     }
 
     resetGrid(){
@@ -142,21 +136,14 @@ export class JeuFleurs {
         }
     }
 
-    async loadLac(){
-        try {
-            const result = await SceneLoader.ImportMeshAsync("", EauMap, "", this.scene);
-            const ground = result.meshes[0];
-            result.meshes.forEach((mesh) => {
-                mesh.scaling = new Vector3(7, 7, 7);
-                mesh.isVisible = false;
-            });
-            ground.scaling = new Vector3(15, 15, 15);
-            ground.position = new Vector3(0, 0, 0);
-            ground.rotation = new Vector3(0, Math.PI / 2, 0);
-            return result;
-        } catch (error) {
-            console.error("Erreur lors du chargement du lac:", error);
-            return { meshes: [] };
+    checkFinish(){
+        for (let i = 0; i < this.alreadyGrown.length; i++) {
+            for (let j = 0; j < this.alreadyGrown[i].length; j++) {
+                if (this.alreadyGrown[i][j] == 0) return ; // Il reste des fleurs à planter
+            }
         }
+        console.log("Toutes les fleurs sont plantées !");
+        this.scene.missionBranche = true; // Toutes les fleurs sont plantées
     }
+
 }

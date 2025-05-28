@@ -4,19 +4,27 @@ import Potato from "./../assets/animations/PotatoPNJ.glb";
 export class Pnj {
     ready = false
     speaking = false
+    isTyping = false
     available_dialogues = ['debut']
     name="PNJ"
     state=[0,0,0]
+    typingInterval = null;
+    currentText = "";
     // 0: eau, 1: soleil, 2: engrais
 
     dialogues = { 
         debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté l'arbre juste ici mais il l'air vlà fatigué.",
         mid:"L'arbre a déja meilleure mine, mais il a encore besoin d'un petit coup de pouce.",
-        eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre, tu d'vrais guetter (aller voir) la citerne!",
-        soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!",
+        eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre,\ntu d'vrais guetter (aller voir) la citerne!",
+        soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe.\n Je mettrai ma main à couper qu'il y est encore!",
+        engrais:"Il a l'air d'avoir besoin d'engrais, mais je sais pas où en trouver.\nPeut-être que tu devrais aller fouiller le champ de fleurs.",
         fin: "Wow Look Lemon, t'as sauvé le Grand Arbre mon pote!",
         fin1: "Look Lemon, QUEL CITRON! T'es le plus cool, t'es le plus beau, t'es le plus fort!",
         fin2: "Look Lemon, QUEL CITRON! Mais dis moi quel citron!\nLook Lemon, QUEL CITRON! Mais dis moi quel citron!",
+        fleurNeutre:"Salut, Look Lemon, t'as besoin de mon engrais pour aider l'arbre?<br>Je peux t'aider à une condition, tu vois le champs de fleurs derrière moi?<br>Il manque cruellement de fleurset j'aimerais que tu le fleurisse pour moi.",
+        fleurVenere:"BAH ALORS LOOK LEMON! TU AS ÉCRASÉ MES ENFANTS! RECCOMMENCE MAINTENANT!",
+        fleurHappy:"Merci Look Lemon, tu as fait un super boulot! Tu peux prendre l'engrais maintenant.",
+        fleurfin:"Look Lemon, QUEL CITRON! Mais dis moi quel citron!\nLook Lemon, QUEL CITRON! Mais dis moi quel citron!",
     }
 
     constructor(scene) {
@@ -77,7 +85,6 @@ export class Pnj {
         }
         const anim = this.animations.find(a => a.name === name)
         if (anim && anim !== this.currentAnimation) {
-            anim.stop();
             anim.start(loop);
             this.currentAnimation = anim;
             return true;
@@ -104,36 +111,29 @@ export class Pnj {
     }
 
     setState(state) { // y aura jamais 0 0 0 a part au debut donc le 'x <= 2' marche tjrs
-        if (state[0]===0){
-            this.addDialog('eau')
-        }
+        if (state[0]===0) this.addDialog('eau')
+        else this.removeDialog('eau')
+
+        if (state[1]===0) this.addDialog('soleil')
+        else this.removeDialog('soleil')
+
+        if (state[2]===0) this.addDialog('engrais')
         else {
-            this.removeDialog('eau')
-        }
-        if (state[1]===0){
-            this.addDialog('soleil')
-        }
-        else {
-            this.removeDialog('soleil')
-        }/*
-        if (state[2]===0){
-            this.addDialog('engrais')
-        }
-        else {
+            console.log("engrais non dispo")
             this.removeDialog('engrais')
         }
-        this.state = state*/
+        this.state = state
         let somme = state.reduce((x, y) => x + y, 0)
         if (somme !== 0){
             this.removeDialog('debut')
         }
 
         if ( somme == 1){ // a passer a 2 pour le vrai jeu
-            this.playAnimation("Mid")
+            this.setDefaultAnimation('Mid')
             this.addDialog('mid')
         }
         else if (somme == 2){ // a passer a 3 pour le vrai jeu
-            this.playAnimation("Happy")
+            this.setDefaultAnimation('Happy')
             this.removeDialog('mid')
             this.addDialog('fin')
             this.addDialog('fin1')
@@ -144,9 +144,28 @@ export class Pnj {
     //Handle dialog with the pnj
     handleDialog() {
         this.speaking = true
+        this.istyping = true
         let random_text = Math.floor(Math.random() * (this.available_dialogues.length))
-                document.getElementById("dialogue").innerHTML = "Bro Tato: "+this.dialogues[this.available_dialogues[random_text]]
-        document.getElementById("dialogue").style.display = 'block'
+        this.currentText = `${this.dialogues[this.available_dialogues[random_text]]}`
+
+        document.getElementById("dialogue").style.display = 'flex'
+
+        let i = 0;
+        document.getElementById("dialogue").innerHTML = ''; // Clear previous text
+        const type = () => {
+            if (i < this.currentText.length) {
+                document.getElementById("dialogue").innerHTML += this.currentText.charAt(i);
+                i++
+                this.typingInterval = setTimeout(type, 10);
+            }
+        }
+        type();
+    }
+
+    skipTyping() {
+            clearTimeout(this.typingInterval);        
+            document.getElementById("dialogue").innerHTML = this.currentText;             
+            this.istyping = false;
     }
 
     name(newName){
@@ -154,9 +173,12 @@ export class Pnj {
     }
 
     endDialog(){
-        this.speaking = false
-        document.getElementById("dialogue").innerHTML = ""
-        document.getElementById("dialogue").style.display = 'none'
+        if (!this.istyping || this.currentText === document.getElementById("dialogue").innerHTML) {
+            this.speaking = false
+            document.getElementById("dialogue").innerHTML = ""
+            document.getElementById("dialogue").style.display = 'none'
+        }
+        else this.skipTyping()
     }
 
     removeDialog(dialog){

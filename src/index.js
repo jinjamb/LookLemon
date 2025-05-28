@@ -36,7 +36,9 @@ let backgroundMusicMenu;
 let backgroundMusicGame;
 
 let lemon;
-let pnj1
+let pnj_Potato
+let pnj_Fleur;
+let PNJs = [];
 
 let jumpPad;
 let jumping = false;
@@ -61,11 +63,24 @@ function spawnCitron(lemon, position, rotation) {
     }
 }
 
+function openFullscreen() {
+  const elem = document.documentElement; // or any specific element
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
 const createScene = async function () {
 
     const scene = new Scene(engine);
     scene.missionFeuille = false;
     scene.missionTronc = false;
+    scene.missionFleur = false
     
     clickSound = new Sound("click", "../assets/sounds/effect/Interact.mp3", scene, null, { 
         loop: false, 
@@ -78,8 +93,7 @@ const createScene = async function () {
         volume: 0.5,});
 
     
-    backgroundMusicGame = new Sound("backgroundMusicGame", "./../assets/sounds/music/HowSweet.mp3", scene, null,
-        { 
+    backgroundMusicGame = new Sound("backgroundMusicGame", "./../assets/sounds/music/HowSweet.mp3", scene, null, { 
             loop: true, 
             autoplay: false,
             volume: 0.3,
@@ -120,10 +134,12 @@ const createScene = async function () {
 
     new MapLoader(scene).load(); // Load the map
 
-    pnj1 = new Pnj(scene);
-    await pnj1.loadPnj(scene);
-    pnj1.model.position = new Vector3(-120, 27.25, -70);
-    pnj1.model.rotation.y = Math.PI/4
+    pnj_Potato = new Pnj(scene);
+    await pnj_Potato.loadPnj(scene);
+    pnj_Potato.model.position = new Vector3(-120, 27.25, -70);
+    pnj_Potato.model.rotation.y = Math.PI/4
+
+    PNJs.push(pnj_Potato);
 
     // Create lemon with physics
     lemon = citron.getMesh();
@@ -133,7 +149,6 @@ const createScene = async function () {
 
     window.gameCitron = citron;
     scene.player = lemon;
-
 
     //"jump" collision
     jumpPad = MeshBuilder.CreateBox("ground", { width: 15, height: 0.5, depth: 15 }, scene)
@@ -153,12 +168,19 @@ const createScene = async function () {
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
         if (playing){
-            let distance = Math.sqrt(Math.pow(lemon.position.x - pnj1.model.position.x, 2) + Math.pow(lemon.position.z - pnj1.model.position.z, 2));
-            if (distance < 70){
-                if (distance < 40) pnj1.changeclickercolor(new Color3(1, 0, 1), true);
-                pnj1.model.lookAt(new Vector3(lemon.position.x, pnj1.model.position.y, lemon.position.z));
-            }
-            else pnj1.changeclickercolor(new Color3(0, 0, 0), false);
+            let mindistance = Infinity
+            PNJs.forEach((pnj) => {
+                let distance = Math.sqrt(Math.pow(lemon.position.x - pnj.model.position.x, 2) + Math.pow(lemon.position.z - pnj.model.position.z, 2));
+                if (distance < mindistance) {
+                    mindistance = distance;
+                }
+                if (distance < 70){
+                    if (distance < 40) pnj.changeclickercolor(new Color3(1, 0, 1), true);
+                    pnj.model.lookAt(new Vector3(lemon.position.x, pnj.model.position.y, lemon.position.z));
+                }
+                else pnj.changeclickercolor(new Color3(0, 0, 0), false);
+            })
+
             //console.log(event.code)
             switch (event.code) {
                 case "KeyI":
@@ -178,14 +200,13 @@ const createScene = async function () {
                     }
                     break;
                 case "KeyE":
-
-                    if (!pnj1.speaking && !pause && distance < 50) {
-                        pnj1.handleDialog()
-                        clickSound.playMusic();
-                     } // a mettre dans un foreach pour tous les pnjs quand on en aura plusieurs 
-                    else {
-                        pnj1.endDialog()
-                    }
+                    PNJs.forEach((pnj) => {
+                        if (!pnj.speaking && !pause && mindistance < 50) {
+                            pnj.handleDialog()
+                            clickSound.playMusic();
+                        }
+                        else { pnj.endDialog(); }
+                })
             }
         }
     });
@@ -193,7 +214,7 @@ const createScene = async function () {
         keypress[event.code] = false;
     });
     //waiting for everything to be ready before letting the player start the game
-    //while (!pageLoaded || !citron.ready || !pnj1.ready ) {}
+    //while (!pageLoaded || !citron.ready || !pnj_Potato.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
     backgroundMusicMenu.playMusic();
@@ -213,7 +234,9 @@ function addVector(vectors_array) {
 let playing = false;
 let pause = false;
 
-document.getElementById("playbutton").addEventListener("click", function (e) {
+document.getElementById("playbutton").addEventListener("click", function () {
+    openFullscreen();
+    setTimeout(() => {}, 5000);
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display =  playing? 'block' : 'none'
@@ -222,8 +245,9 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicGame.playMusic();
 });
 
-
-window.addEventListener('load', () => { pageLoaded = true; });
+window.addEventListener('load', () => {
+    pageLoaded = true;
+});
 
 const pauseButton = document.getElementById("pauseButton")
 const pauseMenu = document.getElementById("pauseMenu")
@@ -245,6 +269,7 @@ document.getElementById("resetButton").addEventListener("click", () => {
     }
 })
 createScene().then((scene) => {
+    console.log(pnj_Potato.getAnimationNames())
 
     let jumpY=0;
     let groundCollision = {ray:null, point:0, lastY:lemon.position.y};
@@ -261,14 +286,14 @@ createScene().then((scene) => {
 
     engine.runRenderLoop(function () {
         if (!playing) {}
-        else if (document.getElementById("dialogue").style.display == 'block'){
+        else if (document.getElementById("dialogue").style.display !== 'none'){
+            console.log(document.getElementById("dialogue").style.display)
             gameCitron.stand();
             scene.render();
         }
-        else if (scene && !pause) {
-            
+        else if (scene && !pause) {            
             //log pour voir la possition du joueur a tt moment
-            console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
+            //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z);
             camera.target = lemon.position
             let origin = new Vector3(lemon.position.x, lemon.position.y+10, lemon.position.z);
             let sideOrigin = new Vector3(lemon.position.x, lemon.position.y+2, lemon.position.z);
@@ -443,10 +468,9 @@ createScene().then((scene) => {
                 scene.missionFeuille = true ; 
             }
             
-            pnj1.setState([scene.missionTronc? 1:0, scene.missionFeuille? 1:0, 0]);
+            pnj_Potato.setState([scene.missionTronc? 1:0, scene.missionFeuille? 1:0, scene.missionFleur? 1:0]);
             scene.render();
         }  
-        //console.log(lemon.position)
     });
 });
 

@@ -5,7 +5,6 @@ import MapColi from "./../assets/SolColi.glb"
 import MapVisu from "./../assets/SolVisu.glb";
 import Citerne from "./../assets/citerne.glb"
 import { JeuFleurs } from "./JeuFleurs.js";
-import { JeuTuyaux } from "./JeuTuyaux.js";
 import {LabyrintheModel} from "./Labyrinthe.js"
 import grass from "./../assets/grass.jpg";
 import cristal from "./../assets/cristal.glb";
@@ -16,7 +15,6 @@ import tuyauD from "./../assets/tuyauDroit.glb";
 //import GrassMix from "././assets/deco/GrassMix.glb";
 //import GrassPatch from "././assets/deco/GrassPatch.glb";
 import { JeuTuyaux } from "./JeuTuyauxv2.js"
-import { LabyrintheModel } from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
 import { SkyboxModel } from "./Skybox.js";
 import { TextureTest } from "./TextureTest.js";
@@ -29,6 +27,7 @@ export class MapLoader {
         this.models = [];
         this.TroncEnCours = true;
         this.FeuilleEnCours = true;
+        this.BrancheEnCours = true;
     }
 
     async load() {
@@ -65,6 +64,10 @@ export class MapLoader {
                 this.arbreModel.feuilleVerte();
                 this.FeuilleEnCours = false;
             }
+            if (this.scene.missionBranche === true && this.arbreModel && this.BrancheEnCours) {
+                //this.arbreModel.branches();
+                this.BrancheEnCours = false;
+            }
         });
     }
     //plus necessaire car la map collision les geres
@@ -84,8 +87,6 @@ export class MapLoader {
         m1.name = "ground";
         m1.visibility = false;
     }
-
-
 
     async loadModel(model, scale, position, rotation) {
         try {
