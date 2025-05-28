@@ -218,9 +218,9 @@ const createScene = async function () {
                     }
                     if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626) {
                         //tp au debut
-                        lemon.position.x = 0;
-                        lemon.position.y = 60;
-                        lemon.position.z = 0;
+                        lemon.position.x = 55;
+                        lemon.position.y = 40;
+                        lemon.position.z = 80;
                     }
             }
         }

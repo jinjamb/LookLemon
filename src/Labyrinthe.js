@@ -3,10 +3,10 @@ import Labyrinthe from "./../assets/Labyrinthe.glb";
 import soleil from "./../assets/Soleil.glb";
 import soleilText from "./../assets/soleil.png";
 import cristalModelViolet from "./../assets/CristauxViolet.glb";
-import cristalModelJaune from "./../assets/CristauxJaune.glb";
+
 import cristalModelVert from "./../assets/CristauxVert.glb";
 import cristalViolet from "./../assets/cristalViolet.png";
-import cristalJaune from "./../assets/cristalJaune.png";
+
 import cristalVert from "./../assets/cristalVert.png";
 
 
@@ -72,7 +72,6 @@ export class LabyrintheModel {
             this.createLightSphere(position.add(new Vector3(-10, 10, 10)));
             //this.createLightSphere( new Vector3(390,-190,410)); // Position de la sphère de lumière
             this.loadCristaux(position, cristalModelViolet, cristalViolet);
-            this.loadCristaux(position, cristalModelJaune, cristalViolet);
             this.loadCristaux(position, cristalModelVert, cristalVert);
 
             console.log("Labyrinthe model loaded successfully");
