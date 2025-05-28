@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3,StandardMaterial,Color3,Texture, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
-import Citron from "./../assets/animations/CitronPLAYER.glb";
+import Citron from "./../ModelsBB/citron/citron.glb";
 
 export class CitronModel {
     constructor(scene) {
@@ -86,7 +86,7 @@ export class CitronModel {
         try {
             const result = await SceneLoader.ImportMeshAsync("", Citron, "", scene);
             this.model = result.meshes[0];
-            this.model.scaling = new Vector3(5, 5, 5);
+            this.model.scaling = new Vector3(35, 35, 35);
             this.model.position = new Vector3(0, 0, 3);
             this.model.rotation = new Vector3(0, -4, 0);
 
