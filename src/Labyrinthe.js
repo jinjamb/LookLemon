@@ -1,13 +1,11 @@
-import { SceneLoader, Vector3, Color3, PointLight, GlowLayer, StandardMaterial, MeshBuilder, Texture } from "@babylonjs/core";
-import Labyrinthe from "./../assets/Labyrinthe.glb";
-import soleil from "./../assets/Soleil.glb";
-import soleilText from "./../assets/soleil.png";
-import cristalModelViolet from "./../assets/CristauxViolet.glb";
-
-import cristalModelVert from "./../assets/CristauxVert.glb";
-import cristalViolet from "./../assets/cristalViolet.png";
-
-import cristalVert from "./../assets/cristalVert.png";
+import { SceneLoader, Vector3, Color3, PointLight, GlowLayer, StandardMaterial, Texture } from "@babylonjs/core";
+import Labyrinthe from "./../assets/labyrinthe/Labyrinthe.glb";
+import soleil from "./../assets/labyrinthe/Soleil.glb";
+import soleilText from "./../assets/labyrinthe/soleil.png";
+import cristalModelViolet from "./../assets/labyrinthe/CristauxViolet.glb";
+import cristalModelVert from "./../assets/labyrinthe/CristauxVert.glb";
+import cristalViolet from "./../assets/labyrinthe/cristalViolet.png";
+import cristalVert from "./../assets/labyrinthe/cristalVert.png";
 
 
 

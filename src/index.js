@@ -15,9 +15,9 @@ import BubbleGum from "../assets/sounds/music/BubbleGum.mp3";
 import HowSweet from "../assets/sounds/music/HowSweet.mp3";
 import Interact from "../assets/sounds/effects/Interact.mp3";
 import FootGrass from "../assets/sounds/effects/FootGrass.mp3";
-import TexVide from "./../assets/vide.png"
+
 //import Map from "./../assets/Sol.glb"
-import text from "./../assets/texture.png"
+
 
 let canvas = document.getElementById("maCanvas");
 canvas.width = window.innerWidth;

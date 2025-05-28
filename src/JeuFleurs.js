@@ -1,6 +1,6 @@
-import { Vector3, KeyboardEventTypes } from "@babylonjs/core";
-import FleurC from "./../assets/FleurClaire.glb";
-import FleurF from "./../assets/FleurFonce.glb";
+import { Vector3 } from "@babylonjs/core";
+import FleurC from "./../assets/fleurs/FleurClaire.glb";
+import FleurF from "./../assets/fleurs/FleurFonce.glb";
 
 
 import { Fleur } from "./Fleur.js";
@@ -122,6 +122,9 @@ export class JeuFleurs {
             //this.applyTexture(texturePath);
 
             return result;
+            
+        
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             //console.error("Error loading model:", error);
         }

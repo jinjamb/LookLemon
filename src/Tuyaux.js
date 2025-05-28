@@ -1,6 +1,5 @@
-import { SceneLoader, KeyboardEventTypes, Vector3, SoundTrack } from "@babylonjs/core";
+import { SceneLoader } from "@babylonjs/core";
 
-import tuyau from "./../assets/tuyauAngle.glb";
 
 export class Tuyau {
     constructor(scene) {

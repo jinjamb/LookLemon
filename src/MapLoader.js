@@ -1,15 +1,14 @@
-import { SceneLoader, Vector3, HemisphericLight, MeshBuilder,StandardMaterial, Texture } from "@babylonjs/core";
-import Nuage from "./../assets/nuage.glb";
+import { SceneLoader, Vector3, HemisphericLight,StandardMaterial, Texture } from "@babylonjs/core";
+
 //import Grotte from "./../assets/Grotte.glb";
-import MapColi from "./../assets/SolColi.glb"
-import MapVisu from "./../assets/SolVisu.glb";
-import Citerne from "./../assets/citerne.glb"
+import MapColi from "./../assets/map/SolColi.glb"
+import MapVisu from "./../assets/map/SolVisu.glb";
+import Citerne from "./../assets/tuyaux/citerne.glb"
 import { JeuFleurs } from "./JeuFleurs.js";
 import {LabyrintheModel} from "./Labyrinthe.js"
-import grass from "./../assets/grass.jpg";
-import cristal from "./../assets/cristal.glb";
 
-import tuyauD from "./../assets/tuyauDroit.glb";
+
+
 
 //import Rocks from "././assets/deco/Rocks.glb";
 //import GrassMix from "././assets/deco/GrassMix.glb";
@@ -17,8 +16,7 @@ import tuyauD from "./../assets/tuyauDroit.glb";
 import { JeuTuyaux } from "./JeuTuyaux.js"
 import { ArbreModel } from "./Arbre.js";
 import { SkyboxModel } from "./Skybox.js";
-import { TextureTest } from "./TextureTest.js";
-import { Tuyau } from "./Tuyaux.js";
+
 
 
 export class MapLoader {
@@ -96,11 +94,8 @@ export class MapLoader {
         light.intensity = 1;
         this.scene.light = light;
 
-        let material = new StandardMaterial("material", this.scene);
-        material.diffuseTexture = new Texture(grass, this.scene);
 
-        material.diffuseTexture.uScale = 10;
-        material.diffuseTexture.vScale = 10;
+
         await SceneLoader.ImportMeshAsync("", MapColi, "", this.scene).then((result) => {
             var ground = result.meshes[0];
             result.meshes.forEach((mesh) => {
@@ -108,7 +103,7 @@ export class MapLoader {
                 mesh.name = "ground";
                 mesh.checkCollisions = true;
                 mesh.visibility = 0;
-                //mesh.material = material;
+
             });
             ground.scaling = new Vector3(15, 15, 15);
             ground.position = new Vector3(0, -3, 0);

@@ -1,8 +1,8 @@
 import { SceneLoader, Vector3, KeyboardEventTypes } from "@babylonjs/core";
 
-import tuyauD from "./../assets/tuyauDroit.glb";
-import tuyauA from "./../assets/tuyauAngle.glb";
-import EauMap from "./../assets/SolEau.glb";
+import tuyauD from "./../assets/tuyaux/tuyauDroit.glb";
+import tuyauA from "./../assets/tuyaux/tuyauAngle.glb";
+import EauMap from "./../assets/tuyaux/SolEau.glb";
 
 import { Tuyau } from "./Tuyaux.js";
 
