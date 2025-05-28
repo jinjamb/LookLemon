@@ -6,7 +6,7 @@ export class Pnj {
     speaking = false
     isTyping = false
     available_dialogues = ['debut']
-    name="PNJ"
+    name="Bro Tato"
     state=[0,0,0]
     typingInterval = null;
     currentText = "";
@@ -149,14 +149,20 @@ export class Pnj {
         this.currentText = `${this.dialogues[this.available_dialogues[random_text]]}`
 
         document.getElementById("dialogue").style.display = 'flex'
+        document.getElementById("nomPnj").style.display = 'flex'
 
         let i = 0;
         document.getElementById("dialogue").innerHTML = ''; // Clear previous text
+        document.getElementById("nomPnj").innerHTML = this.name
+
+        let string = ""
         const type = () => {
             if (i < this.currentText.length) {
-                document.getElementById("dialogue").innerHTML += this.currentText.charAt(i);
+                string += this.currentText.charAt(i);
+                document.getElementById("dialogue").innerHTML = `${string}${'\u00A0'.repeat(this.currentText.length - i - 1)}`; // Add spaces to fill the rest of the line
+                //console.log(`${this.currentText.length} - ${document.getElementById("dialogue").innerHTML.length}`);
                 i++
-                this.typingInterval = setTimeout(type, 10);
+                this.typingInterval = setTimeout(type, 5);
             }
         }
         type();
@@ -175,8 +181,8 @@ export class Pnj {
     endDialog(){
         if (!this.istyping || this.currentText === document.getElementById("dialogue").innerHTML) {
             this.speaking = false
-            document.getElementById("dialogue").innerHTML = ""
             document.getElementById("dialogue").style.display = 'none'
+            document.getElementById("nomPnj").style.display = 'none'
         }
         else this.skipTyping()
     }
