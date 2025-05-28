@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3, HemisphericLight,StandardMaterial, Texture } from "@babylonjs/core";
+import { SceneLoader, Vector3, HemisphericLight } from "@babylonjs/core";
 
 //import Grotte from "./../assets/Grotte.glb";
 import MapColi from "./../assets/map/SolColi.glb"

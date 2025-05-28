@@ -98,6 +98,7 @@ export class JeuFleurs {
         });
         if (test) {
             this.scene.missionFleur = true;
+            document.getElementById("engrais").src = "./engraisP.png";
             this.lockFleurs();
         }
         return test;

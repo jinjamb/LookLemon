@@ -54,6 +54,9 @@ export class JeuTuyaux {
                     this.rotateClosestTuyau(playerPosition);
                     this.changeVisibility();
                 }
+                // }if (kbInfo.event.key.toLowerCase() === 'o') {
+                //     document.getElementById("eau").src = "./eauP.png";
+                // }
             }
         });
     }
@@ -315,7 +318,7 @@ export class JeuTuyaux {
             this.matriceModels[tuple[0]][tuple[1]][0].plein();
             if (tuple[0] == 4 && tuple[1] == 7 && this.matriceModels[tuple[0]][tuple[1]][1]== 3) {
                 this.showTemporaryMessage("Mission des tuyaux terminée !", 5000);
-                console.log("fin de la mission");
+                document.getElementById("eau").src = "./eauP.png";
                 endaccess = true;
             }
         });

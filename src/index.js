@@ -232,6 +232,7 @@ const createScene = async function () {
     //while (!pageLoaded || !citron.ready || !pnj_Potato.ready ) {}
     document.getElementById("buttons").style.display = 'flex'
     document.getElementById("loading").style.display = 'none'
+    
     backgroundMusicMenu.playMusic();
 
     return scene;
@@ -274,6 +275,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
         canvas.style.display = 'block'
         backgroundMusicMenu.stopMusic();
         backgroundMusicGame.playMusic();
+        document.getElementById("missions").style.display = 'flex';
     }, 2000);
 });
 
@@ -493,6 +495,7 @@ createScene().then((scene) => {
             }
             if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626 && lemon.position.y < 0) {
                 showTemporaryMessage("Appuillez sur E pour récupérer le Soleil.", 500);
+                document.getElementById("soleil").src = "./soleilP.png";
                 scene.missionFeuille = true;
             }
             pnj_Potato.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);

@@ -160,3 +160,18 @@ a {
     z-index: 1000;
     display: none;
 }
+#eau,#engrais,#soleil{
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+}
+#missions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: -4px;
+    z-index: 1000;
+    display: none;
+}
