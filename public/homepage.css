@@ -128,3 +128,36 @@ a {
   height:fit-content;
   max-height: 25%;
 }
+
+#notif {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 18px;
+    pointer-events: none; /* Pour que le clic passe à travers */
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1000;
+    display: none;
+>>>>>>> 3a81e39c313ecffdabf9125152795624733954c2
+}
+
+#notif {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 18px;
+    pointer-events: none; /* Pour que le clic passe à travers */
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1000;
+    display: none;
+}

@@ -14,7 +14,9 @@ import tuyauD from "./../assets/tuyauDroit.glb";
 //import Rocks from "././assets/deco/Rocks.glb";
 //import GrassMix from "././assets/deco/GrassMix.glb";
 //import GrassPatch from "././assets/deco/GrassPatch.glb";
-import { JeuTuyaux } from "./JeuTuyauxv2.js"
+import { JeuTuyaux } from "./JeuTuyaux.js"
+import { JeuFleurs } from "./JeuFleurs.js";
+import { LabyrintheModel } from "./Labyrinthe.js"
 import { ArbreModel } from "./Arbre.js";
 import { SkyboxModel } from "./Skybox.js";
 import { TextureTest } from "./TextureTest.js";
@@ -33,24 +35,16 @@ export class MapLoader {
     async load() {
         this.loadGround();
         this.loadvisualGround();
-        //this.murs();
-        //this.loadModel(Nuage, new Vector3(40, 45, 40), new Vector3(-100, 0, 10), new Vector3(0, Math.PI, 0));
-        //this.loadModel(Grotte, new Vector3(10, 10, 10), new Vector3(0, 0, -100), new Vector3(0, 0, 0));
         new LabyrintheModel(this.scene).loadModel();
         this.loadModel(Citerne, new Vector3(150, 150, 150), new Vector3(55, 67, -530), new Vector3(0, Math.PI, 0));
         await new JeuTuyaux(this.scene).createFromMatrice(new Vector3(-5, 68, -480)); // load le jeu des tuyaux
-        new JeuFleurs(this.scene).createFromMatrice(new Vector3(212,29.25,-45)); // load le jeu des tuyaux
+        await new JeuFleurs(this.scene).createFromMatrice(new Vector3( 250, 22,-50)); // load le jeu des fleures
+        
         new SkyboxModel(this.scene).load(); // load le skybox
         this.arbreModel = new ArbreModel(this.scene);
         this.arbreModel.load();
         this.setupMissionTroncObserver();
-        //new TextureTest(this.scene).load();
 
-        //this.loadModel(cristal, new Vector3(100, 100, 100), new Vector3(280, -80, 280), new Vector3(0, 0, 0));
-
-        //new Tuyau(this.scene).loadModel(tuyauD, new Vector3(100, 100, 100),new Vector3(0, 60, 0), new Vector3(0, Math.PI / 2, 0));
-
-        //this.loadRandomDeco(10, 10, 10);
 
     }
 
@@ -70,23 +64,8 @@ export class MapLoader {
             }
         });
     }
-    //plus necessaire car la map collision les geres
-    async murs() {
-        this.murInvisible(new Vector3(-350, 50, -190), -Math.PI / 4, 1100);
-        this.murInvisible(new Vector3(90, 50, -555), Math.PI / 2, 200);
-        this.murInvisible(new Vector3(350, 50, -210), Math.PI / 6, 900);
-        this.murInvisible(new Vector3(-210, 50, 173), -4 * Math.PI / 6, 800);
-        this.murInvisible(new Vector3(86, 50, 252), Math.PI / 2, 400);
-        this.murInvisible(new Vector3(250, 50, 160), -Math.PI / 4, 400);
-        this.murInvisible(new Vector3(390, 50, -55), 0, 400);
-    }
-    async murInvisible(pos, rot, lar) {
-        let m1 = MeshBuilder.CreateBox("murInvisible", { height: 180, width: 5, depth: lar }, this.scene);
-        m1.position = pos
-        m1.rotation = new Vector3(0, rot, 0);
-        m1.name = "ground";
-        m1.visibility = false;
-    }
+
+
 
     async loadModel(model, scale, position, rotation) {
         try {

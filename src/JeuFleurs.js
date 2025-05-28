@@ -1,75 +1,86 @@
-import { SceneLoader, Vector3, KeyboardEventTypes } from "@babylonjs/core";
+import { Vector3, KeyboardEventTypes } from "@babylonjs/core";
+import FleurC from "./../assets/FleurClaire.glb";
+import FleurF from "./../assets/FleurFonce.glb";
 
-import TuyauDV from "./../assets/tuyauDroitVide.glb";
-import TuyauDP from "./../assets/tuyauDroitPlein.glb";
+
+import { Fleur } from "./Fleur.js";
+
 
 export class JeuFleurs {
     constructor(scene) {
         this.scene = scene;
+        this.damier = false;
+        this.tt = null;
         this.models = [];
-        this.modelsP = [];
-        this.previousFlower = null;
+        //matrice des tuyaux
+        this.matriceModels = [];
+        //matrice des fleures: 1 si ya fleur 2 si elle est heruuse 3 si dead 0 pion.
         this.matrice = [
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 0, 1, 1, 1],
-            [1, 1, 0, 1, 1, 1, 1, 1]
+            [1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 1],
+            [0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 0],
         ];
-        this.alreadyGrown = [
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 2, 0, 0, 0, 2, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 2, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 2, 0],
-            [0, 0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 0, 0, 0, 0],
-        ]
-
-        this.KeyControles();
-
+        this.currentPosition = [0, 0];
+        this.scene.onBeforeRenderObservable.add(() => this.update()); 
     }
 
-    KeyControles() {
-        console.log(this.scene.missionBranche)
-        
-        window.addEventListener("keydown", (event) => {
-            if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].indexOf(event.code) != -1) { // KEYDOWN event
-                const playerPosition = this.scene.player.position;
-                if (!this.scene.missionBranche) this.checkGround(playerPosition);
-            }
-        });
-    }
+
 
     async createFromMatrice(positionInit) {
-        let vec = new Vector3(20, 20, 20);
+        let vec = new Vector3(40, 40, 40);
         let coef = 20;
+
+        //let t = this.loadModel(TuyauD, vec, new Vector3(positionInit.x + 3 * coef, positionInit.y, positionInit.z - coef), new Vector3(0, Math.PI, 0), positionInit, true, false);
+
+
         for (let i = 0; i < this.matrice.length; i++) {
+            let ligne = [];
             for (let j = 0; j < this.matrice[i].length; j++) {
                 if (this.matrice[i][j] == 1) {
-                    this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
-                } // a remplacer par la terre et la fleur
-                else {
-                    this.loadModel(TuyauDV, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, 0, 0), positionInit, true, true);
+                    let fleur = new Fleur(this.scene);
+                    if (this.damier) {
+                        fleur.loadModel(FleurF, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                        this.damier = false;
+                    } else {
+                        fleur.loadModel(FleurC, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                        this.damier = true;
+                    }
+                    this.models.push(fleur);
+                    fleur.chill();
+                    this.models.push(fleur);
+                    ligne.push([fleur, 1]); // etat
+
+                } else if (this.matrice[i][j] == 0) {
+                    let fleur = new Fleur(this.scene);
+                    ligne.push([null, 0]); // pas de fleur
+                    if (this.damier) {
+                        fleur.loadModel(FleurF, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                         this.damier = false; 
+                    } else {
+                        fleur.loadModel(FleurC, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0), positionInit);
+                        this.damier = true; 
+                    }
+                    // 0 pion
                 }
             }
-        }   
+            this.matriceModels.push(ligne);
+            if (this.damier) { this.damier = false; } else { this.damier = true; }
+        }
+        //console.log("matriceModels=", this.matriceModels);
     }
 
-    async loadModel(model, scale, position, rotation, posInit, visibility, flip) {
+
+    async loadModel(model, scale, position, rotation, posInit) {
         try {
-            const result = await SceneLoader.ImportMeshAsync("", model, "", this.scene);
+
+            let fleur = new Fleur(this.scene);
+            const result = await fleur.loadModel(model, scale, position, rotation, posInit);
             this.model = result.meshes[0];
-            this.model.scaling = new Vector3(scale.x, scale.y, scale.z);
-            this.model.position = new Vector3(position.x, position.y, position.z);
-            this.model.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
-            for (let mesh of result.meshes) {
-                mesh.isVisible = visibility;
-            }
+
+
             //permet de gerer avec les matrice leur pos et rota
             this.model.metadata = {
                 modelType: model,
@@ -78,72 +89,76 @@ export class JeuFleurs {
                     z: Math.floor((position.z - posInit.z) / 20)
                 }//on soutrais pour avoir des valeur quon peut utilisr dans la matrice
             };
-            if (visibility && flip) {
-                this.models.push(this.model);
-            } else if (!visibility && flip) {
-                this.modelsP.push(this.model);
-            }
             //this.applyTexture(texturePath);
+
+            return result;
         } catch (error) {
-            console.error("Error loading model:", error);
+            //console.error("Error loading model:", error);
         }
     }
 
-    Closest(position) {
-        let closest = null;
-        let min = 10;
-        for (const tuyau of this.models) {
-            const distance = Vector3.Distance(tuyau.position, position);
-            if (distance < min) {
-                min = distance;
-                closest = tuyau;
-            }
+
+    update() {
+        let fleur = this.getClosestFleure();
+        if(!fleur) {
+            //console.log("No flower found close enough.");
+            return;
         }
-        this.checkFinish()
-        return closest;
+        let x = fleur.metadata.gridPosition.x;
+        let y = fleur.metadata.gridPosition.z;
+        //console.log("closest fleur=", fleur, "x=", x, "y=", y);
+        //console.log("currentPosition=", this.matriceModels);
+        if (this.matriceModels[x][y][1] == 1) {
+            this.matriceModels[x][y][1] = 2; // on met a jour l'etat de la fleur
+            this.currentPosition = [x, y];
+            fleur.pousse();
+        }
+        else if (this.matriceModels[x][y][1] == 2 && this.currentPosition[0] == x && this.currentPosition[1] == y) {
+            return;
+        }else if (this.matriceModels[x][y][1] == 2) {
+            this.matriceModels[x][y][1] = 3; // on met a jour l'etat de la fleur
+            this.currentPosition = [x, y];
+            this.showTemporaryMessage("Fleur Ecrasée !!!! retourne voir la fleur", 5000);
+            fleur.meurt();
+        }
+
     }
 
-    checkGround(position) {
-        let closest = this.Closest(position);
-        if (closest != this.previousFlower && closest != null ) {
-            if (this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] < 1 ){
-                closest.position.y += 2;
-                // animation fleur()
-                console.log(`fleur [${closest.metadata.gridPosition.x}, ${closest.metadata.gridPosition.z}] plantée`);
-                this.alreadyGrown[closest.metadata.gridPosition.x][closest.metadata.gridPosition.z] = 1; //a virer du coup
-            }
-            else {
-                // on ecrase la fleur
-                console.log(`fleur [${closest.metadata.gridPosition.x}, ${closest.metadata.gridPosition.z}] déja plantée`);
-            }
-        }
-        this.previousFlower = closest;
-    }
+    getClosestFleure() {
+        //console.log("currentPosition=", this.currentPosition);
+        let closestFleure = null;
+        let closestDistance = Infinity; // Initialiser à l'infini pour trouver la plus proche
 
-    resetGrid(){
-        for (let i = 0; i < this.alreadyGrown.length; i++) {
-            for (let j = 0; j < this.alreadyGrown[i].length; j++) {
-                if (this.alreadyGrown[i][j] == 1) {
-                    //mettre fleurs plantées
-                    const model = this.models.find(m => m.metadata.gridPosition.x === i && m.metadata.gridPosition.z === j);
-                    if (model) {
-                        // jouer anim de départ
-                        model.position.y -= 2;
-                    }
-                }
-                this.alreadyGrown[i][j] = 0;
+        this.matriceModels.forEach(lignes => {
+            lignes.forEach(fleur => {
+                if (fleur[0]){
+                        //console.log("fleur=", fleur[0]);
+                        const distance = Vector3.Distance(this.scene.player.position, fleur[0].position);
+                        //console.log("distance=", distance, "position=", fleur[0].position);
+                        if (distance < closestDistance && distance<15) { // 20 is the max distance to consider
+                            //console.log("distance=", distance);
+                            closestDistance = distance;
+                            closestFleure = fleur[0];
+                            //console.log("closestFleure=", closestDistance.position);
+                        }
+                    };
+                });
             }
-        }
+        );
+        return closestFleure;
     }
-
-    checkFinish(){
-        for (let i = 0; i < this.alreadyGrown.length; i++) {
-            for (let j = 0; j < this.alreadyGrown[i].length; j++) {
-                if (this.alreadyGrown[i][j] == 0) return ; // Il reste des fleurs à planter
-            }
-        }
-        console.log("Toutes les fleurs sont plantées !");
-        this.scene.missionBranche = true; // Toutes les fleurs sont plantées
+    showTemporaryMessage(message, duration = 100) {
+        const dialogueElement = document.getElementById("notif");
+        dialogueElement.innerHTML = message;
+        dialogueElement.style.display = 'block';
+        dialogueElement.style.opacity = '1';
+        
+        // Faire disparaître le message après la durée spécifiée
+        setTimeout(() => {
+            dialogueElement.style.opacity = '0';
+            setTimeout(() => {
+                dialogueElement.style.display = 'none';
+            }, 500); // Attendre que la transition d'opacité soit terminée
+        }, duration);
     }
-
 }
