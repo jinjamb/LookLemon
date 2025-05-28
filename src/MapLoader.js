@@ -55,8 +55,10 @@ export class MapLoader {
             }
             if (this.scene.missionBranche === true && this.arbreModel && this.BrancheEnCours) {
                 //this.arbreModel.branches();
+                this.arbreModel.citron();
                 this.BrancheEnCours = false;
             }
+            
         });
     }
 
@@ -73,7 +75,7 @@ export class MapLoader {
             //this.applyTexture(texturePath);
         } catch (error) {
             console.error("Error loading model:", error);
-            
+
         }
     }
     async loadvisualGround() {

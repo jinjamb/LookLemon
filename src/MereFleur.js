@@ -16,6 +16,7 @@ export class MereFleur {
     track = false;
     position = new Vector3(266, 26, 78);
     reset= false;
+    name= "Maelle";
     constructor(scene) {
         this.scene = scene;
     }
@@ -105,20 +106,26 @@ export class MereFleur {
         let text = this.dialogue[this.numDialogue];
         this.reset = true;
         this.playAnimation("standhappy");
-        let displayText = "";
 
         document.getElementById("dialogue").style.display = 'flex';
-
-
         document.getElementById("dialogue").innerHTML = ''; // Clear previous text
-        console.log("currentText=", text);
-        for (let i = 0; i < text.length; i++) {
-            setTimeout(() => {
-                displayText += text.charAt(i);
-                document.getElementById("dialogue").innerHTML = displayText;
-            
-            }, i * 10); // Adjust typing speed here
+
+        //jai copier le code de calvin si ca marche pas c'est pas ma faute
+        document.getElementById("nomPnj").style.display = 'flex'
+        document.getElementById("nomPnj").innerHTML = this.name
+        let i = 0;
+        let string = ""
+
+        const type = () => {
+            if (i < text.length) {
+                string += text.charAt(i);
+                document.getElementById("dialogue").innerHTML = `${string}${'\u00A0'.repeat(text - i - 1)}`; // Add spaces to fill the rest of the line
+                //console.log(`${this.currentText.length} - ${document.getElementById("dialogue").innerHTML.length}`);
+                i++
+                this.typingInterval = setTimeout(type, 5);
+            }
         }
+        type();
     
     }
     endDialog(){
@@ -126,6 +133,7 @@ export class MereFleur {
             this.speaking = false
             document.getElementById("dialogue").innerHTML = "";
             document.getElementById("dialogue").style.display = 'none';
+            document.getElementById("nomPnj").style.display = 'none'
             
         }else {
             this.istyping = false;
