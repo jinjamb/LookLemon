@@ -274,7 +274,6 @@ function showTemporaryMessage(message, duration = 100) {
 
 document.getElementById("playbutton").addEventListener("click", function (e) {
     //openFullscreen();
-
     playing = !playing;
     document.getElementById("buttons").style.display = playing ? 'none' : 'flex';
     document.getElementById("pauseButton").style.display = playing ? 'block' : 'none'
@@ -282,7 +281,6 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
     document.getElementById("missions").style.display = 'flex';
-
 });
 
 window.addEventListener('load', () => {
