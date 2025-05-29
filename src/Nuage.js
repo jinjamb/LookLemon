@@ -1,6 +1,5 @@
-import { SceneLoader, Vector3, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
+import { SceneLoader, Vector3 } from "@babylonjs/core";
 import Nuage from "./../assets/Nuage.glb";
-import Arbre from "./../assets/tree.glb";
 
 export class NuageModel {
     constructor(scene) {

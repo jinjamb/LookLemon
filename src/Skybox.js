@@ -1,4 +1,4 @@
-import { Mesh,StandardMaterial,CubeTexture, SceneLoader, Vector3 } from "@babylonjs/core";
+import { Mesh,StandardMaterial } from "@babylonjs/core";
 
 //import SkyboxTexture from "./../assets/skybox/sky";
 

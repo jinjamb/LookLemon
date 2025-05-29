@@ -1,4 +1,4 @@
-import { SceneLoader, Vector3,StandardMaterial,Color3,Texture, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
+import { SceneLoader, Vector3 } from "@babylonjs/core";
 import Citron from "./../ModelsBB/citron/citron.glb";
 
 export class CitronModel {
