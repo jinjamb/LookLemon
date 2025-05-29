@@ -192,7 +192,11 @@ const createScene = async function () {
                 if (distance < 70) {
                     if (distance < 40){
                         pnj.changeclickercolor(new Color3(1, 0, 1), true);
-                        showTemporaryMessage("Appuie sur E pour interagir avec " + pnj.name, 2000);
+                        if (!pnj.speaking && !pause){
+                            showTemporaryMessage("Appuie sur E pour interagir avec " + pnj.name, 500);
+                        } else {
+                            return;
+                        }
                     } 
                     pnj.model.lookAt(new Vector3(lemon.position.x, pnj.model.position.y, lemon.position.z));
                 }
