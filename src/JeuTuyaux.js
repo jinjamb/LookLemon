@@ -76,23 +76,29 @@ export class JeuTuyaux {
         for (let i = 0; i < this.matrice.length; i++) {
             let ligne = [];
             for (let j = 0; j < this.matrice[i].length; j++) {
+                
+                //random entre 1 et 4
+                let rota = Math.floor(Math.random() * 4) + 1;
+                console.log("rota=", rota);
+                this.rotations[i][j] = rota;
                 if (this.matrice[i][j] == 1) {
                     let tuyau = new Tuyau(this.scene);
-                    tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit );
+                    tuyau.loadModel(tuyauD, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, rota * (Math.PI / 2), 0),positionInit );
                     this.models.push(tuyau);
-                    ligne.push([tuyau,1,1]);//tuyaux,rotation,type
+                    ligne.push([tuyau,rota,1]);//tuyaux,rotation,type
                     //this.loadModel(TuyauDP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, (this.res[i][j] - 1) * (Math.PI / 2), 0), positionInit, false, true);
                 } else if (this.matrice[i][j] == 2) {   
                     let tuyau = new Tuyau(this.scene);
-                    await tuyau.loadModel(tuyauA, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, Math.PI / 2, 0),positionInit);
+                    await tuyau.loadModel(tuyauA, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0,rota* (Math.PI / 2), 0),positionInit);
                     this.models.push(tuyau);
                     tuyau.vide();
-                    ligne.push([tuyau,1,2]);
+                    ligne.push([tuyau,rota,2]);
                     //this.loadModel(TuyauAP, vec, new Vector3(positionInit.x + i * coef, positionInit.y, positionInit.z + j * coef), new Vector3(0, this.res[i][j] * (Math.PI / 2), 0), positionInit, false, true);
                 }
             }
             this.matriceModels.push(ligne);
         }
+        this.changeVisibility();
         //console.log("matriceModels=", this.matriceModels);
     }
 
