@@ -32,7 +32,7 @@ export class MereFleur {
         //sphere de dialogue
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
-        this.clickZone.position = new Vector3(266, 26, 78);
+        this.clickZone.position = new Vector3(230, 26, 71);
         this.clickZone.position.y = this.clickZone.position.y + 40;
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
@@ -49,7 +49,7 @@ export class MereFleur {
             mesh.isVisible = true;
         }
         f.scaling = new Vector3(40, 40, 40);
-        f.position = new Vector3(266, 26, 78);
+        f.position = new Vector3(230, 26, 71);
         f.rotation = new Vector3(0, 3 / 4 * Math.PI + Math.PI, 0);
 
         this.animationGroups = result.animationGroups;
