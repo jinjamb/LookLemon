@@ -53,6 +53,10 @@ export class JeuTuyaux {
                     const playerPosition = this.scene.player.position;
                     if(this.rotateClosestTuyau(playerPosition) !== null){
                         this.changeVisibility();
+
+                        this.scene.PNJs[1].addDialog('milieu')
+                        this.scene.PNJs[1].removeDialog('debut');
+                        this.scene.PNJs[1].image = 'angryPanel.png'
                     }
                     
                 }
@@ -311,6 +315,7 @@ export class JeuTuyaux {
             //console.log("aucun tuyau valide");
             return;
         }
+
         //console.log("valides=", valides);
         //console.log("valides=",valides,"len",valides);
 
@@ -369,6 +374,10 @@ export class JeuTuyaux {
         this.eau.meshes.forEach((mesh) => {
             mesh.isVisible = true;
         });
+        
+        this.scene.PNJs[1].addDialog('fin')
+        this.scene.PNJs[1].removeDialog('milieu');
+        this.scene.PNJs[1].image = 'happyPanel.png'
     }
     async videLac() {
         //console.log("videLac");
