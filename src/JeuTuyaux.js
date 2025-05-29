@@ -79,7 +79,7 @@ export class JeuTuyaux {
                 
                 //random entre 1 et 4
                 let rota = Math.floor(Math.random() * 4) + 1;
-                console.log("rota=", rota);
+
                 this.rotations[i][j] = rota;
                 if (this.matrice[i][j] == 1) {
                     let tuyau = new Tuyau(this.scene);
