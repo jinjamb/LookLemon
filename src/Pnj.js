@@ -11,6 +11,7 @@ export class Pnj {
     state=[0,0,0]
     typingInterval = null;
     currentText = "";
+    image= "";
     // 0: eau, 1: soleil, 2: engrais
 
     dialogues = { 
@@ -42,6 +43,8 @@ export class Pnj {
         this.name = "Panneau";
         this.dialogues = {only: text};
         this.available_dialogues = ["only"];
+
+        this.image = "sign.png"; 
 
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
@@ -88,6 +91,8 @@ export class Pnj {
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
         
+        this.image = "citronVert.png"; 
+
         const clickMat = new StandardMaterial("clickZoneMat", this.scene);
         clickMat.diffuseColor = new Color3(0, 0, 0);
         clickMat.alpha = 0.3;
@@ -191,6 +196,8 @@ export class Pnj {
         document.getElementById("dialogContainer").style.display = 'flex';
         document.getElementById("nomPnj").innerHTML = this.name
         document.getElementById("photoHolder").style.display = 'block';
+        document.getElementById("photoHolder").innerHTML = '<img src="'+this.image+'" id="photo">';
+        console.log(document.getElementById("photoHolder").innerHTML);
 
         let i = 0;
 
@@ -201,7 +208,7 @@ export class Pnj {
                 string += this.currentText.charAt(i) + this.currentText.charAt(i + 1);
                 document.getElementById("dialogue").innerHTML = `${string}${'\u00A0 '.repeat((this.currentText.length - string.length)/2)}`; // Add spaces to fill the rest of the line
                 //console.log(`${this.currentText.length} - ${document.getElementById("dialogue").innerHTML.length}`);
-                i+=2
+                i+=2;
                 this.typingInterval = setTimeout(type, 5);
             }
         }

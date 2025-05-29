@@ -16,6 +16,7 @@ export class MereFleur {
     currentAnimation = null;
     track = false;
     typingInterval = null;
+    image = "happyFlower.png";
     position = new Vector3(266, 26, 78);
     reset= false;
     name= "Maëlle";
@@ -107,6 +108,8 @@ export class MereFleur {
         this.reset = true;
         this.playAnimation("standhappy");
 
+        document.getElementById("photoHolder").innerHTML = '<img src="'+this.image+'" id="photo">';
+
         //jai copier le code de calvin si ca marche pas c'est pas ma faute
         document.getElementById("dialogContainer").style.display = 'flex';
         document.getElementById("nomPnj").innerHTML = this.name
@@ -145,11 +148,12 @@ export class MereFleur {
     changeNumdialogue(num) {
         if (num === 2 && this.numDialogue !== 2) {
             document.getElementById("photoHolder").innerHTML = '<img src="happyFlower.png" id="photo">';
+            this.image = "happyFlower.png";
         }
         else if (num === 1 && this.numDialogue !== 1) {
             document.getElementById("photoHolder").innerHTML = '<img src="angryFlower.png" id="photo">';
+            this.image = "angryFlower.png";
         }
-        else {}
         this.numDialogue = num;
     }
 
