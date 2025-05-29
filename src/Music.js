@@ -1,5 +1,4 @@
 
-
 export class Music {
     audioElement;
     music;

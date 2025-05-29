@@ -1,4 +1,4 @@
-import { SceneLoader, MeshBuilder, Color3, StandardMaterial, ActionManager, Vector3, ExecuteCodeAction, GUID, TextBlock } from "@babylonjs/core";
+import { SceneLoader, MeshBuilder, Color3, StandardMaterial, Vector3 } from "@babylonjs/core";
 import CitronVert from "./../assets/animations/CitronVert.glb";
 import paneau from "./../assets/animations/panneau.glb";
 
