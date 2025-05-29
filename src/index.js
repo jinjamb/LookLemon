@@ -38,7 +38,7 @@ let backgroundMusicGame;
 let lemon;
 let pnj_Potato;
 let pnj_CitronVert;
-let paneau1;
+let panneau1;
 
 let pnj_Fleur;
 let PNJs = [];
@@ -148,10 +148,10 @@ const createScene = async function () {
     pnj_CitronVert.model.rotation.y = Math.PI / 4
     PNJs.push(pnj_CitronVert);
 
-    paneau1 = new Pnj(scene);
-    await paneau1.loadPaneau("Utiliser les tuyaux pour amener l'eau pour remplir le lac.");
-    paneau1.model.position = new Vector3(-60,67,-410);
-    PNJs.push(paneau1);
+    panneau1 = new Pnj(scene);
+    await panneau1.loadPanneau("Utiliser les tuyaux pour amener l'eau pour remplir le lac.");
+    panneau1.model.position = new Vector3(-60,67,-410);
+    PNJs.push(panneau1);
 
     // Create lemon with physics
     lemon = citron.getMesh();

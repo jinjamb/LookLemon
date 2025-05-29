@@ -1,6 +1,6 @@
 import { SceneLoader, MeshBuilder, Color3, StandardMaterial, ActionManager, Vector3, ExecuteCodeAction, GUID, TextBlock } from "@babylonjs/core";
 import CitronVert from "./../assets/animations/CitronVert.glb";
-import paneau from "./../assets/animations/paneau.glb";
+import paneau from "./../assets/animations/panneau.glb";
 
 export class Pnj {
     ready = false
@@ -34,12 +34,12 @@ export class Pnj {
         this.potatoMesh = null;  // le mesh importé
         this.startPosition = new Vector3(5, 1, 5);
     }
-    async loadPaneau(text) {
+    async loadPanneau(text) {
         this.collider = MeshBuilder.CreateBox("pnjContainer", { size: 0.1 }, this.scene);
         this.collider.position = this.startPosition.clone();
         this.collider.visibility = 0;
         
-        this.name = "Paneau";
+        this.name = "Panneau";
         this.dialogues = {only: text};
         this.available_dialogues = ["only"];
 
