@@ -159,6 +159,15 @@ a:hover {
   max-height: 25%;
 }
 
+#loadingImage {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  top: 4rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 #notif {
     position: absolute;
     bottom: 20%;

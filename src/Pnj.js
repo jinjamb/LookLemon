@@ -87,7 +87,7 @@ export class Pnj {
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
         
-        this.image = "citronVert.png"; 
+        this.image = "sadLime.png"; 
 
         const clickMat = new StandardMaterial("clickZoneMat", this.scene);
         clickMat.diffuseColor = new Color3(0, 0, 0);
@@ -154,6 +154,7 @@ export class Pnj {
     }
 
     setState(state) {
+        if (this.name !== "François-Louis-Gustave") {return}
         if (state[0]===0) this.addDialog('eau')
         else this.removeDialog('eau')
 
@@ -169,16 +170,18 @@ export class Pnj {
             this.removeDialog('debut')
         }
 
-        if ( somme == 2){ // a passer a 2 pour le vrai jeu
+        if ( somme == 2){ 
             //this.setDefaultAnimation('Mid')
             this.addDialog('mid')
+            this.image = "midLime.png";
         }
-        else if (somme == 3){ // a passer a 3 pour le vrai jeu
+        else if (somme == 3){ 
             //this.setDefaultAnimation('Happy')
             this.removeDialog('mid')
             this.addDialog('fin')
             this.addDialog('fin1')
             this.addDialog('fin2')
+            this.image = "happyLime.png";
         }
     }
 
