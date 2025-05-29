@@ -1,4 +1,4 @@
-import { SceneLoader, KeyboardEventTypes, Vector3, SoundTrack } from "@babylonjs/core";
+import { SceneLoader } from "@babylonjs/core";
 
 
 export class Fleur {
@@ -14,7 +14,6 @@ export class Fleur {
         if (this.currentAnimation) {
             this.currentAnimation.stop();
         }
-
         const animation = this.findAnimation(name);
         if (animation) {
             animation.play(true);
@@ -22,8 +21,8 @@ export class Fleur {
             this.state = name;
             //console.log("Animation:", name);
         } else {
-            console.log("Animation not found:", name);
-            console.log("Available animations:", this.animationGroups ? this.animationGroups.map(ag => ag.name) : "None");
+            //console.log("Animation not found:", name);
+            //console.log("Available animations:", this.animationGroups ? this.animationGroups.map(ag => ag.name) : "None");
         }
     }
 

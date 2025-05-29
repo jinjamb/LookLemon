@@ -131,7 +131,7 @@ export class Pnj {
             this.currentAnimation = anim;
             return true;
         } else {
-            //console.warn(`Animation '${name}' non trouvée`);
+            console.warn(`Animation '${name}' non trouvée`);
             //console.log("Available animations:", this.animations ? this.animations.map(ag => ag.name) : "None");
             return false;
         }

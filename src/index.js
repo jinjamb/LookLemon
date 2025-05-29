@@ -177,9 +177,10 @@ const createScene = async function () {
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
-    // Add keyboard controls
-    window.addEventListener("keydown", (event) => {
-        keypress[event.code] = true;
+
+    scene.onBeforeRenderObservable.add(() => update());
+
+    function update() {
         if (playing) {
             let mindistance = Infinity
             PNJs.forEach((pnj) => {
@@ -189,13 +190,43 @@ const createScene = async function () {
                     mindistance = distance;
                 }
                 if (distance < 70) {
-                    if (distance < 40) pnj.changeclickercolor(new Color3(1, 0, 1), true);
+                    if (distance < 40){
+                        pnj.changeclickercolor(new Color3(1, 0, 1), true);
+                        showTemporaryMessage("Appuie sur E pour interagir avec " + pnj.name, 2000);
+                    } 
                     pnj.model.lookAt(new Vector3(lemon.position.x, pnj.model.position.y, lemon.position.z));
                 }
                 else pnj.changeclickercolor(new Color3(0, 0, 0), false);
             })
+        }
+    }
+    // Add keyboard controls
+    
+    window.addEventListener("keydown", (event) => {
+        keypress[event.code] = true;
+        if (playing) {
+            //J'ai passer cette partie du code dans update pour la faire tourner en boucle 
+            //pour que les pnj tourne smooth.
 
-            //console.log(event.code)
+            let mindistance = Infinity
+            // PNJs.forEach((pnj) => {
+            //     if (pnj.model == null) return;
+            //     let distance = Math.sqrt(Math.pow(lemon.position.x - pnj.model.position.x, 2) + Math.pow(lemon.position.z - pnj.model.position.z, 2));
+            //     if (distance < mindistance) {
+            //         mindistance = distance;
+            //     }
+            //     if (distance < 70) {
+            //         if (distance < 40){
+            //             pnj.changeclickercolor(new Color3(1, 0, 1), true);
+            //             showTemporaryMessage("Appuie sur E pour interagir avec " + pnj.name, 2000);
+            //         } 
+            //         pnj.model.lookAt(new Vector3(lemon.position.x, pnj.model.position.y, lemon.position.z));
+            //     }
+            //     else pnj.changeclickercolor(new Color3(0, 0, 0), false);
+            // })
+
+            
+
             switch (event.code) {
                 // case "KeyI":
                 //     if (scene.debugLayer.isVisible()) {
@@ -216,11 +247,11 @@ const createScene = async function () {
                 case "KeyE":
                     PNJs.forEach((pnj) => {
                         mindistance = Vector3.Distance(lemon.position, pnj.model.position);
-                        if (!pnj.speaking && !pause && mindistance < 50) {
+                        if (!pnj.speaking && !pause && mindistance < 40) {
 
                             pnj.handleDialog();
                             clickSound.playMusic();
-                        } else if (mindistance < 50) { pnj.endDialog(); }
+                        } else if (mindistance < 40) { pnj.endDialog(); }
                     })
                     //devant la grotte
                     if (lemon.position.y > 0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23) {
@@ -316,7 +347,7 @@ document.getElementById("resumeButton").addEventListener("click", () => { pauseR
 document.getElementById("resetButton").addEventListener("click", () => {
     if (pause) {
         pauseResume();
-        spawnCitron(lemon, position, rotation);
+        spawnCitron(lemon, new Vector3(72,40,60), new Vector3(0, 0, 0));
     }
 })
 createScene().then((scene) => {
@@ -440,7 +471,7 @@ createScene().then((scene) => {
             else {
                 if (groundCollision.lastY >= lemon.position.y - 0.001 && groundCollision.lastY <= lemon.position.y + 0.001) { // if the lemon is on the ground
                     if (keypress["Space"]) {
-                        console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z) //pour chopper des coordonnées facilement
+                        //console.log("Pos:", lemon.position.x, lemon.position.y, lemon.position.z) //pour chopper des coordonnées facilement
                         jumping = true; // we can jump
                         jumpY = groundCollision.point;
                         jumpPad.position.y = jumpY;
@@ -508,7 +539,7 @@ createScene().then((scene) => {
             //Partie de la tp dans le labyrinthe
             //console.log("Test tp:", lemon.position.x, lemon.position.z ,lemon.position.x < -257 , lemon.position.x > -270 , lemon.position.z > -28 , lemon.position.z < 23 );
             if (lemon.position.y > 0 && lemon.position.x < -257 && lemon.position.x > -270 && lemon.position.z > -28 && lemon.position.z < 23) {
-                console.log("tu peux tp apuie sur E dailleur faut faire un ptit dialogue pour mettre loption ce serais cool voilavoila");
+                //console.log("tu peux tp apuie sur E dailleur faut faire un ptit dialogue pour mettre loption ce serais cool voilavoila");
                 showTemporaryMessage("Appuie sur E pour te rendre dans la grotte!", 100);
             }
             if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626 && lemon.position.y < 0) {
@@ -518,7 +549,7 @@ createScene().then((scene) => {
             }
             pnj_CitronVert.setState([scene.missionTronc ? 1 : 0, scene.missionFeuille ? 1 : 0, scene.missionFleur ? 1 : 0]);
             if (scene.missionFleur && scene.missionTronc && scene.missionFeuille) {
-                console.log("Mission terminée!");
+                //console.log("Mission terminée!");
                 if(!jeufini){
                     pnj_CitronVert.playAnimation("HowSweet");
                     jeufini = true;

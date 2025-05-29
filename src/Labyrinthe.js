@@ -72,7 +72,7 @@ export class LabyrintheModel {
             this.loadCristaux(position, cristalModelViolet, cristalViolet);
             this.loadCristaux(position, cristalModelVert, cristalVert);
 
-            console.log("Labyrinthe model loaded successfully");
+            //console.log("Labyrinthe model loaded successfully");
         } catch (error) {
             console.error("Error loading Labyrinthe model:", error);
         }

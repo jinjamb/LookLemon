@@ -73,8 +73,9 @@ export class MereFleur {
             this.state = name;
             //console.log("Animation:", name);
         } else {
-            console.log("Animation not found:", name);
-            console.log("Available animations:", this.animationGroups ? this.animationGroups.map(ag => ag.name) : "None");
+            console.warn("Animation not found:", name);
+            //console.log("Animation not found:", name);
+            //console.log("Available animations:", this.animationGroups ? this.animationGroups.map(ag => ag.name) : "None");
         }
     }
     

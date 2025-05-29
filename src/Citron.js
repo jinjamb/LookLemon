@@ -110,15 +110,15 @@ export class CitronModel {
             this.animationGroups = result.animationGroups;
 
             if (this.animationGroups && this.animationGroups.length > 0) {
-                console.log("Anim dispo :");
+                //console.log("Anim dispo :");
                 this.animationGroups.forEach((ag, index) => {
-                    console.log(`${index}: ${ag.name}`);
+                    //console.log(`${index}: ${ag.name}`);
                 });
 
                 this.playAnimation("Stand");
             }
 
-            console.log("Citron model loaded successfully");
+            //console.log("Citron model loaded successfully");
             this.ready = true;
         } catch (error) {
             console.error("Error loading citron model:", error);
