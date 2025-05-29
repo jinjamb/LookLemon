@@ -38,6 +38,8 @@ let backgroundMusicGame;
 let lemon;
 let pnj_Potato;
 let pnj_CitronVert;
+let paneau1;
+
 let pnj_Fleur;
 let PNJs = [];
 
@@ -143,10 +145,13 @@ const createScene = async function () {
     pnj_CitronVert = new Pnj(scene);
     await pnj_CitronVert.loadPnj(scene);
     pnj_CitronVert.model.position = new Vector3(-120, 27.25, -70);
-
     pnj_CitronVert.model.rotation.y = Math.PI / 4
-
     PNJs.push(pnj_CitronVert);
+
+    paneau1 = new Pnj(scene);
+    await paneau1.loadPaneau("Utiliser les tuyaux pour amener l'eau pour remplir le lac.");
+    paneau1.model.position = new Vector3(-60,67,-410);
+    PNJs.push(paneau1);
 
     // Create lemon with physics
     lemon = citron.getMesh();
@@ -178,7 +183,7 @@ const createScene = async function () {
         if (playing) {
             let mindistance = Infinity
             PNJs.forEach((pnj) => {
-                
+                if (pnj.model == null) return;
                 let distance = Math.sqrt(Math.pow(lemon.position.x - pnj.model.position.x, 2) + Math.pow(lemon.position.z - pnj.model.position.z, 2));
                 if (distance < mindistance) {
                     mindistance = distance;
@@ -517,7 +522,7 @@ createScene().then((scene) => {
                 if(!jeufini){
                     pnj_CitronVert.playAnimation("HowSweet");
                     jeufini = true;
-                    showTemporaryMessage("Bravo, tu as fini toutes les missions!", 5000);
+                    showTemporaryMessage("Bravo, tu as fini toutes les missions!", 10000);
                 }
                 
             }

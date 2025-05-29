@@ -124,7 +124,7 @@ export class JeuTuyaux {
     }
     Closest(position) {
         let closest = null;
-        let min = 50;
+        let min = 30;
         for (const tuyau of this.models) {
             //console.log("tuyau pos=", tuyau.position);
             const distance = Vector3.Distance(tuyau.position, position);

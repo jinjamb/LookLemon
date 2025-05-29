@@ -1,5 +1,6 @@
 import { SceneLoader, MeshBuilder, Color3, StandardMaterial, ActionManager, Vector3, ExecuteCodeAction, GUID, TextBlock } from "@babylonjs/core";
 import CitronVert from "./../assets/animations/CitronVert.glb";
+import paneau from "./../assets/animations/paneau.glb";
 
 export class Pnj {
     ready = false
@@ -33,7 +34,48 @@ export class Pnj {
         this.potatoMesh = null;  // le mesh importé
         this.startPosition = new Vector3(5, 1, 5);
     }
-    
+    async loadPaneau(text) {
+        this.collider = MeshBuilder.CreateBox("pnjContainer", { size: 0.1 }, this.scene);
+        this.collider.position = this.startPosition.clone();
+        this.collider.visibility = 0;
+        
+        this.name = "Paneau";
+        this.dialogues = {only: text};
+        this.available_dialogues = ["only"];
+
+        this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
+        this.clickZone.parent = this.collider;
+        this.clickZone.position = this.startPosition.clone();
+        this.clickZone.position.y = this.clickZone.position.y + 20;
+        this.clickZone.position.x = this.clickZone.position.x - 5;
+        this.clickZone.position.z = this.clickZone.position.z - 5;
+        
+        const clickMat = new StandardMaterial("clickZoneMat", this.scene);
+        clickMat.diffuseColor = new Color3(0, 0, 0);
+        clickMat.alpha = 0.3;
+        this.clickZone.material = clickMat;
+        
+        try {
+            const result = await SceneLoader.ImportMeshAsync("", "", paneau, this.scene);
+            const root = result.meshes[0];
+            root.parent = this.collider;
+            root.scaling.scaleInPlace(100);
+            root.isPickable = false;
+            this.potatoMesh = root;
+
+        } catch (error) {
+            console.error("Erreur lors du chargement du modèle:", error);
+            const errorMesh = MeshBuilder.CreateSphere("errorPNJ", { diameter: 2 }, this.scene);
+            errorMesh.parent = this.collider;
+            const errorMat = new StandardMaterial("errorMat", this.scene);
+            errorMat.diffuseColor = new Color3(1, 0, 0);
+            errorMesh.material = errorMat;
+        }
+        
+        this.model = this.collider;
+        this.ready = true;
+        return this.collider;
+    }
     async loadPnj() {
         this.collider = MeshBuilder.CreateBox("pnjContainer", { size: 0.1 }, this.scene);
         this.collider.position = this.startPosition.clone();
@@ -163,7 +205,7 @@ export class Pnj {
                 this.typingInterval = setTimeout(type, 5);
             }
         }
-        console.log('')
+
         type();
     }
 

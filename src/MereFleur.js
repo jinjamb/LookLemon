@@ -6,7 +6,8 @@ export class MereFleur {
     dialogue = 
     ["Fais pousser mes enfants en passant une seule fois sur chaque case du champ.",
     "Tu as écrasé mes enfants ! Recommence maintenant ! ET DEPUIS LE DÉBUT !",
-    "Prends cet engrais, je n'en ai plus besoin maintenant que j'ai 36 enfants à gérer..."];
+    "Prends cet engrais, je n'en ai plus besoin maintenant que j'ai 32 enfants à gérer..."];
+    //32 pas 36 c'est 6*6 -4
     numDialogue = 0;
     scene = null;
     heureux = true;
