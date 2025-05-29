@@ -262,13 +262,18 @@ const createScene = async function () {
                         lemon.position.x = 830;
                         lemon.position.y = -180;
                         lemon.position.z = 820;
+
                         document.getElementById("notif").innerHTML = "none";
+                        setTimeout(() => {
+                            showTemporaryMessage("Récupère le Soleil qui est au milieu de la grotte !", 10000);
+                        }, 1000);        
                     }
                     if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626) {
                         //tp au debut
                         lemon.position.x = 55;
                         lemon.position.y = 40;
                         lemon.position.z = 80;
+                        
                     }
                     break;
                 case "KeyC":
