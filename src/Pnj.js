@@ -15,12 +15,12 @@ export class Pnj {
     // 0: eau, 1: soleil, 2: engrais
 
     dialogues = { 
-        debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté l'arbre juste ici mais il l'air vlà fatigué.",
-        mid:"L'arbre a déja meilleure mine, mais il a encore besoin d'un petit coup de pouce.",
-        eau:"Il doit manquer d'eau! Le lac du Nord est HS, c'est lui qui abreuve le Grand Arbre, tu d'vrais guetter (aller voir) la citerne!",
-        soleil:"J'pense qu'il a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe. Je mettrai ma main à couper qu'il y est encore!",
-        engrais:"Il a l'air d'avoir besoin d'engrais, mais je sais pas où en trouver. Demande à Maëlle, elle est à coté du champ de fleurs.",
-        fin: "Wow Look Lemon, t'as sauvé le Grand Arbre mon pote!",
+        debut:"Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté le citronnier juste ici mais il l'air vlà fatigué.",
+        mid:"Le citronnier a déja meilleure mine, mais il a encore besoin d'un petit coup de pouce.",
+        eau:"Le citronnier doit manquer d'eau! Le lac du Nord est vide, c'est lui qui abreuve le Grand Citronnier, tu d'vrais guetter (aller voir) la citerne!",
+        soleil:"J'pense que le citronnier a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe à l'est. Je mettrai ma main à couper qu'il y est encore!",
+        engrais:"Le citronnier a l'air d'avoir besoin d'engrais, mais je sais pas où en trouver. Demande à Maëlle, elle est à coté du champ de fleurs au sud-ouest.",
+        fin: "Wow Look Lemon, t'as sauvé le Grand Citronnier mon pote!",
         fin1: "Look Lemon, QUEL CITRON! T'es le plus cool, t'es le plus beau, t'es le plus fort!",
         fin2: "Look Lemon, QUEL CITRON! Look Lemon, mais dis moi quel citron! Look Lemon, QUEL CITRON!",
     }
@@ -87,7 +87,7 @@ export class Pnj {
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
         
-        this.image = "sadLime.png"; 
+        this.image = "startLime.png"; 
 
         const clickMat = new StandardMaterial("clickZoneMat", this.scene);
         clickMat.diffuseColor = new Color3(0, 0, 0);
@@ -169,6 +169,16 @@ export class Pnj {
         if (somme !== 0){
             this.removeDialog('debut')
         }
+        if (somme == 1){ 
+            //this.setDefaultAnimation('Mid')
+            this.image = "sadLime.png";
+        }
+        else if (somme == 0){ 
+            //this.setDefaultAnimation('Sad')
+            this.removeDialog('mid')
+            this.image = "startLime.png";
+        }
+        else
 
         if ( somme == 2){ 
             //this.setDefaultAnimation('Mid')
