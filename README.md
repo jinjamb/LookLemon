@@ -1,14 +1,16 @@
 Look Lemon - 3D Game - https://jinjamb.github.io/LookLemon/
 
 Projet Member:
-Calvin Zegbeu
-Maxime Celeste
-Matthias Carré
+- Calvin Zegbeu
+- Maxime Celeste
+- Matthias Carré
 
-A 3D platformer game built with BabylonJS where you play as a lemon character exploring a world with puzzles and characters to interact with.
+A 3D platformer game built only with BabylonJS where you play as a lemon character exploring a world with puzzles and characters to interact with.
 
-Installation and Setup
+## 🚀 Installation and Setup
 To get started with the game:
+
+- First way:
 ```
 # Clone the repository
 git clone https://github.com/jinjamb/3DGame.git
@@ -21,9 +23,19 @@ npm install
 
 # Start the development server
 npm start
+
+# The game should automatically open in your default browser.
 ```
 
-The game should automatically open in your default browser.
+- Other way:
+```
+Click on this link
+https://jinjamb.github.io/LookLemon/
+```
+
+## ⚠️ Warning
+
+You need to have hardware acceleration enabled in order to play.
 
 Game Controls
 ZQSD - Move the character
