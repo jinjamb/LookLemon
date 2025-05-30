@@ -269,10 +269,10 @@ const createScene = async function () {
                         }, 1000);        
                     }
                     if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626) {
-                        //tp au debut
-                        lemon.position.x = 55;
-                        lemon.position.y = 40;
-                        lemon.position.z = 80;
+                        //tp deavnt la grotte
+                        lemon.position.x = -260;
+                        lemon.position.y = 26.5;
+                        lemon.position.z = 0;
                         
                     }
                     break;
@@ -557,6 +557,8 @@ createScene().then((scene) => {
                     pnj_CitronVert.playAnimation("HowSweet");
                     jeufini = true;
                     showTemporaryMessage("Bravo, tu as fini toutes les missions!", 10000);
+                    document.getElementById("fin").style.display = 'block';
+                    document.getElementById("fin").innerHTML = "Bravo, tu as fini toutes les missions!";
                 }
                 
             }
