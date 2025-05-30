@@ -45,7 +45,7 @@ You need to have hardware acceleration enabled in order to play.
 
 ## 🎮 Game Controls
 
-- ZQSD or WASD - Move the character
+- ZQSD or WASD or Arrows keys - Move the character
 - Space - Jump
 - E - Interact with NPCs/objects/pipes
 - M - Go back to the starting area (Only works when the game is paused)
