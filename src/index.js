@@ -144,7 +144,7 @@ const createScene = async function () {
 
     pnj_CitronVert = new Pnj(scene);
     await pnj_CitronVert.loadPnj(scene);
-    pnj_CitronVert.model.position = new Vector3(-120, 27.25, -70);
+    pnj_CitronVert.model.position = new Vector3(-40, 40, 60);
     pnj_CitronVert.model.rotation.y = Math.PI / 4
     PNJs.push(pnj_CitronVert);
 
