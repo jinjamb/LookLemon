@@ -4,10 +4,11 @@ import mamafleur from "./../assets/fleurs/merefleur.glb";
 
 export class MereFleur {
     dialogue = 
-    ["Fais pousser mes enfants en passant une seule fois sur chaque case du champ.",
+    ["T'as besoin de l'engrais? Okay mais à une condition: fais pousser mes enfants en passant une seule fois sur chaque case du champ. d'accord?",
     "Tu as écrasé mes enfants ! Recommence maintenant ! ET DEPUIS LE DÉBUT !",
     "Prends cet engrais, je n'en ai plus besoin maintenant que j'ai 32 enfants à gérer..."];
-    //32 pas 36 c'est 6*6 -4
+    // 32 pas 36 c'est 6*6 -4
+    // My bad frerot j'ai cru que les pièces étaient adoptées
     numDialogue = 0;
     scene = null;
     heureux = true;
@@ -16,7 +17,7 @@ export class MereFleur {
     currentAnimation = null;
     track = false;
     typingInterval = null;
-    image = "happyFlower.png";
+    image = "neutralFlower.png";
     position = new Vector3(266, 26, 78);
     reset= false;
     name= "Maëlle";

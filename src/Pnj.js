@@ -23,10 +23,6 @@ export class Pnj {
         fin: "Wow Look Lemon, t'as sauvé le Grand Arbre mon pote!",
         fin1: "Look Lemon, QUEL CITRON! T'es le plus cool, t'es le plus beau, t'es le plus fort!",
         fin2: "Look Lemon, QUEL CITRON! Look Lemon, mais dis moi quel citron! Look Lemon, QUEL CITRON!",
-        fleurNeutre:"Salut, Look Lemon, t'as besoin de mon engrais pour aider l'arbre? Je peux t'aider à une condition, tu vois le champs de fleurs derrière moi?<br>Il manque cruellement de fleurset j'aimerais que tu le fleurisse pour moi.",
-        fleurVenere:"BAH ALORS LOOK LEMON! TU AS ÉCRASÉ MES ENFANTS! RECCOMMENCE MAINTENANT!",
-        fleurHappy:"Merci Look Lemon, tu as fait un super boulot! Tu peux prendre l'engrais maintenant.",
-        fleurfin:"Look Lemon, QUEL CITRON! Mais dis moi quel citron! Look Lemon, QUEL CITRON! Mais dis moi quel citron!",
     }
 
     constructor(scene) {
@@ -35,16 +31,16 @@ export class Pnj {
         this.potatoMesh = null;  // le mesh importé
         this.startPosition = new Vector3(5, 1, 5);
     }
-    async loadPanneau(text) {
+    async loadPanneau(text1, text2, text3) {
         this.collider = MeshBuilder.CreateBox("pnjContainer", { size: 0.1 }, this.scene);
         this.collider.position = this.startPosition.clone();
         this.collider.visibility = 0;
         
-        this.name = "Panneau";
-        this.dialogues = {only: text};
-        this.available_dialogues = ["only"];
+        this.name = "Panneau tout à fait normal";
+        this.dialogues = {debut: text1, milieu: text2, fin: text3};
+        this.available_dialogues = ["debut"];
 
-        this.image = "sign.png"; 
+        this.image = "neutralPanel.png"; 
 
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
@@ -91,7 +87,7 @@ export class Pnj {
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
         
-        this.image = "citronVert.png"; 
+        this.image = "sadLime.png"; 
 
         const clickMat = new StandardMaterial("clickZoneMat", this.scene);
         clickMat.diffuseColor = new Color3(0, 0, 0);
@@ -158,6 +154,7 @@ export class Pnj {
     }
 
     setState(state) {
+        if (this.name !== "François-Louis-Gustave") {return}
         if (state[0]===0) this.addDialog('eau')
         else this.removeDialog('eau')
 
@@ -173,16 +170,18 @@ export class Pnj {
             this.removeDialog('debut')
         }
 
-        if ( somme == 2){ // a passer a 2 pour le vrai jeu
+        if ( somme == 2){ 
             //this.setDefaultAnimation('Mid')
             this.addDialog('mid')
+            this.image = "midLime.png";
         }
-        else if (somme == 3){ // a passer a 3 pour le vrai jeu
+        else if (somme == 3){ 
             //this.setDefaultAnimation('Happy')
             this.removeDialog('mid')
             this.addDialog('fin')
             this.addDialog('fin1')
             this.addDialog('fin2')
+            this.image = "happyLime.png";
         }
     }
 
