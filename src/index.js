@@ -174,6 +174,7 @@ const createScene = async function () {
     camera.lockedTarget = lemon.position;
     camera.inputs.attached.pointers.buttons = []; // Aucun bouton de souris ne fera bouger la caméra
     camera.inputs.attached.mousewheel.detachControl();
+    camera.inputs.attached.keyboard.detachControl();
     // Variables to track the current force
     forceDirection = new Vector3(0, 0, 0);
 
