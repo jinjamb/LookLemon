@@ -149,7 +149,7 @@ const createScene = async function () {
     PNJs.push(pnj_CitronVert);
 
     panneau1 = new Pnj(scene);
-    await panneau1.loadPanneau("Tourne les tuyaux pour guider l'eau jusqu'au lac.", "Eh oh c'est pas fini, le lac n'est pas rempli !", "Je n'ai plus d'info pour toi.");
+    await panneau1.loadPanneau("Tourne les tuyaux pour guider l'eau jusqu'au lac en appuyant sur 'E'.", "Eh oh c'est pas fini, le lac n'est pas rempli !", "Je n'ai plus d'info pour toi.");
     panneau1.model.position = new Vector3(-60,67,-410);
     PNJs.push(panneau1);
 

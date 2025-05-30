@@ -75,6 +75,7 @@ export class JeuFleurs {
 
         this.mereFleur = new MereFleur(this.scene);
         this.mereFleur.loadModel();
+        
         this.scene.PNJs.push(this.mereFleur);
     }
     lockFleurs() {

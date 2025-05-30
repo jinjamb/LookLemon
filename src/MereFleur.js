@@ -52,6 +52,9 @@ export class MereFleur {
         f.scaling = new Vector3(40, 40, 40);
         f.position = new Vector3(230, 26, 71);
         f.rotation = new Vector3(0, 3 / 4 * Math.PI + Math.PI, 0);
+        this.collider = MeshBuilder.CreateBox("ground", { height: 30, width: 8, depth:8 }, this.scene);
+        this.collider.position = f.position.clone();
+        this.collider.visibility = 0;
 
         this.animationGroups = result.animationGroups;
         this.playAnimation("standhappy");
