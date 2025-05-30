@@ -333,6 +333,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
     document.getElementById("missions").style.display = 'flex';
+    setTimeout(() => canvas.focus(), 10);
 });
 
 window.addEventListener('load', () => {
@@ -345,7 +346,10 @@ const pauseMenu = document.getElementById("pauseMenu")
 function pauseResume() {
     pause = !pause;
     if (pause) backgroundMusicGame.pauseMusic();
-    else backgroundMusicGame.playMusic()
+    else {
+        backgroundMusicGame.playMusic();
+        setTimeout(() => canvas.focus(), 10);
+    }
     pauseButton.style.display = pause ? 'none' : 'block'
     pauseMenu.style.display = pause ? 'flex' : 'none'
 }
