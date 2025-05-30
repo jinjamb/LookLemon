@@ -47,7 +47,7 @@ You need to have hardware acceleration enabled in order to play.
 - ZQSD or WASD - Move the character
 - Space - Jump
 - E - Interact with NPCs/objects/pipes
-- M - Reset position
+- M - Go back to the starting area (Only works when the game is paused)
 - Escape - Pause/resume game
 
 ## 📹 Camera
