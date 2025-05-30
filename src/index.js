@@ -155,7 +155,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(100, 39.375, 0);
+    let position = new Vector3(68, 39.375, 68);
     let rotation = new Vector3(0, -3 * Math.PI/4, 0);
     spawnCitron(lemon, position, rotation);
 
