@@ -1,4 +1,7 @@
- ## Look Lemon - 3D Game - https://jinjamb.github.io/LookLemon/
+![image](https://github.com/user-attachments/assets/34011378-b1dd-49e7-9a91-1dd1c734cec6)
+
+
+## Look Lemon - 3D Game - https://jinjamb.github.io/LookLemon/
 
 Projet Member:
 - Calvin Zegbeu
