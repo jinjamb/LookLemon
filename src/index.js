@@ -460,12 +460,6 @@ createScene().then((scene) => {
                 walkSound.stopMusic();
                 gameCitron.stand();
             }
-            if (keypress["KeyT"]) {
-                spawnCitron(lemon, position, rotation);
-            } //reset position
-            if (keypress["KeyU"]) {
-                spawnCitron(lemon, new Vector3(0, 0, 0), rotation);
-            }
             //gestion du saut et du déplacement aérien
             if (jumping) {
                 if (jumpPad.position.y - jumpY <= 5) {
