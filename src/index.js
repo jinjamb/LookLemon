@@ -144,7 +144,7 @@ const createScene = async function () {
 
     pnj_CitronVert = new Pnj(scene);
     await pnj_CitronVert.loadPnj(scene);
-    pnj_CitronVert.model.position = new Vector3(-120, 27.25, -70);
+    pnj_CitronVert.model.position = new Vector3(-40, 40, 60);
     pnj_CitronVert.model.rotation.y = Math.PI / 4
     PNJs.push(pnj_CitronVert);
 
@@ -155,7 +155,7 @@ const createScene = async function () {
 
     // Create lemon with physics
     lemon = citron.getMesh();
-    let position = new Vector3(100, 39.375, 0);
+    let position = new Vector3(68, 39.375, 68);
     let rotation = new Vector3(0, -3 * Math.PI/4, 0);
     spawnCitron(lemon, position, rotation);
 
@@ -269,10 +269,10 @@ const createScene = async function () {
                         }, 1000);        
                     }
                     if (lemon.position.x < 600 && lemon.position.x > 578 && lemon.position.z > 598 && lemon.position.z < 626) {
-                        //tp au debut
-                        lemon.position.x = 55;
-                        lemon.position.y = 40;
-                        lemon.position.z = 80;
+                        //tp deavnt la grotte
+                        lemon.position.x = -260;
+                        lemon.position.y = 26.5;
+                        lemon.position.z = 0;
                         
                     }
                     break;
@@ -333,6 +333,7 @@ document.getElementById("playbutton").addEventListener("click", function (e) {
     backgroundMusicMenu.stopMusic();
     backgroundMusicGame.playMusic();
     document.getElementById("missions").style.display = 'flex';
+    setTimeout(() => canvas.focus(), 10);
 });
 
 window.addEventListener('load', () => {
@@ -345,7 +346,10 @@ const pauseMenu = document.getElementById("pauseMenu")
 function pauseResume() {
     pause = !pause;
     if (pause) backgroundMusicGame.pauseMusic();
-    else backgroundMusicGame.playMusic()
+    else {
+        backgroundMusicGame.playMusic();
+        setTimeout(() => canvas.focus(), 10);
+    }
     pauseButton.style.display = pause ? 'none' : 'block'
     pauseMenu.style.display = pause ? 'flex' : 'none'
 }
@@ -460,12 +464,6 @@ createScene().then((scene) => {
                 walkSound.stopMusic();
                 gameCitron.stand();
             }
-            if (keypress["KeyT"]) {
-                spawnCitron(lemon, position, rotation);
-            } //reset position
-            if (keypress["KeyU"]) {
-                spawnCitron(lemon, new Vector3(0, 0, 0), rotation);
-            }
             //gestion du saut et du déplacement aérien
             if (jumping) {
                 if (jumpPad.position.y - jumpY <= 5) {
@@ -563,6 +561,8 @@ createScene().then((scene) => {
                     pnj_CitronVert.playAnimation("HowSweet");
                     jeufini = true;
                     showTemporaryMessage("Bravo, tu as fini toutes les missions!", 10000);
+                    document.getElementById("fin").style.display = 'block';
+                    document.getElementById("fin").innerHTML = "Bravo, tu as fini toutes les missions!";
                 }
                 
             }

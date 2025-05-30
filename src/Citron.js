@@ -1,5 +1,5 @@
 import { SceneLoader, Vector3 } from "@babylonjs/core";
-import Citron from "./../ModelsBB/citron/citron.glb";
+import Citron from "./../assets/citron.glb";
 
 export class CitronModel {
     constructor(scene) {

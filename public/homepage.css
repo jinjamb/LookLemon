@@ -214,3 +214,12 @@ a:hover {
     z-index: 1000;
     display: none;
 }
+#hautgauche{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+}
+#fin{
+  left: 30px;
+}
