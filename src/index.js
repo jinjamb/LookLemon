@@ -209,6 +209,7 @@ const createScene = async function () {
     
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
+        console.log("Key pressed:", event.code);
         if (playing) {
             //J'ai passer cette partie du code dans update pour la faire tourner en boucle 
             //pour que les pnj tourne smooth.
@@ -440,7 +441,7 @@ createScene().then((scene) => {
 
             // mouvements 
             let vectors_array = [];
-            if (keypress["KeyW"] && !keypress["KeyS"]) {
+            if ((keypress["KeyW"] )&& !keypress["KeyS"]) {
                 walkSound.playMusic();
                 vectors_array.push(new Vector3(-1, 0, -1));
                 gameCitron.runForward();
@@ -457,6 +458,29 @@ createScene().then((scene) => {
                 gameCitron.runForward();
             }
             if (keypress["KeyD"] && !keypress["KeyA"]) {
+                walkSound.playMusic();
+                vectors_array.push(new Vector3(-1, 0, 1));
+                gameCitron.runForward();
+            }
+            
+            //fleche direction
+            if ((keypress["ArrowUp"] )&& !keypress["ArrowDown"]) {
+                walkSound.playMusic();
+                vectors_array.push(new Vector3(-1, 0, -1));
+                gameCitron.runForward();
+            }
+            if (keypress["ArrowDown"] && !keypress["ArrowUp"]) {
+                walkSound.playMusic();
+                gameCitron.changeCitronRotation(rotation);
+                vectors_array.push(new Vector3(1, 0, 1));
+                gameCitron.runForward();
+            }
+            if (keypress["ArrowLeft"] && !keypress["ArrowRight"]) {
+                walkSound.playMusic();
+                vectors_array.push(new Vector3(1, 0, -1));
+                gameCitron.runForward();
+            }
+            if (keypress["ArrowRight"] && !keypress["ArrowLeft"]) {
                 walkSound.playMusic();
                 vectors_array.push(new Vector3(-1, 0, 1));
                 gameCitron.runForward();
@@ -508,15 +532,15 @@ createScene().then((scene) => {
             if (vector.length() > 0.1) {
                 let targetAngle;
 
-                if (keypress["KeyW"] && keypress["KeyA"]) { targetAngle = Math.PI / 2; }
-                else if (keypress["KeyW"] && keypress["KeyD"]) { targetAngle = Math.PI; }
-                else if (keypress["KeyS"] && keypress["KeyA"]) { targetAngle = 0; }
-                else if (keypress["KeyS"] && keypress["KeyD"]) { targetAngle = -Math.PI / 2; }
+                if (keypress["KeyW"] && keypress["KeyA"] || keypress["ArrowUp"] && keypress["ArrowLeft"] ) { targetAngle = Math.PI / 2; }
+                else if (keypress["KeyW"] && keypress["KeyD"] || keypress["ArrowUp"] && keypress["ArrowRight"]) { targetAngle = Math.PI; }
+                else if (keypress["KeyS"] && keypress["KeyA"] || keypress["ArrowDown"] && keypress["ArrowLeft"]) { targetAngle = 0; }
+                else if (keypress["KeyS"] && keypress["KeyD"] || keypress["ArrowDown"] && keypress["ArrowRight"]) { targetAngle = -Math.PI / 2; }
 
-                else if (keypress["KeyA"]) { targetAngle = Math.PI / 4 }
-                else if (keypress["KeyD"]) { targetAngle = -3 * Math.PI / 4 }
-                else if (keypress["KeyW"]) { targetAngle = 3 * Math.PI / 4 }
-                else if (keypress["KeyS"]) { targetAngle = -Math.PI / 4 }
+                else if (keypress["KeyA"] || keypress["ArrowLeft"] ) { targetAngle = Math.PI / 4 }
+                else if (keypress["KeyD"] || keypress["ArrowRight"]) { targetAngle = -3 * Math.PI / 4 }
+                else if (keypress["KeyW"] || keypress["ArrowUp"]) { targetAngle = 3 * Math.PI / 4 }
+                else if (keypress["KeyS"] || keypress["ArrowDown"]) { targetAngle = -Math.PI / 4 }
 
 
                 // Set the rotation of the lemon (y-axis rotation for turning left/right)

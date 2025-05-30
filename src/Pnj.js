@@ -16,7 +16,7 @@ export class Pnj {
     // 0: eau, 1: soleil, 2: engrais
 
     dialogues = {
-        debut: "Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté le citronnier juste ici mais il l'air vlà fatigué.",
+        debut: "Hey Look Lemon, comment ça va BG? Je sais pas si t'as zieuté le citronnier juste ici mais il à l'air vlà fatigué.",
         mid: "Le citronnier a déja meilleure mine, mais il a encore besoin d'un petit coup de pouce.",
         eau: "Le citronnier doit manquer d'eau! Le lac du Nord est vide, c'est lui qui abreuve le Grand Citronnier, tu d'vrais guetter (aller voir) la citerne!",
         soleil: "J'pense que le citronnier a b'zoin de vitamine D ! J'ai cru voir quelqu'un emmener le soleil vers le labyrinthe à l'est. Je mettrai ma main à couper qu'il y est encore!",
@@ -46,7 +46,7 @@ export class Pnj {
         this.clickZone = MeshBuilder.CreateSphere("pnjClickZone", { diameter: 4 }, this.scene);
         this.clickZone.parent = this.collider;
         this.clickZone.position = this.startPosition.clone();
-        this.clickZone.position.y = this.clickZone.position.y + 20;
+        this.clickZone.position.y = this.clickZone.position.y + 25;
         this.clickZone.position.x = this.clickZone.position.x - 5;
         this.clickZone.position.z = this.clickZone.position.z - 5;
 
@@ -59,7 +59,7 @@ export class Pnj {
             const result = await SceneLoader.ImportMeshAsync("", "", paneau, this.scene);
             const root = result.meshes[0];
             root.parent = this.collider;
-            root.scaling.scaleInPlace(100);
+            root.scaling.scaleInPlace(150);
             root.isPickable = false;
             this.potatoMesh = root;
 
