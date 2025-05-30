@@ -44,12 +44,11 @@ You need to have hardware acceleration enabled in order to play.
 
 ## 🎮 Game Controls
 
-ZQSD or WASD - Move the character
-Space - Jump
-E - Interact with NPCs/objects/pipes
-I - Toggle debug inspector
-M - Reset position
-Escape - Pause/resume game
+- ZQSD or WASD - Move the character
+- Space - Jump
+- E - Interact with NPCs/objects/pipes
+- M - Reset position
+- Escape - Pause/resume game
 
 ## 📹 Camera
 
