@@ -51,12 +51,14 @@ export class JeuTuyaux {
                     //console.log(this.scene.activeCamera.position);
                     //le joeur a changer apres c'est juste pour test
                     const playerPosition = this.scene.player.position;
-                    if(this.rotateClosestTuyau(playerPosition) !== null){
+                    if (this.rotateClosestTuyau(playerPosition) !== null ) {
                         this.changeVisibility();
 
-                        this.scene.PNJs[1].addDialog('milieu')
-                        this.scene.PNJs[1].removeDialog('debut');
-                        this.scene.PNJs[1].image = 'angryPanel.png'
+                        if (!this.scene.missionTronc){
+                            this.scene.PNJs[1].addDialog('milieu')
+                            this.scene.PNJs[1].removeDialog('debut');
+                            this.scene.PNJs[1].image = 'angryPanel.png'
+                        }
                     }
                     
                 }
@@ -331,7 +333,9 @@ export class JeuTuyaux {
         valides.forEach((tuple) => {
             this.matriceModels[tuple[0]][tuple[1]][0].plein();
             if (tuple[0] == 4 && tuple[1] == 7 && this.matriceModels[tuple[0]][tuple[1]][1]== 3) {
-                this.showTemporaryMessage("Mission des tuyaux terminée !", 5000);
+                 if (!this.scene.missionTronc) {
+                    this.showTemporaryMessage("Mission des tuyaux terminée !", 5000);
+                }
                 document.getElementById("eau").src = "./eauP.png";
                 endaccess = true;
             }
