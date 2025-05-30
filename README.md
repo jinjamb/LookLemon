@@ -54,6 +54,9 @@ You need to have hardware acceleration enabled in order to play.
 
 The camera is designed to follow the player character with fixed parameters to provide a consistent view of the game world.
 
+## 📼 Videos
+- Mid road video: https://youtu.be/tBjr61Rcy_0
+- Final video: https://youtu.be/Qyf2mWurEPc
 ## ⚙️ Game Mechanics
 
 You will have to complete tasks on the map in order to revitalize the lemon tree.
@@ -74,3 +77,17 @@ Help revitalize the Great Tree by solving puzzles and completing missions throug
 ## 🎨 Creation
 
 Every animation, character, or asset that is in the game is an original creation.
+
+## 💡 Inspirations
+
+# We were inspired by a lot of games and tried to respect them as much as possible.
+- Tunic for the type of game and the camera.
+- Pokemon for the cave for one of the quest.
+- Club Penguin for one of the quest.
+- "Blicassty & Ti Blica - Look Lemon" for the name, and the idea of the lemon.
+
+## ♭ Music
+
+The musics used in the game are a free Lo-Fi version of original songs made by NJZ.
+- NewJeans (NJZ) - How Sweet.
+- NewJeans (NJZ) - Bubble Gum.
