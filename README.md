@@ -3,7 +3,7 @@
 
 ## Look Lemon - 3D Game - https://jinjamb.github.io/LookLemon/
 
-Projet Member:
+Project Members:
 - Calvin Zegbeu
 - Maxime Celeste
 - Matthias Carré
