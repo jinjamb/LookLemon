@@ -209,7 +209,7 @@ const createScene = async function () {
     
     window.addEventListener("keydown", (event) => {
         keypress[event.code] = true;
-        console.log("Key pressed:", event.code);
+        //console.log("Key pressed:", event.code);
         if (playing) {
             //J'ai passer cette partie du code dans update pour la faire tourner en boucle 
             //pour que les pnj tourne smooth.
@@ -242,12 +242,12 @@ const createScene = async function () {
                 //     }
                 //     break;
                 case "Escape":
-                    pauseResume()
+                    pauseResume();
                     break;
                 case "Semicolon":
                     if (pause) {
                         spawnCitron(lemon, position, rotation);
-                        pauseResume()
+                        pauseResume();
                     }
                     break;
                 case "KeyE":
@@ -347,7 +347,10 @@ const pauseMenu = document.getElementById("pauseMenu")
 
 function pauseResume() {
     pause = !pause;
-    if (pause) backgroundMusicGame.pauseMusic();
+    if (pause){ 
+        walkSound.stopMusic();
+        backgroundMusicGame.pauseMusic();
+    }
     else {
         backgroundMusicGame.playMusic();
         setTimeout(() => canvas.focus(), 10);
@@ -386,6 +389,7 @@ createScene().then((scene) => {
         if (!playing) { }
         else if (document.getElementById("dialogContainer").style.display !== 'none') {
             //console.log("dispaly: ",document.getElementById("dialogue").style.display);
+            walkSound.stopMusic();
             gameCitron.stand();
             scene.render();
         }
