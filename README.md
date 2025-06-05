@@ -81,7 +81,7 @@ Every animation, character, or asset that is in the game is an original creation
 
 ## 💡 Inspirations
 
-# We were inspired by a lot of games and tried to respect them as much as possible.
+### We were inspired by a lot of games and tried to respect them as much as possible.
 - Tunic for the type of game and the camera.
 - Pokemon for the cave for one of the quest.
 - Club Penguin for one of the quest.
@@ -91,4 +91,6 @@ Every animation, character, or asset that is in the game is an original creation
 
 The musics used in the game are a free Lo-Fi version of original songs made by NJZ.
 - NewJeans (NJZ) - How Sweet.
+- how sweet new jeans lofi remix
 - NewJeans (NJZ) - Bubble Gum.
+- Bubble Gum lofi ~ NewJeans
